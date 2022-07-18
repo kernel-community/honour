@@ -1,0 +1,13 @@
+{
+    "name": "honour",
+    "private": "true",
+    "version": "0.0.1",
+    "main": "index.js",
+    "workspaces": {
+      "packages": ["packages/*"]
+    },
+    "scripts": {
+    },
+    "license": "MIT"
+  }
+  
