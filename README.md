@@ -20,6 +20,10 @@ yarn
 yarn start
 ```
 
+If you look in the package.json file at the top level of this repo, you will see that we only specify starting the frontend. It is possible to `cd` into either the `hardhat` or `subgraph` repos, but those are a bit more involved to work with. 
+
+In particular, we recommend that you start the app, change the network in whatever wallet you like to use to Goerli and go from there. It should be easy enough to deploy your own local contracts, but this app also relies on a subgraph, and the one we are currently using is fetching data from the contract on Goerli.
+
 ## Notes
 
 The two mappings you will find in the Honour.sol contract are not very gas-efficient means of storing information. There are two alternative ways to address this:

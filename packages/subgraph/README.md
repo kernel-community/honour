@@ -48,17 +48,13 @@ Now for all the fun stuff. You will be juggling many terminal windows by the end
 1. Test you hardhat setup from the root folder and ensure that the contracts are working as intended:
 
 ```bash
-cd ~/signature-economies/
-TS_NODE_TRANSPILE_ONLY=1 yarn hardhat:compile
-
-# marvel at our tests
-yarn hardhat:test
+cd ~/Kernel/honour/packages/hardhat
 
 # run a local node 
-yarn hardhat:localnode
+yarn localnode
 
-# deploy the contracts to generate the necessary deployments.json files
-yarn hardhat:deploylocal
+# deploy the contracts to generate the necessary deployments.json files (do this even if the localnode command deploys them too)
+yarn deployl
 ```
 
 2. Open a new terminal and start the IPFS daemon:
@@ -93,61 +89,32 @@ cargo run -p graph-node --release --postgres-url postgresql://<yourname>:<pswd>@
 
 5. Before we build the frontend querying application for our graph node, we need to get some data into it. Run the front end and propose some HON for a given account.
 
-6. Open a new terminal, again in the project root, and build the frontend application for your graph-node:
+6. Open a new terminal, in this subgraph directory, and build the frontend application for your graph-node:
 
 ```bash
-yarn run createlocal
-yarn run deploylocal
+cd ~/Kernel/honour/packages/subgraph
+yarn create:local
+yarn deploy:local
 ```
 
-You can navigate to http://localhost:8000/subgraphs/name/sign-eco/sign-eco-subgraph-localhost/graphql to see your graph query engine. Put the below query into the left-hand pane and then click the Play button at the top to see the different kinds of NFTs we just created:
+You can navigate to http://localhost:8000/subgraphs/name/honour-localhost/graphql to see your graph query engine. Put the below query into the left-hand pane and then click the Play button at the top to see the proposals made for a given account. YOu cna adapt the query for `honoureds`, `forgivens` or `accepteds`. In order for this to work, you will need to specify the account in the Query Variables pane at the bottom of the screen:
 
 ```graphql
-query {
-  accounts {
+query GetProposals($account: Bytes!) {
+  proposeds(where: {receiver: $account}) {
     id
-    balance
-    proposals {
-      id
-      receiver
-      amount
-      proposer
-      timestamp
-    }
-    forgiveness {
-      id
-      forgiven
-      amount
-      forgiver
-      timestamp
-    }
-  }
-  proposals {
-    id
-    receiver
-    amount
     proposer
-    timestamp
-  }
-  forgivenesses {
-    id
-    forgiven
     amount
-    forgiver
-    timestamp
+    blockNumber
+    blockTimestamp
+    transactionHash
   }
 }
 ```
-and
-```
-query ERC20Query($account: String!) {
-  erc20 {
-    id
-    name
-    symbol
-    decimals
-    totalSupply
-    balanceOf(account: $account)
-  }
+and, in the Query Variable pane:
+
+```json
+{
+  "account": "0x1234..."
 }
 ```
