@@ -7,6 +7,9 @@
       "packages": ["packages/*"]
     },
     "scripts": {
+      "start": "yarn workspace dapp start",
+      "format": "yarn workspace dapp format",
+      "lint": "yarn workspace dapp lint"
     },
     "license": "MIT"
   }

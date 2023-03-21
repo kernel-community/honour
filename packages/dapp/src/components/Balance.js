@@ -13,7 +13,7 @@ const Balance = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (address) {
+    if (address && chain) {
       const fetchBalance = async () => {
         const balance = await balanceOf(chain.id, provider, address.toString())
         setBalance(balance)
@@ -21,7 +21,7 @@ const Balance = () => {
       }
       fetchBalance()
     }
-  }, [chain.id, provider, address, setBalance])
+  }, [chain, provider, address, setBalance])
 
   return (
     <div className='flex flex-col w-screen items-center '>

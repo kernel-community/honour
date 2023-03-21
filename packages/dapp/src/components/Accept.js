@@ -25,31 +25,33 @@ function Accept () {
     const [error, setError] = useState(null)
 
   useEffect(() => {
-    async function fetchData () {
-      const queryForgivens = gql`
-            query GetForgivens($account: Bytes!) {
-              forgivens(where: { forgiven: $account }) {
-                id
-                forgiver
-                amount
-                blockNumber
-                blockTimestamp
-                transactionHash
-              }
-            }
-          `
+    if (address) {
+        async function fetchData () {
+        const queryForgivens = gql`
+                query GetForgivens($account: Bytes!) {
+                forgivens(where: { forgiven: $account }) {
+                    id
+                    forgiver
+                    amount
+                    blockNumber
+                    blockTimestamp
+                    transactionHash
+                }
+                }
+            `
 
-      const variables = { account: address.toString() }
-      const dataForgivens = await graphQLClient.request(queryForgivens, variables)
+        const variables = { account: address.toString() }
+        const dataForgivens = await graphQLClient.request(queryForgivens, variables)
 
-      // Get the array of forgiveness
-      const forgiveness = dataForgivens.forgivens
+        // Get the array of forgiveness
+        const forgiveness = dataForgivens.forgivens
 
-      // Set the proposals state to the array of forgiveness
-      setForgiveness(forgiveness)
+        // Set the proposals state to the array of forgiveness
+        setForgiveness(forgiveness)
+        }
+
+        fetchData()
     }
-
-    fetchData()
   }, [address])
 
   const acceptance = async (forgiver) => {

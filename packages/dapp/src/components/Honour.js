@@ -25,59 +25,61 @@ function Honour () {
     const [error, setError] = useState(null)
 
   useEffect(() => {
-    async function fetchData () {
-      const queryProposals = gql`
-            query GetProposals($account: Bytes!) {
-              proposeds(where: { receiver: $account }) {
-                id
-                proposer
-                amount
-                blockNumber
-                blockTimestamp
-                transactionHash
-              }
-            }
-          `
+    if (address) {
+        async function fetchData () {
+        const queryProposals = gql`
+                query GetProposals($account: Bytes!) {
+                proposeds(where: { receiver: $account }) {
+                    id
+                    proposer
+                    amount
+                    blockNumber
+                    blockTimestamp
+                    transactionHash
+                }
+                }
+            `
 
-      const queryHonoureds = gql`
-            query GetHonoureds($account: Bytes!) {
-              honoureds(where: { receiver: $account }) {
-                id
-                proposer
-                amount
-              }
-            }
-          `
+        const queryHonoureds = gql`
+                query GetHonoureds($account: Bytes!) {
+                honoureds(where: { receiver: $account }) {
+                    id
+                    proposer
+                    amount
+                }
+                }
+            `
 
-      const variables = { account: address.toString() }
+        const variables = { account: address.toString() }
 
-      const [dataProposals, dataHonoureds] = await Promise.all([
-        graphQLClient.request(queryProposals, variables),
-        graphQLClient.request(queryHonoureds, variables)
-      ])
+        const [dataProposals, dataHonoureds] = await Promise.all([
+            graphQLClient.request(queryProposals, variables),
+            graphQLClient.request(queryHonoureds, variables)
+        ])
 
-      // Get the array of proposals and honoured proposals
-      const proposals = dataProposals.proposeds
-      const honouredProposals = dataHonoureds.honoureds
+        // Get the array of proposals and honoured proposals
+        const proposals = dataProposals.proposeds
+        const honouredProposals = dataHonoureds.honoureds
 
-      // Filter out the proposals that have already been honoured
-      // This is not the best method - what happens if a proposer proposes multiple same amount?!
-      // TODO: how to set a unique ID in a proposal which an honour tx can reference without
-      // adding more gas costs to each call in the contract?
-      const filteredProposals = proposals.filter((proposal) => {
-        return !honouredProposals.some((honouredProposal) => {
-          return (
-            honouredProposal.proposer === proposal.proposer &&
-                honouredProposal.amount.toString() === proposal.amount.toString()
-          )
+        // Filter out the proposals that have already been honoured
+        // This is not the best method - what happens if a proposer proposes multiple same amount?!
+        // TODO: how to set a unique ID in a proposal which an honour tx can reference without
+        // adding more gas costs to each call in the contract?
+        const filteredProposals = proposals.filter((proposal) => {
+            return !honouredProposals.some((honouredProposal) => {
+            return (
+                honouredProposal.proposer === proposal.proposer &&
+                    honouredProposal.amount.toString() === proposal.amount.toString()
+            )
+            })
         })
-      })
 
-      // Set the proposals state to the filtered array of proposals
-      setProposals(filteredProposals)
+        // Set the proposals state to the filtered array of proposals
+        setProposals(filteredProposals)
+        }
+
+        fetchData()
     }
-
-    fetchData()
   }, [address])
 
   const honourProposal = async (proposer, amount) => {
