@@ -1,0 +1,38 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/ERC20.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.7;\n\n/// @notice Gas efficient ERC20 to explore alternative currency designs\n/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)\n/// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)\n/// @author Modified for this use by stripping all transfer and approval logic + associated events.\ncontract ERC20 {\n    /*///////////////////////////////////////////////////////////////\n                                  EVENTS\n    //////////////////////////////////////////////////////////////*/\n\n    event Transfer(address from, address to, uint256 amount);\n\n    /*///////////////////////////////////////////////////////////////\n                             METADATA STORAGE\n    //////////////////////////////////////////////////////////////*/\n\n    string public name;\n\n    string public symbol;\n\n    uint8 public immutable decimals;\n\n    /*///////////////////////////////////////////////////////////////\n                              ERC20 STORAGE\n    //////////////////////////////////////////////////////////////*/\n\n    uint256 public totalSupply;\n\n    mapping(address => uint256) public balanceOf;\n\n    /*///////////////////////////////////////////////////////////////\n                               CONSTRUCTOR\n    //////////////////////////////////////////////////////////////*/\n\n    constructor(\n        string memory _name,\n        string memory _symbol,\n        uint8 _decimals\n    ) {\n        name = _name;\n        symbol = _symbol;\n        decimals = _decimals;\n    }\n\n    /*///////////////////////////////////////////////////////////////\n                    INTERNAL PROMISE/FORGIVE LOGIC\n    //////////////////////////////////////////////////////////////*/\n\n    function _mint(address to, uint256 amount) internal virtual {\n        totalSupply += amount;\n\n        // Cannot overflow because the sum of all user\n        // balances can't exceed the max uint256 value.\n        unchecked {\n            balanceOf[to] += amount;\n        }\n\n        emit Transfer(address(0), to, amount);\n    }\n\n    function _burn(address from, uint256 amount) internal virtual {\n        balanceOf[from] -= amount;\n\n        // Cannot underflow because a user's balance\n        // will never be larger than the total supply.\n        unchecked {\n            totalSupply -= amount;\n        }\n\n        emit Transfer(from, address(0), amount);\n    }\n}"
+    },
+    "contracts/Honour.sol": {
+      "content": "//SPDX-License-Identifier: MIT\npragma solidity 0.8.7;\n\nimport \"./ERC20.sol\";\n\ncontract Honour is ERC20 {\n\n    error Unbalanced();\n\n    ERC20 public reserve;\n\n    // Storage mappings for proposals and forgiveness.\n    // We store information about both the account with which the proposal/forgiving\n    // is associated, as well as the account which initiated it, in order to ensure that people\n    // can pick and choose at their leisure which proposals to accept and which to leave.\n    mapping(address => mapping(address => uint256)) proposal;\n    mapping(address => mapping(address => uint256)) forgiving;\n\n    constructor(address _reserve) ERC20(\"HONOUR\", \"HON\", 18) {\n        reserve = ERC20(_reserve);\n    }\n\n    /**\n     * @notice begin the process of creating HON by setting the amount and address it should be added to\n     * @param  receiver the address who is set to take on the HON once created\n     * @param  amount the amount of HON to be created once it is honoured into existence.\n     */\n    function propose(address receiver, uint256 amount)\n        public\n    {\n        proposal[receiver][msg.sender] += amount;\n    }\n\n    /**\n     * @notice create HON by accepting the amount set in propose()\n     * @param proposer the address of the account which proposed this to ensure no-one is forced\n     *                 to accept HON they don't want to.\n     * @param amount   the amount of proposed HON to accept. This allows for multiple proposals to\n     *                 exist from the same account without having to accept them all at the same time.\n     *                 It has no check because, if the amount passed in is greater than what is stored\n     *                 in the mapping, we default to just minting the max in the mapping.\n     */\n    function honour(address proposer, uint256 amount)\n        public\n    {\n        if (proposal[msg.sender][proposer] > amount) {\n            _mint(msg.sender, amount);\n            proposal[msg.sender][proposer] -= amount;\n        } else {\n            _mint(msg.sender, proposal[msg.sender][proposer]);\n            proposal[msg.sender][proposer] = 0;\n        }\n    }\n\n    /**\n     * @notice begin the process of erasing HON by setting the amount and address it should be removed from\n     * @param  forgiven the address to be forgiven\n     * @param  amount the amount to forgive\n     */\n    function forgive(address forgiven, uint256 amount)\n        public\n    {\n        // you can't forgive more than your current balance, nor can you forgive more than\n        // the current balance of the person you are forgiving\n        if(balanceOf[msg.sender] < amount || balanceOf[forgiven] < amount) {\n            revert Unbalanced();\n        }\n        forgiving[forgiven][msg.sender] += amount;\n    }\n\n    /**\n     * @notice erase HON by accepting the amount set in forgive()\n     * @param  forgiver allows us to differentiate between accounts who forgive so no-one is\n     *                  forced to accept forgiveness from an account which may tarnish their history.\n     */\n    function accept(address forgiver)\n        public\n    {\n        _burn(msg.sender, forgiving[msg.sender][forgiver]);\n        forgiving[msg.sender][forgiver] = 0;\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

@@ -1,0 +1,49 @@
+type Accepted @entity(immutable: true) {
+  id: Bytes!
+  forgiver: Bytes! # address
+  forgiven: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Forgiven @entity(immutable: true) {
+  id: Bytes!
+  forgiver: Bytes! # address
+  forgiven: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Honoured @entity(immutable: true) {
+  id: Bytes!
+  proposer: Bytes! # address
+  receiver: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Proposed @entity(immutable: true) {
+  id: Bytes!
+  proposer: Bytes! # address
+  receiver: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

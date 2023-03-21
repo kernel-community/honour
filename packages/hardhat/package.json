@@ -24,7 +24,9 @@
       "clean": "yarn hardhat clean",
       "compile": "yarn hardhat compile",
       "localnode": "yarn hardhat node",
-      "test": "yarn hardhat test"
+      "test": "yarn hardhat test",
+      "deployl": "yarn hardhat --network localhost deploy --export-all ../subgraph/config/deployments.json",
+      "deployg": "yarn hardhat --network goerli deploy --export-all ../subgraph/config/deployments.json"
     }
   }
   

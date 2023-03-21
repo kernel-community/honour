@@ -1,0 +1,35 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Honour
+    network: localhost
+    source:
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+      abi: Honour
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Accepted
+        - Forgiven
+        - Honoured
+        - Proposed
+        - Transfer
+      abis:
+        - name: Honour
+          file: ../../packages/hardhat/deployments/localhost/Honour.json
+      eventHandlers:
+        - event: Accepted(indexed address,indexed address,uint256)
+          handler: handleAccepted
+        - event: Forgiven(indexed address,indexed address,uint256)
+          handler: handleForgiven
+        - event: Honoured(indexed address,indexed address,uint256)
+          handler: handleHonoured
+        - event: Proposed(indexed address,indexed address,uint256)
+          handler: handleProposed
+        - event: Transfer(address,address,uint256)
+          handler: handleTransfer
+      file: ./src/Honour-mapping.ts

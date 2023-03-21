@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.43aa262d.css",
+    "main.js": "/static/js/main.f7c6ea60.js",
+    "static/media/Volkhorn.otf": "/static/media/Volkhorn.2188208a0df1f3bb369a.otf",
+    "static/media/kernel_logo.png": "/static/media/kernel_logo.ad8f047ef531c1a35319.png",
+    "index.html": "/index.html",
+    "main.43aa262d.css.map": "/static/css/main.43aa262d.css.map",
+    "main.f7c6ea60.js.map": "/static/js/main.f7c6ea60.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.43aa262d.css",
+    "static/js/main.f7c6ea60.js"
+  ]
+}

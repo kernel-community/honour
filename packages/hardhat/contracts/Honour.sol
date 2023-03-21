@@ -5,6 +5,11 @@ import "./ERC20.sol";
 
 contract Honour is ERC20 {
 
+    event Proposed(address indexed proposer, address indexed receiver, uint256 amount);
+    event Honoured(address indexed proposer, address indexed receiver, uint256 amount);
+    event Forgiven(address indexed forgiver, address indexed forgiven, uint256 amount);
+    event Accepted(address indexed forgiver, address indexed forgiven, uint256 amount);
+
     error Unbalanced();
 
     ERC20 public reserve;
@@ -29,17 +34,29 @@ contract Honour is ERC20 {
         public
     {
         proposal[receiver][msg.sender] += amount;
+        emit Proposed(msg.sender, receiver, amount);
     }
 
     /**
      * @notice create HON by accepting the amount set in propose()
      * @param proposer the address of the account which proposed this to ensure no-one is forced
      *                 to accept HON they don't want to.
+     * @param amount   the amount of proposed HON to accept. This allows for multiple proposals to
+     *                 exist from the same account without having to accept them all at the same time.
+     *                 It has no check because, if the amount passed in is greater than what is stored
+     *                 in the mapping, we default to just minting the max in the mapping.
      */
-    function honour(address proposer)
+    function honour(address proposer, uint256 amount)
         public
     {
-        _mint(msg.sender, proposal[msg.sender][proposer]);
+        if (proposal[msg.sender][proposer] > amount) {
+            _mint(msg.sender, amount);
+            proposal[msg.sender][proposer] -= amount;
+        } else {
+            _mint(msg.sender, proposal[msg.sender][proposer]);
+            proposal[msg.sender][proposer] = 0;
+        }
+        emit Honoured(proposer, msg.sender, amount);
     }
 
     /**
@@ -56,6 +73,7 @@ contract Honour is ERC20 {
             revert Unbalanced();
         }
         forgiving[forgiven][msg.sender] += amount;
+        emit Forgiven(msg.sender, forgiven, amount);
     }
 
     /**
@@ -67,5 +85,7 @@ contract Honour is ERC20 {
         public
     {
         _burn(msg.sender, forgiving[msg.sender][forgiver]);
+        forgiving[msg.sender][forgiver] = 0;
+        emit Accepted(forgiver, msg.sender, forgiving[msg.sender][forgiver]);
     }
 }

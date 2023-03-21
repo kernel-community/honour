@@ -46,10 +46,9 @@ module.exports = {
       allowUnlimitedContractSize: true,
       initialBaseFeePerGas: 0 // https://github.com/sc-forks/solidity-coverage/issues/652
     },
-    GOERLI: {
-      url: `https://GOERLI.infura.io/v3/${INFURA_API_KEY}`,
-      accounts: [GOERLI_PRIVATE_KEY],
-      gasPrice: 10000000000
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [GOERLI_PRIVATE_KEY]
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
