@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { useNetwork, useAccount, useSigner } from 'wagmi'
+import React, { useState, useEffect, useContext } from 'react'
+import { useAccount } from 'wagmi'
 import { ethers } from 'ethers'
+import { InspectContext } from '../contexts/Inspect'
 import { GraphQLClient, gql } from 'graphql-request'
-
-import { honour } from '../utils/contracts'
-import useError from '../hooks/useError'
-import useLoading from '../hooks/useLoading'
 import { graph } from '../utils/constants'
 
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Honour () {
-  const { chain } = useNetwork()
   const { address } = useAccount()
-  const { data: signer } = useSigner()
+  const { dispatch } = useContext(InspectContext)
 
   const [proposals, setProposals] = useState([])
-
-  const { open: openLoading, close: closeLoading } = useLoading()
-  const { open: openError } = useError()
-
-  // eslint-disable-next-line
-    const [error, setError] = useState(null)
 
   useEffect(() => {
     if (address) {
@@ -65,6 +55,8 @@ function Honour () {
         // This is not the best method - what happens if a proposer proposes multiple same amount?!
         // TODO: how to set a unique ID in a proposal which an honour tx can reference without
         // adding more gas costs to each call in the contract?
+        // TODO: make sure these rows are cleared once the transaction is successful from
+        // the new Inspect.js file once you figure out how to match honoureds to proposeds etc.
         const filteredProposals = proposals.filter((proposal) => {
             return !honouredProposals.some((honouredProposal) => {
             return (
@@ -82,31 +74,7 @@ function Honour () {
     }
   }, [address])
 
-  const honourProposal = async (proposer, amount) => {
-    openLoading('Please sign this transaction')
-
-    // Call the propose function with the inputted address and amount
-    let tx
-    try {
-      tx = await honour(proposer, amount, chain.id, signer)
-    } catch (err) {
-      console.log(err)
-      openError('There was an error. Please try again.')
-      console.log(err)
-      closeLoading()
-      setError('Failed to submit transaction')
-      return
-    }
-
-    openLoading('Waiting for money to get weirder')
-
-    await tx.wait(1)
-
-    // Remove the honoured proposal from the proposals array
-    setProposals(proposals.filter(p => p.proposer !== proposer || p.amount !== amount))
-
-    closeLoading()
-  }
+  
 
   return (
     <div className='mt-20'>
@@ -130,7 +98,7 @@ function Honour () {
           </div>
           {proposals.map((proposal) => (
             <div key={proposal.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {ethers.utils.formatUnits(proposal.amount, 18)}
+              {(ethers.utils.formatUnits(proposal.amount, 18)).slice(0,5)}
             </div>
           ))}
         </div>
@@ -152,9 +120,9 @@ function Honour () {
             <div key={proposal.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => honourProposal(proposal.proposer, proposal.amount)}
+                onClick={() => dispatch({ type: 'honour', payload: {showModal: true, address: proposal.proposer, amount: proposal.amount} })}
               >
-                Honour
+                Inspect
               </button>
             </div>
           ))}

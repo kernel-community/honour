@@ -93,7 +93,7 @@ const Items = () => {
       </div>
       <Link
         to='/learn'
-        className={`cursor-pointer hover:text-black no-underline ${pathname === '/signatures' ? 'text-black' : 'text-gray-400'}`}
+        className={`cursor-pointer hover:text-black no-underline ${pathname === '/learn' ? 'text-black' : 'text-gray-400'}`}
       >
         <div>
           learn

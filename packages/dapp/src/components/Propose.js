@@ -83,9 +83,7 @@ function Propose () {
     try {
       tx = await propose(receiver, amount, chain.id, signer)
     } catch (err) {
-      console.log(err)
       openError('There was an error. Please try again.')
-      console.log(err)
       closeLoading()
       setError('Failed to submit transaction')
       return

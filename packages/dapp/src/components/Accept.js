@@ -1,28 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { useNetwork, useAccount, useSigner } from 'wagmi'
+import React, { useState, useEffect, useContext } from 'react'
+import { useAccount } from 'wagmi'
 import { ethers } from 'ethers'
 import { GraphQLClient, gql } from 'graphql-request'
-
-import { accept } from '../utils/contracts'
-import useError from '../hooks/useError'
-import useLoading from '../hooks/useLoading'
 import { graph } from '../utils/constants'
+import { InspectContext } from '../contexts/Inspect'
 
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Accept () {
-  const { chain } = useNetwork()
   const { address } = useAccount()
-  const { data: signer } = useSigner()
-
+  const { dispatch } = useContext(InspectContext)
   const [forgiveness, setForgiveness] = useState([])
-
-  const { open: openLoading, close: closeLoading } = useLoading()
-  const { open: openError } = useError()
-
-  // eslint-disable-next-line
-    const [error, setError] = useState(null)
 
   useEffect(() => {
     if (address) {
@@ -39,7 +28,6 @@ function Accept () {
                 }
                 }
             `
-
         const variables = { account: address.toString() }
         const dataForgivens = await graphQLClient.request(queryForgivens, variables)
 
@@ -53,29 +41,6 @@ function Accept () {
         fetchData()
     }
   }, [address])
-
-  const acceptance = async (forgiver) => {
-    openLoading('Please sign this transaction')
-
-    // Call the propose function with the inputted address and amount
-    let tx
-    try {
-      tx = await accept(forgiver, chain.id, signer)
-    } catch (err) {
-      console.log(err)
-      openError('There was an error. Please try again.')
-      console.log(err)
-      closeLoading()
-      setError('Failed to submit transaction')
-      return
-    }
-
-    openLoading('Waiting for money to get weirder')
-
-    await tx.wait(1)
-
-    closeLoading()
-  }
 
   return (
     <div className='mt-20'>
@@ -99,7 +64,7 @@ function Accept () {
           </div>
           {forgiveness.map((forgive) => (
             <div key={forgive.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {ethers.utils.formatUnits(forgive.amount, 18)}
+              {(ethers.utils.formatUnits(forgive.amount, 18)).slice(0,5)}
             </div>
           ))}
         </div>
@@ -121,9 +86,9 @@ function Accept () {
             <div key={forgive.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => acceptance(forgive.forgiver)}
+                onClick={() => dispatch({ type: 'accept', payload: {showModal: true, address: forgive.forgiver} })}
               >
-                Accept
+                Inspect
               </button>
             </div>
           ))}

@@ -40,7 +40,7 @@ const Balance = () => {
               Your current obligation is:
             </div>
             <div className='text-center text-4xl my-4'>
-              {balance}
+              {balance.slice(0,5)}
             </div>
           </div>
           )}
