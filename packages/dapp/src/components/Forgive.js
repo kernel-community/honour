@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNetwork, useSigner } from 'wagmi'
 import { forgive } from '../utils/contracts'
 import QrReader from 'react-qr-reader'
@@ -14,12 +14,22 @@ function Forgive () {
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
 
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [forgiven, setForgiven] = useState('')
   const [amount, setAmount] = useState('')
   const [showScanner, setShowScanner] = useState(false)
   const [validForm, setValidForm] = useState(false)
   // eslint-disable-next-line
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleScan = async (scanData) => {
     if (scanData && scanData !== '') {
@@ -93,6 +103,15 @@ function Forgive () {
     setAmount('')
   }
 
+  const truncateString = (str, maxLen) => {
+    if (str.length <= maxLen) return str
+    const start = str.slice(0, 8)
+    const end = str.slice(-5)
+    return `${start}...${end}`
+  }
+
+  const truncatedForgiven = truncateString(forgiven, 8)
+
   return (
     <div>
       <div className='flex md:text-4xl text-2xl flex-grow font-volkhorn text-gray-700 self-center'>
@@ -107,14 +126,14 @@ function Forgive () {
             type='text'
             id='forgiven'
             name='forgiven'
-            value={forgiven}
+            value={isSmallScreen ? truncatedForgiven : forgiven}
             onChange={handleInputChange}
-            className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
+            className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 truncate'
           />
           <button
             type='button'
             className='absolute right-0 h-full px-3 text-gray-500 hover:text-gray-700'
-            onClick={() => setShowScanner(true)}
+            onClick={() => setShowScanner(!showScanner)}
           >
             <img src={qrcode} alt='Scan' className='h-8' />
           </button>
@@ -123,7 +142,7 @@ function Forgive () {
           <QrReader
             onScan={handleScan}
             onError={handleError}
-            style={{ width: '300px', marginBottom: '1rem' }}
+            style={{ width: '300px', margin: '0 auto 1rem' }}
           />
         )}
         <label htmlFor='amount' className='text-gray-800'>
