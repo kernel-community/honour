@@ -4,6 +4,7 @@ import { useNetwork, useProvider, useSigner, useAccount } from 'wagmi'
 import { ethers } from 'ethers'
 import { balanceOf, honour, accept } from '../utils/contracts'
 
+import CloseButton from './common/CloseButton'
 import Spinner from './common/Spinner'
 import useInspectTransactions from '../hooks/useInspectTransactions'
 import Modal from '../layouts/Modal'
@@ -22,9 +23,9 @@ const InspectModal = () => {
   // eslint-disable-next-line
   const [error, setError] = useState(null)
 
-  const investigator = address
+  const inspector = address
 
-  const [allTransactions, trustScore] = useInspectTransactions(state.address, investigator);
+  const [allTransactions, trustScore] = useInspectTransactions(state.address, inspector);
   const transactions = allTransactions.slice(0, 8);
 
   useEffect(() => {
@@ -45,31 +46,33 @@ const InspectModal = () => {
   }
   const truncatedAddress = truncateString(state.address, 8)
 
-  const honourTx = async (proposer, amount) => {
+  const honourTx = async (proposer, id) => {
     setLoading(true);
     let tx
     try {
-      tx = await honour(proposer, amount, chain.id, signer)
+      tx = await honour(proposer, id, chain.id, signer)
     } catch (err) {
       setLoading(false)
       setError('Failed to submit transaction')
       return
     }
     await tx.wait(1)
+    dispatch({ type: 'honourEvent', payload: { honouredId: id } })
     dispatch({ type: 'hideModal' })
   }
 
-  const acceptTx = async (address) => {
+  const acceptTx = async (forgiver, id) => {
     setLoading(true);
     let tx
     try {
-      tx = await accept(address, chain.id, signer)
+      tx = await accept(forgiver, id, chain.id, signer)
     } catch (err) {
       setLoading(false);
       setError('Failed or rejected transaction')
       return
     }
     await tx.wait(1)
+    dispatch({ type: 'acceptEvent', payload: { acceptedId: id } })
     dispatch({ type: 'hideModal' })
   }
 
@@ -77,12 +80,21 @@ const InspectModal = () => {
   return (
     <Modal bringToFront>
       <div className='md:p-8 w-full h-min-content md:w-3/4 my-auto rounded-lg shadow-xl bg-white font-volkhorn flex flex-col items-center py-6 sm:py-0'>
+        <div className='self-end'>
+          <CloseButton exec={() => dispatch({ type: 'close' })} />
+        </div>
         <div className='w-full h-full p-2'>
           <div className='text-2xl my-2'>
             Take Care
           </div>
-          <div className='my-4'>
-            Your are about to interact with: <strong>{truncatedAddress}</strong>
+          <div className='my-4 text-xl'>
+            Your are about to interact with: <strong>{truncatedAddress}</strong>,<br/>
+            who wants&nbsp;
+            {state.button === 'accept' ? 
+            <span>to forgive you <strong>{ethers.utils.formatUnits(state.amount, 18)}</strong>, which will <strong>decrease</strong> your HON balance.</span>
+            :
+            <span>you to take on an additional <strong>{ethers.utils.formatUnits(state.amount, 18)} HON</strong>.</span>
+            }
           </div>
           <hr />
           <div className='grid grid-cols-2 my-4'>
@@ -143,7 +155,7 @@ const InspectModal = () => {
         <div className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
           <button
               className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-              onClick={() => acceptTx(state.address)}
+              onClick={() => acceptTx(state.address, state.id)}
               disabled={loading}
               style={{ position: 'relative' }}
             >
@@ -157,7 +169,7 @@ const InspectModal = () => {
         <div className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
           <button
               className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-              onClick={() => honourTx(state.address, state.amount)}
+              onClick={() => honourTx(state.address, state.id)}
               disabled={loading}
               style={{ position: 'relative' }}
             >

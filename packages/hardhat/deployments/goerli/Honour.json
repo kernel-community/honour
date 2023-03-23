@@ -1,5 +1,5 @@
 {
-  "address": "0x940c4e6D4A603707154ab663bDe529e0467B4cF5",
+  "address": "0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c",
   "abi": [
     {
       "inputs": [
@@ -13,7 +13,13 @@
       "type": "constructor"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        }
+      ],
       "name": "Unbalanced",
       "type": "error"
     },
@@ -31,6 +37,12 @@
           "internalType": "address",
           "name": "forgiven",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "forgivingId",
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -60,6 +72,12 @@
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "forgivingId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
         }
@@ -85,6 +103,12 @@
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
         }
@@ -106,6 +130,12 @@
           "internalType": "address",
           "name": "receiver",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -148,6 +178,11 @@
           "internalType": "address",
           "name": "forgiver",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
         }
       ],
       "name": "accept",
@@ -214,7 +249,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "amount",
+          "name": "id",
           "type": "uint256"
         }
       ],
@@ -294,36 +329,37 @@
       "type": "function"
     }
   ],
-  "transactionHash": "0xfe101f53e9399f2e80d95b0086db78964dbf6510cdf0b2d736a304dee64b8816",
+  "transactionHash": "0x30e3af196dd486a0f579acaf4c0a3d29608dbf1b703071dc950ae64aef23fa68",
   "receipt": {
     "to": null,
     "from": "0x5f3371793285920351344a1EaaAA48d45e600652",
-    "contractAddress": "0x940c4e6D4A603707154ab663bDe529e0467B4cF5",
-    "transactionIndex": 143,
-    "gasUsed": "544774",
+    "contractAddress": "0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c",
+    "transactionIndex": 30,
+    "gasUsed": "735465",
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "blockHash": "0x163cf306da5a61008ed78166a8f2a4edae9cfba53be7d37a11fdd5fab57a4a76",
-    "transactionHash": "0xfe101f53e9399f2e80d95b0086db78964dbf6510cdf0b2d736a304dee64b8816",
+    "blockHash": "0x7c4db0f542188dd930f2e42531ba860a3a47a26b2ef2f2dae0194ef90ed1d11f",
+    "transactionHash": "0x30e3af196dd486a0f579acaf4c0a3d29608dbf1b703071dc950ae64aef23fa68",
     "logs": [],
-    "blockNumber": 8687504,
-    "cumulativeGasUsed": "14283089",
+    "blockNumber": 8705671,
+    "cumulativeGasUsed": "2335974",
     "status": 1,
     "byzantium": true
   },
   "args": [
     "0xd67Da31889E1EC7423cab31c68cD6D3FE1fc6D00"
   ],
-  "numDeployments": 3,
-  "solcInputHash": "3cf0b78d038c80e300aff41b416e2cd6",
-  "metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_reserve\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"Unbalanced\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Accepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Forgiven\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Honoured\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Proposed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"}],\"name\":\"accept\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"forgive\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"honour\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"propose\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"reserve\",\"outputs\":[{\"internalType\":\"contract ERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"accept(address)\":{\"params\":{\"forgiver\":\"allows us to differentiate between accounts who forgive so no-one is                  forced to accept forgiveness from an account which may tarnish their history.\"}},\"forgive(address,uint256)\":{\"params\":{\"amount\":\"the amount to forgive\",\"forgiven\":\"the address to be forgiven\"}},\"honour(address,uint256)\":{\"params\":{\"amount\":\"the amount of proposed HON to accept. This allows for multiple proposals to                 exist from the same account without having to accept them all at the same time.                 It has no check because, if the amount passed in is greater than what is stored                 in the mapping, we default to just minting the max in the mapping.\",\"proposer\":\"the address of the account which proposed this to ensure no-one is forced                 to accept HON they don't want to.\"}},\"propose(address,uint256)\":{\"params\":{\"amount\":\"the amount of HON to be created once it is honoured into existence.\",\"receiver\":\"the address who is set to take on the HON once created\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"accept(address)\":{\"notice\":\"erase HON by accepting the amount set in forgive()\"},\"forgive(address,uint256)\":{\"notice\":\"begin the process of erasing HON by setting the amount and address it should be removed from\"},\"honour(address,uint256)\":{\"notice\":\"create HON by accepting the amount set in propose()\"},\"propose(address,uint256)\":{\"notice\":\"begin the process of creating HON by setting the amount and address it should be added to\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Honour.sol\":\"Honour\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/ERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.7;\\n\\n/// @notice Gas efficient ERC20 to explore alternative currency designs\\n/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)\\n/// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)\\n/// @author Modified for this use by stripping all transfer and approval logic + associated events.\\ncontract ERC20 {\\n    /*///////////////////////////////////////////////////////////////\\n                                  EVENTS\\n    //////////////////////////////////////////////////////////////*/\\n\\n    event Transfer(address from, address to, uint256 amount);\\n\\n    /*///////////////////////////////////////////////////////////////\\n                             METADATA STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    string public name;\\n\\n    string public symbol;\\n\\n    uint8 public immutable decimals;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                              ERC20 STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    uint256 public totalSupply;\\n\\n    mapping(address => uint256) public balanceOf;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                               CONSTRUCTOR\\n    //////////////////////////////////////////////////////////////*/\\n\\n    constructor(\\n        string memory _name,\\n        string memory _symbol,\\n        uint8 _decimals\\n    ) {\\n        name = _name;\\n        symbol = _symbol;\\n        decimals = _decimals;\\n    }\\n\\n    /*///////////////////////////////////////////////////////////////\\n                    INTERNAL PROMISE/FORGIVE LOGIC\\n    //////////////////////////////////////////////////////////////*/\\n\\n    function _mint(address to, uint256 amount) internal virtual {\\n        totalSupply += amount;\\n\\n        // Cannot overflow because the sum of all user\\n        // balances can't exceed the max uint256 value.\\n        unchecked {\\n            balanceOf[to] += amount;\\n        }\\n\\n        emit Transfer(address(0), to, amount);\\n    }\\n\\n    function _burn(address from, uint256 amount) internal virtual {\\n        balanceOf[from] -= amount;\\n\\n        // Cannot underflow because a user's balance\\n        // will never be larger than the total supply.\\n        unchecked {\\n            totalSupply -= amount;\\n        }\\n\\n        emit Transfer(from, address(0), amount);\\n    }\\n}\",\"keccak256\":\"0x89f87207a63bff2edd002623cc87aec2985a215019c8be22a77225bbd8271dbe\",\"license\":\"MIT\"},\"contracts/Honour.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity 0.8.7;\\n\\nimport \\\"./ERC20.sol\\\";\\n\\ncontract Honour is ERC20 {\\n\\n    event Proposed(address indexed proposer, address indexed receiver, uint256 amount);\\n    event Honoured(address indexed proposer, address indexed receiver, uint256 amount);\\n    event Forgiven(address indexed forgiver, address indexed forgiven, uint256 amount);\\n    event Accepted(address indexed forgiver, address indexed forgiven, uint256 amount);\\n\\n    error Unbalanced();\\n\\n    ERC20 public reserve;\\n\\n    // Storage mappings for proposals and forgiveness.\\n    // We store information about both the account with which the proposal/forgiving\\n    // is associated, as well as the account which initiated it, in order to ensure that people\\n    // can pick and choose at their leisure which proposals to accept and which to leave.\\n    mapping(address => mapping(address => uint256)) proposal;\\n    mapping(address => mapping(address => uint256)) forgiving;\\n\\n    constructor(address _reserve) ERC20(\\\"HONOUR\\\", \\\"HON\\\", 18) {\\n        reserve = ERC20(_reserve);\\n    }\\n\\n    /**\\n     * @notice begin the process of creating HON by setting the amount and address it should be added to\\n     * @param  receiver the address who is set to take on the HON once created\\n     * @param  amount the amount of HON to be created once it is honoured into existence.\\n     */\\n    function propose(address receiver, uint256 amount)\\n        public\\n    {\\n        proposal[receiver][msg.sender] += amount;\\n        emit Proposed(msg.sender, receiver, amount);\\n    }\\n\\n    /**\\n     * @notice create HON by accepting the amount set in propose()\\n     * @param proposer the address of the account which proposed this to ensure no-one is forced\\n     *                 to accept HON they don't want to.\\n     * @param amount   the amount of proposed HON to accept. This allows for multiple proposals to\\n     *                 exist from the same account without having to accept them all at the same time.\\n     *                 It has no check because, if the amount passed in is greater than what is stored\\n     *                 in the mapping, we default to just minting the max in the mapping.\\n     */\\n    function honour(address proposer, uint256 amount)\\n        public\\n    {\\n        if (proposal[msg.sender][proposer] > amount) {\\n            _mint(msg.sender, amount);\\n            proposal[msg.sender][proposer] -= amount;\\n        } else {\\n            _mint(msg.sender, proposal[msg.sender][proposer]);\\n            proposal[msg.sender][proposer] = 0;\\n        }\\n        emit Honoured(proposer, msg.sender, amount);\\n    }\\n\\n    /**\\n     * @notice begin the process of erasing HON by setting the amount and address it should be removed from\\n     * @param  forgiven the address to be forgiven\\n     * @param  amount the amount to forgive\\n     */\\n    function forgive(address forgiven, uint256 amount)\\n        public\\n    {\\n        // you can't forgive more than your current balance, nor can you forgive more than\\n        // the current balance of the person you are forgiving\\n        if(balanceOf[msg.sender] < amount || balanceOf[forgiven] < amount) {\\n            revert Unbalanced();\\n        }\\n        forgiving[forgiven][msg.sender] += amount;\\n        emit Forgiven(msg.sender, forgiven, amount);\\n    }\\n\\n    /**\\n     * @notice erase HON by accepting the amount set in forgive()\\n     * @param  forgiver allows us to differentiate between accounts who forgive so no-one is\\n     *                  forced to accept forgiveness from an account which may tarnish their history.\\n     */\\n    function accept(address forgiver)\\n        public\\n    {\\n        _burn(msg.sender, forgiving[msg.sender][forgiver]);\\n        forgiving[msg.sender][forgiver] = 0;\\n        emit Accepted(forgiver, msg.sender, forgiving[msg.sender][forgiver]);\\n    }\\n}\",\"keccak256\":\"0x6cbe419bc1e5a4d5f4434263e82b7ecbc12ae7e412be7e99f9a0f0f33ab4bf4a\",\"license\":\"MIT\"}},\"version\":1}",
-  "bytecode": "0x60a060405234801561001057600080fd5b5060405161098a38038061098a83398101604081905261002f91610177565b60408051808201825260068152652427a727aaa960d11b6020808301918252835180850190945260038452622427a760e91b90840152815191929160129161007a91600091906100de565b50815161008e9060019060208501906100de565b5060f81b7fff00000000000000000000000000000000000000000000000000000000000000166080525050600480546001600160a01b0319166001600160a01b03929092169190911790556101e2565b8280546100ea906101a7565b90600052602060002090601f01602090048101928261010c5760008555610152565b82601f1061012557805160ff1916838001178555610152565b82800160010185558215610152579182015b82811115610152578251825591602001919060010190610137565b5061015e929150610162565b5090565b5b8082111561015e5760008155600101610163565b60006020828403121561018957600080fd5b81516001600160a01b03811681146101a057600080fd5b9392505050565b600181811c908216806101bb57607f821691505b602082108114156101dc57634e487b7160e01b600052602260045260246000fd5b50919050565b60805160f81c61078a6102006000396000610105015261078a6000f3fe608060405234801561001057600080fd5b506004361061009e5760003560e01c8063589de5df11610066578063589de5df1461013957806370a082311461014c57806395d89b411461016c5780639f00592014610174578063cd3293de1461018757600080fd5b806306fdde03146100a357806318160ddd146100c157806318be5af9146100d857806321038b4c146100ed578063313ce56714610100575b600080fd5b6100ab6101b2565b6040516100b8919061067f565b60405180910390f35b6100ca60025481565b6040519081526020016100b8565b6100eb6100e6366004610655565b610240565b005b6100eb6100fb366004610655565b61034b565b6101277f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020016100b8565b6100eb610147366004610655565b610412565b6100ca61015a366004610633565b60036020526000908152604090205481565b6100ab610487565b6100eb610182366004610633565b610494565b60045461019a906001600160a01b031681565b6040516001600160a01b0390911681526020016100b8565b600080546101bf90610703565b80601f01602080910402602001604051908101604052809291908181526020018280546101eb90610703565b80156102385780601f1061020d57610100808354040283529160200191610238565b820191906000526020600020905b81548152906001019060200180831161021b57829003601f168201915b505050505081565b3360009081526005602090815260408083206001600160a01b03861684529091529020548110156102b357610275338261051e565b3360009081526005602090815260408083206001600160a01b0386168452909152812080548392906102a89084906106ec565b909155506103069050565b3360008181526005602090815260408083206001600160a01b03871684529091529020546102e1919061051e565b3360009081526005602090815260408083206001600160a01b03861684529091528120555b60405181815233906001600160a01b038416907f821326e4caf39c3edf2ed1eaf34f0ad348d1378de15d04f4e7c4a026ab355cea906020015b60405180910390a35050565b3360009081526003602052604090205481118061037f57506001600160a01b03821660009081526003602052604090205481115b1561039d576040516301c14c8d60e21b815260040160405180910390fd5b6001600160a01b0382166000908152600660209081526040808320338452909152812080548392906103d09084906106d4565b90915550506040518181526001600160a01b0383169033907f4582a759bd41ffb3bf22459f9d7fce8f2a6338c24b72e7ce95b3f38d4ebb9f829060200161033f565b6001600160a01b0382166000908152600560209081526040808320338452909152812080548392906104459084906106d4565b90915550506040518181526001600160a01b0383169033907fe47648add52eaeb19d203abeac027448f529100956084297e9029d48e11503c79060200161033f565b600180546101bf90610703565b3360008181526006602090815260408083206001600160a01b03861684529091529020546104c2919061059a565b3360008181526006602090815260408083206001600160a01b0386168085529083528184208490559051928352917fb31cd01b602066fe749fca6051c464ab7118e31d1eac4c2c706f2b5dac6e7765910160405180910390a350565b806002600082825461053091906106d4565b90915550506001600160a01b03821660008181526003602090815260408083208054860190558051928352908201929092529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef906060015b60405180910390a15050565b6001600160a01b038216600090815260036020526040812080548392906105c29084906106ec565b9091555050600280548290039055604080516001600160a01b0384168152600060208201529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060600161058e565b80356001600160a01b038116811461062e57600080fd5b919050565b60006020828403121561064557600080fd5b61064e82610617565b9392505050565b6000806040838503121561066857600080fd5b61067183610617565b946020939093013593505050565b600060208083528351808285015260005b818110156106ac57858101830151858201604001528201610690565b818111156106be576000604083870101525b50601f01601f1916929092016040019392505050565b600082198211156106e7576106e761073e565b500190565b6000828210156106fe576106fe61073e565b500390565b600181811c9082168061071757607f821691505b6020821081141561073857634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220680b440ee01d020f838c48f602d4f84189671286db4646948ea68db3e0b33c7f64736f6c63430008070033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061009e5760003560e01c8063589de5df11610066578063589de5df1461013957806370a082311461014c57806395d89b411461016c5780639f00592014610174578063cd3293de1461018757600080fd5b806306fdde03146100a357806318160ddd146100c157806318be5af9146100d857806321038b4c146100ed578063313ce56714610100575b600080fd5b6100ab6101b2565b6040516100b8919061067f565b60405180910390f35b6100ca60025481565b6040519081526020016100b8565b6100eb6100e6366004610655565b610240565b005b6100eb6100fb366004610655565b61034b565b6101277f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020016100b8565b6100eb610147366004610655565b610412565b6100ca61015a366004610633565b60036020526000908152604090205481565b6100ab610487565b6100eb610182366004610633565b610494565b60045461019a906001600160a01b031681565b6040516001600160a01b0390911681526020016100b8565b600080546101bf90610703565b80601f01602080910402602001604051908101604052809291908181526020018280546101eb90610703565b80156102385780601f1061020d57610100808354040283529160200191610238565b820191906000526020600020905b81548152906001019060200180831161021b57829003601f168201915b505050505081565b3360009081526005602090815260408083206001600160a01b03861684529091529020548110156102b357610275338261051e565b3360009081526005602090815260408083206001600160a01b0386168452909152812080548392906102a89084906106ec565b909155506103069050565b3360008181526005602090815260408083206001600160a01b03871684529091529020546102e1919061051e565b3360009081526005602090815260408083206001600160a01b03861684529091528120555b60405181815233906001600160a01b038416907f821326e4caf39c3edf2ed1eaf34f0ad348d1378de15d04f4e7c4a026ab355cea906020015b60405180910390a35050565b3360009081526003602052604090205481118061037f57506001600160a01b03821660009081526003602052604090205481115b1561039d576040516301c14c8d60e21b815260040160405180910390fd5b6001600160a01b0382166000908152600660209081526040808320338452909152812080548392906103d09084906106d4565b90915550506040518181526001600160a01b0383169033907f4582a759bd41ffb3bf22459f9d7fce8f2a6338c24b72e7ce95b3f38d4ebb9f829060200161033f565b6001600160a01b0382166000908152600560209081526040808320338452909152812080548392906104459084906106d4565b90915550506040518181526001600160a01b0383169033907fe47648add52eaeb19d203abeac027448f529100956084297e9029d48e11503c79060200161033f565b600180546101bf90610703565b3360008181526006602090815260408083206001600160a01b03861684529091529020546104c2919061059a565b3360008181526006602090815260408083206001600160a01b0386168085529083528184208490559051928352917fb31cd01b602066fe749fca6051c464ab7118e31d1eac4c2c706f2b5dac6e7765910160405180910390a350565b806002600082825461053091906106d4565b90915550506001600160a01b03821660008181526003602090815260408083208054860190558051928352908201929092529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef906060015b60405180910390a15050565b6001600160a01b038216600090815260036020526040812080548392906105c29084906106ec565b9091555050600280548290039055604080516001600160a01b0384168152600060208201529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060600161058e565b80356001600160a01b038116811461062e57600080fd5b919050565b60006020828403121561064557600080fd5b61064e82610617565b9392505050565b6000806040838503121561066857600080fd5b61067183610617565b946020939093013593505050565b600060208083528351808285015260005b818110156106ac57858101830151858201604001528201610690565b818111156106be576000604083870101525b50601f01601f1916929092016040019392505050565b600082198211156106e7576106e761073e565b500190565b6000828210156106fe576106fe61073e565b500390565b600181811c9082168061071757607f821691505b6020821081141561073857634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220680b440ee01d020f838c48f602d4f84189671286db4646948ea68db3e0b33c7f64736f6c63430008070033",
+  "numDeployments": 7,
+  "solcInputHash": "152d8856a8d765e25b3395855b2e9d2c",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_reserve\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"Unbalanced\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"forgivingId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Accepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"forgivingId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Forgiven\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Honoured\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"proposalId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Proposed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forgiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"accept\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"forgiven\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"forgive\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"proposer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"honour\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"propose\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"reserve\",\"outputs\":[{\"internalType\":\"contract ERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"accept(address,uint256)\":{\"params\":{\"forgiver\":\"the address whose forgiveness is being accepted\",\"id\":\"the unique ID of the forgiveness being accepted\"}},\"forgive(address,uint256)\":{\"params\":{\"amount\":\"the amount to forgive\",\"forgiven\":\"the address to be forgiven\"}},\"honour(address,uint256)\":{\"params\":{\"id\":\"the unique ID of the proposal being honoured\",\"proposer\":\"the address whose proposal is being honoured\"}},\"propose(address,uint256)\":{\"params\":{\"amount\":\"the amount of HON to be created once it is honoured into existence.\",\"receiver\":\"the address who is set to take on the HON once created\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"accept(address,uint256)\":{\"notice\":\"erase HON by accepting the amount set in forgive()\"},\"forgive(address,uint256)\":{\"notice\":\"begin the process of erasing HON by setting the amount and address it should be removed from\"},\"honour(address,uint256)\":{\"notice\":\"create HON by accepting the amount set in propose()\"},\"propose(address,uint256)\":{\"notice\":\"begin the process of creating HON by setting the amount and address it should be added to\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Honour.sol\":\"Honour\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/security/ReentrancyGuard.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Contract module that helps prevent reentrant calls to a function.\\n *\\n * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier\\n * available, which can be applied to functions to make sure there are no nested\\n * (reentrant) calls to them.\\n *\\n * Note that because there is a single `nonReentrant` guard, functions marked as\\n * `nonReentrant` may not call one another. This can be worked around by making\\n * those functions `private`, and then adding `external` `nonReentrant` entry\\n * points to them.\\n *\\n * TIP: If you would like to learn more about reentrancy and alternative ways\\n * to protect against it, check out our blog post\\n * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].\\n */\\nabstract contract ReentrancyGuard {\\n    // Booleans are more expensive than uint256 or any type that takes up a full\\n    // word because each write operation emits an extra SLOAD to first read the\\n    // slot's contents, replace the bits taken up by the boolean, and then write\\n    // back. This is the compiler's defense against contract upgrades and\\n    // pointer aliasing, and it cannot be disabled.\\n\\n    // The values being non-zero value makes deployment a bit more expensive,\\n    // but in exchange the refund on every call to nonReentrant will be lower in\\n    // amount. Since refunds are capped to a percentage of the total\\n    // transaction's gas, it is best to keep them low in cases like this one, to\\n    // increase the likelihood of the full refund coming into effect.\\n    uint256 private constant _NOT_ENTERED = 1;\\n    uint256 private constant _ENTERED = 2;\\n\\n    uint256 private _status;\\n\\n    constructor() {\\n        _status = _NOT_ENTERED;\\n    }\\n\\n    /**\\n     * @dev Prevents a contract from calling itself, directly or indirectly.\\n     * Calling a `nonReentrant` function from another `nonReentrant`\\n     * function is not supported. It is possible to prevent this from happening\\n     * by making the `nonReentrant` function external, and making it call a\\n     * `private` function that does the actual work.\\n     */\\n    modifier nonReentrant() {\\n        // On the first call to nonReentrant, _notEntered will be true\\n        require(_status != _ENTERED, \\\"ReentrancyGuard: reentrant call\\\");\\n\\n        // Any calls to nonReentrant after this point will fail\\n        _status = _ENTERED;\\n\\n        _;\\n\\n        // By storing the original value once again, a refund is triggered (see\\n        // https://eips.ethereum.org/EIPS/eip-2200)\\n        _status = _NOT_ENTERED;\\n    }\\n}\\n\",\"keccak256\":\"0x0e9621f60b2faabe65549f7ed0f24e8853a45c1b7990d47e8160e523683f3935\",\"license\":\"MIT\"},\"contracts/ERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.7;\\n\\n/// @notice Gas efficient ERC20 to explore alternative currency designs\\n/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)\\n/// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)\\n/// @author Modified for this use by stripping all transfer and approval logic + associated events.\\ncontract ERC20 {\\n    /*///////////////////////////////////////////////////////////////\\n                                  EVENTS\\n    //////////////////////////////////////////////////////////////*/\\n\\n    event Transfer(address from, address to, uint256 amount);\\n\\n    /*///////////////////////////////////////////////////////////////\\n                             METADATA STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    string public name;\\n\\n    string public symbol;\\n\\n    uint8 public immutable decimals;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                              ERC20 STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    uint256 public totalSupply;\\n\\n    mapping(address => uint256) public balanceOf;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                               CONSTRUCTOR\\n    //////////////////////////////////////////////////////////////*/\\n\\n    constructor(\\n        string memory _name,\\n        string memory _symbol,\\n        uint8 _decimals\\n    ) {\\n        name = _name;\\n        symbol = _symbol;\\n        decimals = _decimals;\\n    }\\n\\n    /*///////////////////////////////////////////////////////////////\\n                    INTERNAL PROMISE/FORGIVE LOGIC\\n    //////////////////////////////////////////////////////////////*/\\n\\n    function _mint(address to, uint256 amount) internal virtual {\\n        totalSupply += amount;\\n\\n        // Cannot overflow because the sum of all user\\n        // balances can't exceed the max uint256 value.\\n        unchecked {\\n            balanceOf[to] += amount;\\n        }\\n\\n        emit Transfer(address(0), to, amount);\\n    }\\n\\n    function _burn(address from, uint256 amount) internal virtual {\\n        balanceOf[from] -= amount;\\n\\n        // Cannot underflow because a user's balance\\n        // will never be larger than the total supply.\\n        unchecked {\\n            totalSupply -= amount;\\n        }\\n\\n        emit Transfer(from, address(0), amount);\\n    }\\n}\",\"keccak256\":\"0x89f87207a63bff2edd002623cc87aec2985a215019c8be22a77225bbd8271dbe\",\"license\":\"MIT\"},\"contracts/Honour.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity 0.8.7;\\n\\nimport \\\"./ERC20.sol\\\";\\nimport \\\"@openzeppelin/contracts/security/ReentrancyGuard.sol\\\";\\n\\ncontract Honour is ERC20, ReentrancyGuard {\\n\\n    event Proposed(address indexed proposer, address indexed receiver, uint256 proposalId, uint256 amount);\\n    event Honoured(address indexed proposer, address indexed receiver, uint256 proposalId, uint256 amount);\\n    event Forgiven(address indexed forgiver, address indexed forgiven, uint256 forgivingId, uint256 amount);\\n    event Accepted(address indexed forgiver, address indexed forgiven, uint256 forgivingId, uint256 amount);\\n\\n    error Unbalanced(string message);\\n\\n    ERC20 public reserve;\\n\\n    // Storage mappings for proposals and forgiveness.\\n    // This multiply nested mapping may seem unnecessary, but we need the address\\n    // of both parties to create trust graphs of more than depth 1, and we need the\\n    // unique ID in the UI to filter propose and forgive by those which have already\\n    // been honoured or accepted\\n    mapping(address => mapping(address => mapping(uint256 => uint256))) private proposal;\\n    mapping(address => mapping(address => mapping(uint256 => uint256))) private forgiving;\\n\\n    uint256 proposalId;\\n    uint256 forgivingId;\\n\\n    constructor(address _reserve) ERC20(\\\"HONOUR\\\", \\\"HON\\\", 18) {\\n        reserve = ERC20(_reserve);\\n    }\\n\\n    /**\\n     * @notice begin the process of creating HON by setting the amount and address it should be added to\\n     * @param  receiver the address who is set to take on the HON once created\\n     * @param  amount the amount of HON to be created once it is honoured into existence.\\n     */\\n    function propose(address receiver, uint256 amount)\\n        public\\n    {\\n        require (msg.sender != receiver, \\\"Can't propose to self\\\");\\n        require (amount > 0, \\\"Propose more than 0\\\");\\n        proposalId++;\\n        proposal[msg.sender][receiver][proposalId] += amount;\\n        emit Proposed(msg.sender, receiver, proposalId, amount);\\n    }\\n\\n    /**\\n     * @notice create HON by accepting the amount set in propose()\\n     * @param proposer  the address whose proposal is being honoured\\n     * @param id        the unique ID of the proposal being honoured\\n     */\\n    function honour(address proposer, uint256 id)\\n        public\\n        nonReentrant\\n    {\\n        require(proposal[proposer][msg.sender][id] > 0, \\\"Nothing to honour\\\");\\n        uint256 amount = proposal[proposer][msg.sender][id];\\n        _mint(msg.sender, amount);\\n        proposal[proposer][msg.sender][id] = 0;\\n        emit Honoured(proposer, msg.sender, id, amount);\\n    }\\n\\n    /**\\n     * @notice begin the process of erasing HON by setting the amount and address it should be removed from\\n     * @param  forgiven the address to be forgiven\\n     * @param  amount the amount to forgive\\n     */\\n    function forgive(address forgiven, uint256 amount)\\n        public\\n    {\\n        require(msg.sender != forgiven, \\\"Can't forgive self\\\");\\n        require (amount > 0, \\\"Forgive more than 0\\\");\\n        // you can't forgive more than your current balance, nor can you forgive more than\\n        // the current balance of the person you are forgiving\\n        if(balanceOf[msg.sender] < amount || balanceOf[forgiven] < amount) {\\n            revert Unbalanced(\\\"Unmatched balances\\\");\\n        }\\n        forgivingId++;\\n        forgiving[msg.sender][forgiven][forgivingId] += amount;\\n        emit Forgiven(msg.sender, forgiven, forgivingId, amount);\\n    }\\n\\n    /**\\n     * @notice erase HON by accepting the amount set in forgive()\\n     * @param forgiver  the address whose forgiveness is being accepted\\n     * @param id        the unique ID of the forgiveness being accepted\\n     */\\n    function accept(address forgiver, uint256 id)\\n        public\\n        nonReentrant\\n    {\\n        require(forgiving[forgiver][msg.sender][id] > 0, \\\"Nothing to accept\\\");\\n        uint256 amount = forgiving[forgiver][msg.sender][id];\\n        _burn(msg.sender, amount);\\n        forgiving[forgiver][msg.sender][id] = 0;\\n        emit Accepted(forgiver, msg.sender, id, amount);\\n    }\\n}\",\"keccak256\":\"0xb5a692451c228e1152fe82232b23c4d8cfa65210015e36c04bd09149f423af5c\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a06040523480156200001157600080fd5b5060405162000cb638038062000cb6833981016040819052620000349162000193565b60408051808201825260068152652427a727aaa960d11b6020808301918252835180850190945260038452622427a760e91b908401528151919291601291620000819160009190620000ed565b50815162000097906001906020850190620000ed565b5060f81b7fff000000000000000000000000000000000000000000000000000000000000001660805250506001600455600580546001600160a01b0319166001600160a01b039290921691909117905562000202565b828054620000fb90620001c5565b90600052602060002090601f0160209004810192826200011f57600085556200016a565b82601f106200013a57805160ff19168380011785556200016a565b828001600101855582156200016a579182015b828111156200016a5782518255916020019190600101906200014d565b50620001789291506200017c565b5090565b5b808211156200017857600081556001016200017d565b600060208284031215620001a657600080fd5b81516001600160a01b0381168114620001be57600080fd5b9392505050565b600181811c90821680620001da57607f821691505b60208210811415620001fc57634e487b7160e01b600052602260045260246000fd5b50919050565b60805160f81c610a956200022160003960006101050152610a956000f3fe608060405234801561001057600080fd5b506004361061009e5760003560e01c8063589de5df11610066578063589de5df1461013957806370a082311461014c57806395d89b411461016c578063cd3293de14610174578063cd67571c1461019f57600080fd5b806306fdde03146100a357806318160ddd146100c157806318be5af9146100d857806321038b4c146100ed578063313ce56714610100575b600080fd5b6100ab6101b2565b6040516100b8919061096f565b60405180910390f35b6100ca60025481565b6040519081526020016100b8565b6100eb6100e6366004610945565b610240565b005b6100eb6100fb366004610945565b6103b8565b6101277f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020016100b8565b6100eb610147366004610945565b610568565b6100ca61015a366004610923565b60036020526000908152604090205481565b6100ab61069c565b600554610187906001600160a01b031681565b6040516001600160a01b0390911681526020016100b8565b6100eb6101ad366004610945565b6106a9565b600080546101bf906109f3565b80601f01602080910402602001604051908101604052809291908181526020018280546101eb906109f3565b80156102385780601f1061020d57610100808354040283529160200191610238565b820191906000526020600020905b81548152906001019060200180831161021b57829003601f168201915b505050505081565b600260045414156102985760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c0060448201526064015b60405180910390fd5b60026004556001600160a01b038216600090815260066020908152604080832033845282528083208484529091529020546103095760405162461bcd60e51b81526020600482015260116024820152702737ba3434b733903a37903437b737bab960791b604482015260640161028f565b6001600160a01b0382166000908152600660209081526040808320338085529083528184208585529092529091205490610343908261080e565b6001600160a01b03831660008181526006602090815260408083203380855290835281842087855283528184209390935580518681529182018590529192917f6c9bd2efd2c9afeaf83a90107cee7aa09e08c9e83cf240d2ea5ac4ed05a9c28591015b60405180910390a35050600160045550565b336001600160a01b03831614156104065760405162461bcd60e51b815260206004820152601260248201527121b0b713ba103337b933b4bb329039b2b63360711b604482015260640161028f565b6000811161044c5760405162461bcd60e51b81526020600482015260136024820152720466f7267697665206d6f7265207468616e203606c1b604482015260640161028f565b3360009081526003602052604090205481118061048057506001600160a01b03821660009081526003602052604090205481115b156104c357604051636fd97e5f60e01b8152602060048201526012602482015271556e6d6174636865642062616c616e63657360701b604482015260640161028f565b600980549060006104d383610a2e565b90915550503360009081526007602090815260408083206001600160a01b038616845282528083206009548452909152812080548392906105159084906109c4565b909155505060095460408051918252602082018390526001600160a01b0384169133917f77a0f9592e2384c121b0353ed0580ac46186852a8f251aefaaa3bd5fdd25923e91015b60405180910390a35050565b336001600160a01b03831614156105b95760405162461bcd60e51b815260206004820152601560248201527421b0b713ba10383937b837b9b2903a379039b2b63360591b604482015260640161028f565b600081116105ff5760405162461bcd60e51b8152602060048201526013602482015272050726f706f7365206d6f7265207468616e203606c1b604482015260640161028f565b6008805490600061060f83610a2e565b90915550503360009081526006602090815260408083206001600160a01b038616845282528083206008548452909152812080548392906106519084906109c4565b909155505060085460408051918252602082018390526001600160a01b0384169133917fd3b765bdd25a28d7041ee634ba9ebd9edadd7677d094ffa3ce74ade3aceaebd9910161055c565b600180546101bf906109f3565b600260045414156106fc5760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c00604482015260640161028f565b60026004556001600160a01b0382166000908152600760209081526040808320338452825280832084845290915290205461076d5760405162461bcd60e51b8152602060048201526011602482015270139bdd1a1a5b99c81d1bc81858d8d95c1d607a1b604482015260640161028f565b6001600160a01b03821660009081526007602090815260408083203380855290835281842085855290925290912054906107a7908261088a565b6001600160a01b03831660008181526007602090815260408083203380855290835281842087855283528184209390935580518681529182018590529192917fd8f3325f42e4346c3cf9d399abf523adacb0a3f95427647fe22149ecf5a379c091016103a6565b806002600082825461082091906109c4565b90915550506001600160a01b03821660008181526003602090815260408083208054860190558051928352908201929092529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef906060015b60405180910390a15050565b6001600160a01b038216600090815260036020526040812080548392906108b29084906109dc565b9091555050600280548290039055604080516001600160a01b0384168152600060208201529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060600161087e565b80356001600160a01b038116811461091e57600080fd5b919050565b60006020828403121561093557600080fd5b61093e82610907565b9392505050565b6000806040838503121561095857600080fd5b61096183610907565b946020939093013593505050565b600060208083528351808285015260005b8181101561099c57858101830151858201604001528201610980565b818111156109ae576000604083870101525b50601f01601f1916929092016040019392505050565b600082198211156109d7576109d7610a49565b500190565b6000828210156109ee576109ee610a49565b500390565b600181811c90821680610a0757607f821691505b60208210811415610a2857634e487b7160e01b600052602260045260246000fd5b50919050565b6000600019821415610a4257610a42610a49565b5060010190565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220b62d3552d19e2bcd31af64de92dccee32163af029923a5e3e7b005221abcd94d64736f6c63430008070033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061009e5760003560e01c8063589de5df11610066578063589de5df1461013957806370a082311461014c57806395d89b411461016c578063cd3293de14610174578063cd67571c1461019f57600080fd5b806306fdde03146100a357806318160ddd146100c157806318be5af9146100d857806321038b4c146100ed578063313ce56714610100575b600080fd5b6100ab6101b2565b6040516100b8919061096f565b60405180910390f35b6100ca60025481565b6040519081526020016100b8565b6100eb6100e6366004610945565b610240565b005b6100eb6100fb366004610945565b6103b8565b6101277f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020016100b8565b6100eb610147366004610945565b610568565b6100ca61015a366004610923565b60036020526000908152604090205481565b6100ab61069c565b600554610187906001600160a01b031681565b6040516001600160a01b0390911681526020016100b8565b6100eb6101ad366004610945565b6106a9565b600080546101bf906109f3565b80601f01602080910402602001604051908101604052809291908181526020018280546101eb906109f3565b80156102385780601f1061020d57610100808354040283529160200191610238565b820191906000526020600020905b81548152906001019060200180831161021b57829003601f168201915b505050505081565b600260045414156102985760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c0060448201526064015b60405180910390fd5b60026004556001600160a01b038216600090815260066020908152604080832033845282528083208484529091529020546103095760405162461bcd60e51b81526020600482015260116024820152702737ba3434b733903a37903437b737bab960791b604482015260640161028f565b6001600160a01b0382166000908152600660209081526040808320338085529083528184208585529092529091205490610343908261080e565b6001600160a01b03831660008181526006602090815260408083203380855290835281842087855283528184209390935580518681529182018590529192917f6c9bd2efd2c9afeaf83a90107cee7aa09e08c9e83cf240d2ea5ac4ed05a9c28591015b60405180910390a35050600160045550565b336001600160a01b03831614156104065760405162461bcd60e51b815260206004820152601260248201527121b0b713ba103337b933b4bb329039b2b63360711b604482015260640161028f565b6000811161044c5760405162461bcd60e51b81526020600482015260136024820152720466f7267697665206d6f7265207468616e203606c1b604482015260640161028f565b3360009081526003602052604090205481118061048057506001600160a01b03821660009081526003602052604090205481115b156104c357604051636fd97e5f60e01b8152602060048201526012602482015271556e6d6174636865642062616c616e63657360701b604482015260640161028f565b600980549060006104d383610a2e565b90915550503360009081526007602090815260408083206001600160a01b038616845282528083206009548452909152812080548392906105159084906109c4565b909155505060095460408051918252602082018390526001600160a01b0384169133917f77a0f9592e2384c121b0353ed0580ac46186852a8f251aefaaa3bd5fdd25923e91015b60405180910390a35050565b336001600160a01b03831614156105b95760405162461bcd60e51b815260206004820152601560248201527421b0b713ba10383937b837b9b2903a379039b2b63360591b604482015260640161028f565b600081116105ff5760405162461bcd60e51b8152602060048201526013602482015272050726f706f7365206d6f7265207468616e203606c1b604482015260640161028f565b6008805490600061060f83610a2e565b90915550503360009081526006602090815260408083206001600160a01b038616845282528083206008548452909152812080548392906106519084906109c4565b909155505060085460408051918252602082018390526001600160a01b0384169133917fd3b765bdd25a28d7041ee634ba9ebd9edadd7677d094ffa3ce74ade3aceaebd9910161055c565b600180546101bf906109f3565b600260045414156106fc5760405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c00604482015260640161028f565b60026004556001600160a01b0382166000908152600760209081526040808320338452825280832084845290915290205461076d5760405162461bcd60e51b8152602060048201526011602482015270139bdd1a1a5b99c81d1bc81858d8d95c1d607a1b604482015260640161028f565b6001600160a01b03821660009081526007602090815260408083203380855290835281842085855290925290912054906107a7908261088a565b6001600160a01b03831660008181526007602090815260408083203380855290835281842087855283528184209390935580518681529182018590529192917fd8f3325f42e4346c3cf9d399abf523adacb0a3f95427647fe22149ecf5a379c091016103a6565b806002600082825461082091906109c4565b90915550506001600160a01b03821660008181526003602090815260408083208054860190558051928352908201929092529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef906060015b60405180910390a15050565b6001600160a01b038216600090815260036020526040812080548392906108b29084906109dc565b9091555050600280548290039055604080516001600160a01b0384168152600060208201529081018290527fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060600161087e565b80356001600160a01b038116811461091e57600080fd5b919050565b60006020828403121561093557600080fd5b61093e82610907565b9392505050565b6000806040838503121561095857600080fd5b61096183610907565b946020939093013593505050565b600060208083528351808285015260005b8181101561099c57858101830151858201604001528201610980565b818111156109ae576000604083870101525b50601f01601f1916929092016040019392505050565b600082198211156109d7576109d7610a49565b500190565b6000828210156109ee576109ee610a49565b500390565b600181811c90821680610a0757607f821691505b60208210811415610a2857634e487b7160e01b600052602260045260246000fd5b50919050565b6000600019821415610a4257610a42610a49565b5060010190565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220b62d3552d19e2bcd31af64de92dccee32163af029923a5e3e7b005221abcd94d64736f6c63430008070033",
   "devdoc": {
     "kind": "dev",
     "methods": {
-      "accept(address)": {
+      "accept(address,uint256)": {
         "params": {
-          "forgiver": "allows us to differentiate between accounts who forgive so no-one is                  forced to accept forgiveness from an account which may tarnish their history."
+          "forgiver": "the address whose forgiveness is being accepted",
+          "id": "the unique ID of the forgiveness being accepted"
         }
       },
       "forgive(address,uint256)": {
@@ -334,8 +370,8 @@
       },
       "honour(address,uint256)": {
         "params": {
-          "amount": "the amount of proposed HON to accept. This allows for multiple proposals to                 exist from the same account without having to accept them all at the same time.                 It has no check because, if the amount passed in is greater than what is stored                 in the mapping, we default to just minting the max in the mapping.",
-          "proposer": "the address of the account which proposed this to ensure no-one is forced                 to accept HON they don't want to."
+          "id": "the unique ID of the proposal being honoured",
+          "proposer": "the address whose proposal is being honoured"
         }
       },
       "propose(address,uint256)": {
@@ -350,7 +386,7 @@
   "userdoc": {
     "kind": "user",
     "methods": {
-      "accept(address)": {
+      "accept(address,uint256)": {
         "notice": "erase HON by accepting the amount set in forgive()"
       },
       "forgive(address,uint256)": {
@@ -368,7 +404,7 @@
   "storageLayout": {
     "storage": [
       {
-        "astId": 12,
+        "astId": 52,
         "contract": "contracts/Honour.sol:Honour",
         "label": "name",
         "offset": 0,
@@ -376,7 +412,7 @@
         "type": "t_string_storage"
       },
       {
-        "astId": 14,
+        "astId": 54,
         "contract": "contracts/Honour.sol:Honour",
         "label": "symbol",
         "offset": 0,
@@ -384,7 +420,7 @@
         "type": "t_string_storage"
       },
       {
-        "astId": 18,
+        "astId": 58,
         "contract": "contracts/Honour.sol:Honour",
         "label": "totalSupply",
         "offset": 0,
@@ -392,7 +428,7 @@
         "type": "t_uint256"
       },
       {
-        "astId": 22,
+        "astId": 62,
         "contract": "contracts/Honour.sol:Honour",
         "label": "balanceOf",
         "offset": 0,
@@ -400,28 +436,52 @@
         "type": "t_mapping(t_address,t_uint256)"
       },
       {
-        "astId": 143,
+        "astId": 10,
+        "contract": "contracts/Honour.sol:Honour",
+        "label": "_status",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 196,
         "contract": "contracts/Honour.sol:Honour",
         "label": "reserve",
         "offset": 0,
-        "slot": "4",
-        "type": "t_contract(ERC20)101"
+        "slot": "5",
+        "type": "t_contract(ERC20)141"
       },
       {
-        "astId": 149,
+        "astId": 204,
         "contract": "contracts/Honour.sol:Honour",
         "label": "proposal",
         "offset": 0,
-        "slot": "5",
-        "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))"
+        "slot": "6",
+        "type": "t_mapping(t_address,t_mapping(t_address,t_mapping(t_uint256,t_uint256)))"
       },
       {
-        "astId": 155,
+        "astId": 212,
         "contract": "contracts/Honour.sol:Honour",
         "label": "forgiving",
         "offset": 0,
-        "slot": "6",
-        "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))"
+        "slot": "7",
+        "type": "t_mapping(t_address,t_mapping(t_address,t_mapping(t_uint256,t_uint256)))"
+      },
+      {
+        "astId": 214,
+        "contract": "contracts/Honour.sol:Honour",
+        "label": "proposalId",
+        "offset": 0,
+        "slot": "8",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 216,
+        "contract": "contracts/Honour.sol:Honour",
+        "label": "forgivingId",
+        "offset": 0,
+        "slot": "9",
+        "type": "t_uint256"
       }
     ],
     "types": {
@@ -430,22 +490,36 @@
         "label": "address",
         "numberOfBytes": "20"
       },
-      "t_contract(ERC20)101": {
+      "t_contract(ERC20)141": {
         "encoding": "inplace",
         "label": "contract ERC20",
         "numberOfBytes": "20"
       },
-      "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+      "t_mapping(t_address,t_mapping(t_address,t_mapping(t_uint256,t_uint256)))": {
         "encoding": "mapping",
         "key": "t_address",
-        "label": "mapping(address => mapping(address => uint256))",
+        "label": "mapping(address => mapping(address => mapping(uint256 => uint256)))",
         "numberOfBytes": "32",
-        "value": "t_mapping(t_address,t_uint256)"
+        "value": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+      },
+      "t_mapping(t_address,t_mapping(t_uint256,t_uint256))": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => mapping(uint256 => uint256))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_uint256,t_uint256)"
       },
       "t_mapping(t_address,t_uint256)": {
         "encoding": "mapping",
         "key": "t_address",
         "label": "mapping(address => uint256)",
+        "numberOfBytes": "32",
+        "value": "t_uint256"
+      },
+      "t_mapping(t_uint256,t_uint256)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => uint256)",
         "numberOfBytes": "32",
         "value": "t_uint256"
       },

@@ -14,16 +14,13 @@ export const propose = async (receiver, amount, chainId, signer) => {
 }
 
 // // function to honour HON proposal
-export const honour = async (proposer, amount, chainId, signer) => {
+export const honour = async (proposer, id, chainId, signer) => {
   const contract = new Contract(
     addresses.chainIdToContractAddresses(chainId).Honour,
     abis.Honour,
     signer
   )
-  // No need to parseUnits here, as the amount being passed in comes from a subgraph query
-  // and already has the 18 decimal places we need.
-  const amountBN = ethers.BigNumber.from(amount)
-  const honour = await contract.honour(proposer, amountBN)
+  const honour = await contract.honour(proposer, id)
   return honour
 }
 
@@ -40,13 +37,13 @@ export const forgive = async (forgiven, amount, chainId, signer) => {
 }
 
 // // function to accept HON forgiveness
-export const accept = async (address, chainId, signer) => {
+export const accept = async (forgiver, id, chainId, signer) => {
   const contract = new Contract(
     addresses.chainIdToContractAddresses(chainId).Honour,
     abis.Honour,
     signer
   )
-  const accept = await contract.accept(address)
+  const accept = await contract.accept(forgiver, id)
   return accept
 }
 

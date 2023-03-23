@@ -12,7 +12,13 @@ export const abis = {
       "type": "constructor"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        }
+      ],
       "name": "Unbalanced",
       "type": "error"
     },
@@ -30,6 +36,12 @@ export const abis = {
           "internalType": "address",
           "name": "forgiven",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "forgivingId",
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -59,6 +71,12 @@ export const abis = {
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "forgivingId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
         }
@@ -84,6 +102,12 @@ export const abis = {
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
         }
@@ -105,6 +129,12 @@ export const abis = {
           "internalType": "address",
           "name": "receiver",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "proposalId",
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -147,6 +177,11 @@ export const abis = {
           "internalType": "address",
           "name": "forgiver",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
         }
       ],
       "name": "accept",
@@ -213,7 +248,7 @@ export const abis = {
         },
         {
           "internalType": "uint256",
-          "name": "amount",
+          "name": "id",
           "type": "uint256"
         }
       ],

@@ -6,9 +6,9 @@ dataSources:
     name: Honour
     network: goerli
     source:
-      address: "0x940c4e6D4A603707154ab663bDe529e0467B4cF5"
+      address: "0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c"
       abi: Honour
-      startBlock: 8687500
+      startBlock: 8705670
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -23,13 +23,13 @@ dataSources:
         - name: Honour
           file: hardhat/deployments/goerli/Honour.json
       eventHandlers:
-        - event: Accepted(indexed address,indexed address,uint256)
+        - event: Accepted(indexed address,indexed address,uint256,uint256)
           handler: handleAccepted
-        - event: Forgiven(indexed address,indexed address,uint256)
+        - event: Forgiven(indexed address,indexed address,uint256,uint256)
           handler: handleForgiven
-        - event: Honoured(indexed address,indexed address,uint256)
+        - event: Honoured(indexed address,indexed address,uint256,uint256)
           handler: handleHonoured
-        - event: Proposed(indexed address,indexed address,uint256)
+        - event: Proposed(indexed address,indexed address,uint256,uint256)
           handler: handleProposed
         - event: Transfer(address,address,uint256)
           handler: handleTransfer

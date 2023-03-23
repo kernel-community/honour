@@ -1,4 +1,4 @@
-const calculateTrustScore = (transactions, account) => {
+const calculateTrustScore = (transactions, inspector) => {
 
   let score = 0
   let txCount = transactions.length
@@ -9,18 +9,19 @@ const calculateTrustScore = (transactions, account) => {
     const txWith = tx.with.toLowerCase()
     const txValue = parseInt(tx.amount)
 
-    // Check if the account has "honoured" a proposal from the user's account
-    if (txWith === account.toLowerCase() && tx.type === "Honoured") {
+    // Check if the inspected account (which is associated with the transactions being passed in) 
+    // has "honoured" a proposal from the inspector account
+    if (txWith === inspector.toLowerCase() && tx.type === "Honoured") {
       score += 2
     }
 
-    // Check if the account has "forgiven" the user's account
-    if (txWith === account.toLowerCase() && tx.type === "Forgiven") {
+    // Check if the inspected account has "forgiven" the inspector account
+    if (txWith === inspector.toLowerCase() && tx.type === "Forgiven") {
       score += 2
     }
 
-    // Check if the account has "accepted" a forgiven transaction from the user's account
-    if (txWith === account.toLowerCase() && tx.type === "Accepted") {
+    // Check if the inspected account has "accepted" a forgiven transaction from the inspector account
+    if (txWith === inspector.toLowerCase() && tx.type === "Accepted") {
       score += 2
     }
 

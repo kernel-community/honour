@@ -10,7 +10,7 @@ const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Honour () {
   const { address } = useAccount()
-  const { dispatch } = useContext(InspectContext)
+  const { state, dispatch } = useContext(InspectContext)
 
   const [proposals, setProposals] = useState([])
 
@@ -18,28 +18,23 @@ function Honour () {
     if (address) {
         async function fetchData () {
         const queryProposals = gql`
-                query GetProposals($account: Bytes!) {
+            query GetProposals($account: Bytes!) {
                 proposeds(where: { receiver: $account }) {
                     id
                     proposer
+                    proposalId
                     amount
-                    blockNumber
                     blockTimestamp
-                    transactionHash
                 }
-                }
-            `
-
+            }
+        `
         const queryHonoureds = gql`
-                query GetHonoureds($account: Bytes!) {
+            query GetHonoureds($account: Bytes!) {
                 honoureds(where: { receiver: $account }) {
-                    id
-                    proposer
-                    amount
+                    proposalId
                 }
-                }
-            `
-
+            }
+        `
         const variables = { account: address.toString() }
 
         const [dataProposals, dataHonoureds] = await Promise.all([
@@ -48,20 +43,15 @@ function Honour () {
         ])
 
         // Get the array of proposals and honoured proposals
-        const proposals = dataProposals.proposeds
-        const honouredProposals = dataHonoureds.honoureds
+        const proposeds = dataProposals.proposeds
+        const honoureds = dataHonoureds.honoureds
 
         // Filter out the proposals that have already been honoured
-        // This is not the best method - what happens if a proposer proposes multiple same amount?!
-        // TODO: how to set a unique ID in a proposal which an honour tx can reference without
-        // adding more gas costs to each call in the contract?
-        // TODO: make sure these rows are cleared once the transaction is successful from
-        // the new Inspect.js file once you figure out how to match honoureds to proposeds etc.
-        const filteredProposals = proposals.filter((proposal) => {
-            return !honouredProposals.some((honouredProposal) => {
+        const filteredProposals = proposeds.filter((proposal) => {
+            return !honoureds.some((honoured) => {
             return (
-                honouredProposal.proposer === proposal.proposer &&
-                    honouredProposal.amount.toString() === proposal.amount.toString()
+                honoured.proposalId === proposal.proposalId &&
+                proposal.proposalId !== state.honouredId
             )
             })
         })
@@ -72,7 +62,7 @@ function Honour () {
 
         fetchData()
     }
-  }, [address])
+  }, [address, state.honouredId])
 
   
 
@@ -120,7 +110,7 @@ function Honour () {
             <div key={proposal.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => dispatch({ type: 'honour', payload: {showModal: true, address: proposal.proposer, amount: proposal.amount} })}
+                onClick={() => dispatch({ type: 'honour', payload: {showModal: true, id: proposal.proposalId, address: proposal.proposer, amount: proposal.amount } })}
               >
                 Inspect
               </button>

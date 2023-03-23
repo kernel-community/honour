@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNetwork, useSigner } from 'wagmi'
+import { useNetwork, useSigner, useAccount } from 'wagmi'
 import { forgive } from '../utils/contracts'
 import QrReader from 'react-qr-reader'
 import useError from '../hooks/useError'
@@ -10,6 +10,7 @@ import qrcode from '../images/qr-code.png'
 function Forgive () {
   const { chain } = useNetwork()
   const { data: signer } = useSigner()
+  const { address } = useAccount()
 
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
@@ -41,8 +42,8 @@ function Forgive () {
     console.error(err)
   }
 
-  const isValidEthereumAddress = (address) => {
-    return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
+  const isValidEthereumAddress = (addr) => {
+    return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
   };
 
   const handleInputChange = (e) => {
@@ -50,13 +51,17 @@ function Forgive () {
     const name = e.target.name;
   
     if (name === 'forgiven') {
-      setForgiven(input);
-      if (!isValidEthereumAddress(input)) {
-        setError('Please enter a valid Ethereum address')
-        setValidForm(false)
-      } else {
-        setError('')
-      }
+        if (address === input) {
+            setError("You can't forgive your own HON")
+        } else {
+            setForgiven(input);
+            if (!isValidEthereumAddress(input)) {
+                setError('Please enter a valid Ethereum address')
+                setValidForm(false)
+            } else {
+                setError('')
+            }
+        }   
     } else if (name === 'amount') {
       const amountNum = Number(input);
       if (isNaN(amountNum) || amountNum <= 0) {
@@ -88,13 +93,11 @@ function Forgive () {
       return
     }
 
-    openLoading('Waiting for money to get weirder')
+    openLoading('Making money weirder')
 
     await tx.wait(1)
 
     closeLoading()
-
-    // Reset the form inputs
 
     // Reset the form inputs
     setForgiven('')
@@ -150,6 +153,7 @@ function Forgive () {
           type='text'
           id='amount'
           name='amount'
+          autoComplete='off'
           value={amount}
           onChange={handleInputChange}
           className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'

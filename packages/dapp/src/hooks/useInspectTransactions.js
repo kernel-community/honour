@@ -7,22 +7,22 @@ import calculateTrustScore from './calculateTrustScore'
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
-function useInspectTransactions(address, investigator) {
+function useInspectTransactions(inspected, inspector) {
   const [transactions, setTransactions] = useState([])
-  const score = calculateTrustScore(transactions, investigator)
+  const score = calculateTrustScore(transactions, inspector)
 
   useEffect(() => {
     async function fetchData() {
       const queryProposeds = gql`
         query GetProposals($account: Bytes!) {
-          proposeds(where: { receiver: $account }) {
+          proposeds(where: { proposer: $account }) {
             id
-            proposer
+            receiver
             amount
             blockNumber
           }
         }
-      `;
+      `
       const queryHonoureds = gql`
         query GetHonoureds($account: Bytes!) {
           honoureds(where: { receiver: $account }) {
@@ -32,28 +32,28 @@ function useInspectTransactions(address, investigator) {
             blockNumber
           }
         }
-      `;
+      `
       const queryForgivens = gql`
         query GetForgivens($account: Bytes!) {
-          forgivens(where: { forgiven: $account }) {
+          forgivens(where: { forgiver: $account }) {
             id
-            forgiver
+            forgiven
             amount
             blockNumber
           }
         }
-      `;
+      `
       const queryAccepteds = gql`
         query getAccepteds($account: Bytes!) {
-          accepteds(where: { accepted: $account }) {
+          accepteds(where: { forgiven: $account }) {
             id
             forgiver
             amount
             blockNumber
           }
         }
-      `;
-      const variables = { account: address.toString() }
+      `
+      const variables = { account: inspected.toString() }
 
       const [dataProposeds, dataHonoureds, dataForgivens, dataAccepteds] = await Promise.all([
         graphQLClient.request(queryProposeds, variables),
@@ -75,10 +75,34 @@ function useInspectTransactions(address, investigator) {
 
       // Merge all the arrays of transactions into a single array
       const transactions = [        
-        ...proposeds.map((proposal) => ({ type: 'Proposed', with: proposal.proposer, amount: proposal.amount, blockNumber: proposal.blockNumber })),        
-        ...honoureds.map((honoured) => ({ type: 'Honoured', with: honoured.proposer, amount: honoured.amount, blockNumber: honoured.blockNumber })),        
-        ...forgivens.map((forgiven) => ({ type: 'Forgiven', with: forgiven.forgiver, amount: forgiven.amount, blockNumber: forgiven.blockNumber })),        
-        ...accepteds.map((accepteds) => ({ type: 'Accepted', with: accepteds.forgiver, amount: accepteds.amount, blockNumber: accepteds.blockNumber })),      
+        ...proposeds.map((proposal) => ({ 
+            type: 'Proposed', 
+            with: proposal.receiver,
+            id: proposal.id,  
+            amount: proposal.amount, 
+            blockNumber: proposal.blockNumber 
+        })),        
+        ...honoureds.map((honoured) => ({ 
+            type: 'Honoured', 
+            with: honoured.proposer,
+            id: honoured.id, 
+            amount: honoured.amount, 
+            blockNumber: honoured.blockNumber 
+        })),        
+        ...forgivens.map((forgiven) => ({ 
+            type: 'Forgiven', 
+            with: forgiven.forgiven,
+            id: forgiven.id, 
+            amount: forgiven.amount, 
+            blockNumber: forgiven.blockNumber 
+        })),        
+        ...accepteds.map((accepted) => ({ 
+            type: 'Accepted', 
+            with: accepted.forgiver,
+            id: accepted.id, 
+            amount: accepted.amount, 
+            blockNumber: accepted.blockNumber 
+        })),      
       ];
 
       // Sort the transactions by blockNumber in descending order
@@ -88,10 +112,10 @@ function useInspectTransactions(address, investigator) {
       setTransactions(transactions)
     }
 
-    if (address) {
+    if (inspected) {
       fetchData()
     }
-  }, [address])
+  }, [inspected])
 
   return [transactions, score]
 }

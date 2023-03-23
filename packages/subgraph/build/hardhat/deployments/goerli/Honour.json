@@ -11,7 +11,13 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "message",
+        "type": "string"
+      }
+    ],
     "name": "Unbalanced",
     "type": "error"
   },
@@ -29,6 +35,12 @@
         "internalType": "address",
         "name": "forgiven",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "forgivingId",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -58,6 +70,12 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "forgivingId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
       }
@@ -83,6 +101,12 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
       }
@@ -104,6 +128,12 @@
         "internalType": "address",
         "name": "receiver",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -146,6 +176,11 @@
         "internalType": "address",
         "name": "forgiver",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
       }
     ],
     "name": "accept",
@@ -212,7 +247,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "id",
         "type": "uint256"
       }
     ],

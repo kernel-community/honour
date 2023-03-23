@@ -2,24 +2,29 @@
 pragma solidity 0.8.7;
 
 import "./ERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract Honour is ERC20 {
+contract Honour is ERC20, ReentrancyGuard {
 
-    event Proposed(address indexed proposer, address indexed receiver, uint256 amount);
-    event Honoured(address indexed proposer, address indexed receiver, uint256 amount);
-    event Forgiven(address indexed forgiver, address indexed forgiven, uint256 amount);
-    event Accepted(address indexed forgiver, address indexed forgiven, uint256 amount);
+    event Proposed(address indexed proposer, address indexed receiver, uint256 proposalId, uint256 amount);
+    event Honoured(address indexed proposer, address indexed receiver, uint256 proposalId, uint256 amount);
+    event Forgiven(address indexed forgiver, address indexed forgiven, uint256 forgivingId, uint256 amount);
+    event Accepted(address indexed forgiver, address indexed forgiven, uint256 forgivingId, uint256 amount);
 
-    error Unbalanced();
+    error Unbalanced(string message);
 
     ERC20 public reserve;
 
     // Storage mappings for proposals and forgiveness.
-    // We store information about both the account with which the proposal/forgiving
-    // is associated, as well as the account which initiated it, in order to ensure that people
-    // can pick and choose at their leisure which proposals to accept and which to leave.
-    mapping(address => mapping(address => uint256)) proposal;
-    mapping(address => mapping(address => uint256)) forgiving;
+    // This multiply nested mapping may seem unnecessary, but we need the address
+    // of both parties to create trust graphs of more than depth 1, and we need the
+    // unique ID in the UI to filter propose and forgive by those which have already
+    // been honoured or accepted
+    mapping(address => mapping(address => mapping(uint256 => uint256))) private proposal;
+    mapping(address => mapping(address => mapping(uint256 => uint256))) private forgiving;
+
+    uint256 proposalId;
+    uint256 forgivingId;
 
     constructor(address _reserve) ERC20("HONOUR", "HON", 18) {
         reserve = ERC20(_reserve);
@@ -33,30 +38,27 @@ contract Honour is ERC20 {
     function propose(address receiver, uint256 amount)
         public
     {
-        proposal[receiver][msg.sender] += amount;
-        emit Proposed(msg.sender, receiver, amount);
+        require (msg.sender != receiver, "Can't propose to self");
+        require (amount > 0, "Propose more than 0");
+        proposalId++;
+        proposal[msg.sender][receiver][proposalId] += amount;
+        emit Proposed(msg.sender, receiver, proposalId, amount);
     }
 
     /**
      * @notice create HON by accepting the amount set in propose()
-     * @param proposer the address of the account which proposed this to ensure no-one is forced
-     *                 to accept HON they don't want to.
-     * @param amount   the amount of proposed HON to accept. This allows for multiple proposals to
-     *                 exist from the same account without having to accept them all at the same time.
-     *                 It has no check because, if the amount passed in is greater than what is stored
-     *                 in the mapping, we default to just minting the max in the mapping.
+     * @param proposer  the address whose proposal is being honoured
+     * @param id        the unique ID of the proposal being honoured
      */
-    function honour(address proposer, uint256 amount)
+    function honour(address proposer, uint256 id)
         public
+        nonReentrant
     {
-        if (proposal[msg.sender][proposer] > amount) {
-            _mint(msg.sender, amount);
-            proposal[msg.sender][proposer] -= amount;
-        } else {
-            _mint(msg.sender, proposal[msg.sender][proposer]);
-            proposal[msg.sender][proposer] = 0;
-        }
-        emit Honoured(proposer, msg.sender, amount);
+        require(proposal[proposer][msg.sender][id] > 0, "Nothing to honour");
+        uint256 amount = proposal[proposer][msg.sender][id];
+        _mint(msg.sender, amount);
+        proposal[proposer][msg.sender][id] = 0;
+        emit Honoured(proposer, msg.sender, id, amount);
     }
 
     /**
@@ -67,25 +69,31 @@ contract Honour is ERC20 {
     function forgive(address forgiven, uint256 amount)
         public
     {
+        require(msg.sender != forgiven, "Can't forgive self");
+        require (amount > 0, "Forgive more than 0");
         // you can't forgive more than your current balance, nor can you forgive more than
         // the current balance of the person you are forgiving
         if(balanceOf[msg.sender] < amount || balanceOf[forgiven] < amount) {
-            revert Unbalanced();
+            revert Unbalanced("Unmatched balances");
         }
-        forgiving[forgiven][msg.sender] += amount;
-        emit Forgiven(msg.sender, forgiven, amount);
+        forgivingId++;
+        forgiving[msg.sender][forgiven][forgivingId] += amount;
+        emit Forgiven(msg.sender, forgiven, forgivingId, amount);
     }
 
     /**
      * @notice erase HON by accepting the amount set in forgive()
-     * @param  forgiver allows us to differentiate between accounts who forgive so no-one is
-     *                  forced to accept forgiveness from an account which may tarnish their history.
+     * @param forgiver  the address whose forgiveness is being accepted
+     * @param id        the unique ID of the forgiveness being accepted
      */
-    function accept(address forgiver)
+    function accept(address forgiver, uint256 id)
         public
+        nonReentrant
     {
-        _burn(msg.sender, forgiving[msg.sender][forgiver]);
-        forgiving[msg.sender][forgiver] = 0;
-        emit Accepted(forgiver, msg.sender, forgiving[msg.sender][forgiver]);
+        require(forgiving[forgiver][msg.sender][id] > 0, "Nothing to accept");
+        uint256 amount = forgiving[forgiver][msg.sender][id];
+        _burn(msg.sender, amount);
+        forgiving[forgiver][msg.sender][id] = 0;
+        emit Accepted(forgiver, msg.sender, id, amount);
     }
 }

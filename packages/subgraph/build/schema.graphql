@@ -2,6 +2,7 @@ type Accepted @entity(immutable: true) {
   id: Bytes!
   forgiver: Bytes! # address
   forgiven: Bytes! # address
+  forgivingId: BigInt! # uint256
   amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -12,6 +13,7 @@ type Forgiven @entity(immutable: true) {
   id: Bytes!
   forgiver: Bytes! # address
   forgiven: Bytes! # address
+  forgivingId: BigInt! # uint256
   amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -22,6 +24,7 @@ type Honoured @entity(immutable: true) {
   id: Bytes!
   proposer: Bytes! # address
   receiver: Bytes! # address
+  proposalId: BigInt! # uint256
   amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -32,6 +35,7 @@ type Proposed @entity(immutable: true) {
   id: Bytes!
   proposer: Bytes! # address
   receiver: Bytes! # address
+  proposalId: BigInt! # uint256
   amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!

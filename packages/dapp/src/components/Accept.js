@@ -10,37 +10,58 @@ const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Accept () {
   const { address } = useAccount()
-  const { dispatch } = useContext(InspectContext)
+  const { state, dispatch } = useContext(InspectContext)
   const [forgiveness, setForgiveness] = useState([])
 
   useEffect(() => {
     if (address) {
         async function fetchData () {
         const queryForgivens = gql`
-                query GetForgivens($account: Bytes!) {
+            query GetForgivens($account: Bytes!) {
                 forgivens(where: { forgiven: $account }) {
                     id
                     forgiver
+                    forgivingId
                     amount
-                    blockNumber
                     blockTimestamp
-                    transactionHash
                 }
+            }
+        `
+        const queryAccepteds = gql`
+            query getAccepteds($account: Bytes!) {
+                accepteds(where: { forgiven: $account }) {
+                    forgivingId
                 }
-            `
+            }
+        `
         const variables = { account: address.toString() }
-        const dataForgivens = await graphQLClient.request(queryForgivens, variables)
+
+        const [dataForgivens, dataAccepteds] = await Promise.all([
+            graphQLClient.request(queryForgivens, variables),
+            graphQLClient.request(queryAccepteds, variables)
+        ])
 
         // Get the array of forgiveness
-        const forgiveness = dataForgivens.forgivens
+        const forgivens = dataForgivens.forgivens
+        const accepteds = dataAccepteds.accepteds
+
+        // Filter out the forgivens that have already been accepteded
+        const filteredForgivens = forgivens.filter((forgiven) => {
+            return !accepteds.some((accepted) => {
+            return (
+                accepted.forgivingId === forgiven.forgivingId &&
+                forgiven.forgivingId !== state.acceptedId
+            )
+            })
+        })
 
         // Set the proposals state to the array of forgiveness
-        setForgiveness(forgiveness)
+        setForgiveness(filteredForgivens)
         }
 
         fetchData()
     }
-  }, [address])
+  }, [address, state.acceptedId])
 
   return (
     <div className='mt-20'>
@@ -86,7 +107,7 @@ function Accept () {
             <div key={forgive.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => dispatch({ type: 'accept', payload: {showModal: true, address: forgive.forgiver} })}
+                onClick={() => dispatch({ type: 'accept', payload: {showModal: true, id: forgive.forgivingId, address: forgive.forgiver, amount: forgive.amount } })}
               >
                 Inspect
               </button>

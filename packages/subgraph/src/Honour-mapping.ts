@@ -19,6 +19,7 @@ export function handleAccepted(event: AcceptedEvent): void {
   )
   entity.forgiver = event.params.forgiver
   entity.forgiven = event.params.forgiven
+  entity.forgivingId = event.params.forgivingId
   entity.amount = event.params.amount
 
   entity.blockNumber = event.block.number
@@ -34,6 +35,7 @@ export function handleForgiven(event: ForgivenEvent): void {
   )
   entity.forgiver = event.params.forgiver
   entity.forgiven = event.params.forgiven
+  entity.forgivingId = event.params.forgivingId
   entity.amount = event.params.amount
 
   entity.blockNumber = event.block.number
@@ -49,6 +51,7 @@ export function handleHonoured(event: HonouredEvent): void {
   )
   entity.proposer = event.params.proposer
   entity.receiver = event.params.receiver
+  entity.proposalId = event.params.proposalId
   entity.amount = event.params.amount
 
   entity.blockNumber = event.block.number
@@ -64,6 +67,7 @@ export function handleProposed(event: ProposedEvent): void {
   )
   entity.proposer = event.params.proposer
   entity.receiver = event.params.receiver
+  entity.proposalId = event.params.proposalId
   entity.amount = event.params.amount
 
   entity.blockNumber = event.block.number

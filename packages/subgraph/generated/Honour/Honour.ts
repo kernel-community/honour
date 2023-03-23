@@ -31,8 +31,12 @@ export class Accepted__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get forgivingId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -57,8 +61,12 @@ export class Forgiven__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get forgivingId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -83,8 +91,12 @@ export class Honoured__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get proposalId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -109,8 +121,12 @@ export class Proposed__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get proposalId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -290,6 +306,10 @@ export class AcceptCall__Inputs {
   get forgiver(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
+
+  get id(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
 }
 
 export class AcceptCall__Outputs {
@@ -355,7 +375,7 @@ export class HonourCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get amount(): BigInt {
+  get id(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }

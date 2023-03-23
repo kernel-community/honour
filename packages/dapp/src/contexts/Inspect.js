@@ -7,17 +7,34 @@ const initial = {
     modal: false,
     button: null,
     address: null, 
-    amount: null
+    amount: null,
+    id: null,
+    acceptedId: null,
+    honouredId: null,
 }
 
 const reducer = (state = initial, action) => {
     switch (action.type) {
+        case 'close': { 
+            return {
+                ...state,
+                modal: false,
+            }
+        }
         case 'accept': {
             return { 
                 ...state, 
                 modal: action.payload.showModal,
                 button: 'accept', 
-                address: action.payload.address 
+                id: action.payload.id,
+                address: action.payload.address,
+                amount: action.payload.amount 
+            }
+        }
+        case 'acceptEvent': {
+            return {
+                ...state,
+                acceptedId: action.payload.id
             }
         }
         case 'honour': {
@@ -25,8 +42,15 @@ const reducer = (state = initial, action) => {
                 ...state, 
                 modal: action.payload.showModal,
                 button: 'honour', 
+                id: action.payload.id,
                 address: action.payload.address,
-                amount: action.payload.amount 
+                amount: action.payload.amount
+            }
+        }
+        case 'honourEvent': {
+            return {
+                ...state,
+                honouredId: action.payload.id
             }
         }
         case 'hideModal': {

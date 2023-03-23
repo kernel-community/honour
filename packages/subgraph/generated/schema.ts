@@ -60,6 +60,15 @@ export class Accepted extends Entity {
     this.set("forgiven", Value.fromBytes(value));
   }
 
+  get forgivingId(): BigInt {
+    let value = this.get("forgivingId");
+    return value!.toBigInt();
+  }
+
+  set forgivingId(value: BigInt) {
+    this.set("forgivingId", Value.fromBigInt(value));
+  }
+
   get amount(): BigInt {
     let value = this.get("amount");
     return value!.toBigInt();
@@ -144,6 +153,15 @@ export class Forgiven extends Entity {
 
   set forgiven(value: Bytes) {
     this.set("forgiven", Value.fromBytes(value));
+  }
+
+  get forgivingId(): BigInt {
+    let value = this.get("forgivingId");
+    return value!.toBigInt();
+  }
+
+  set forgivingId(value: BigInt) {
+    this.set("forgivingId", Value.fromBigInt(value));
   }
 
   get amount(): BigInt {
@@ -232,6 +250,15 @@ export class Honoured extends Entity {
     this.set("receiver", Value.fromBytes(value));
   }
 
+  get proposalId(): BigInt {
+    let value = this.get("proposalId");
+    return value!.toBigInt();
+  }
+
+  set proposalId(value: BigInt) {
+    this.set("proposalId", Value.fromBigInt(value));
+  }
+
   get amount(): BigInt {
     let value = this.get("amount");
     return value!.toBigInt();
@@ -316,6 +343,15 @@ export class Proposed extends Entity {
 
   set receiver(value: Bytes) {
     this.set("receiver", Value.fromBytes(value));
+  }
+
+  get proposalId(): BigInt {
+    let value = this.get("proposalId");
+    return value!.toBigInt();
+  }
+
+  set proposalId(value: BigInt) {
+    this.set("proposalId", Value.fromBigInt(value));
   }
 
   get amount(): BigInt {

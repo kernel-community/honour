@@ -127,7 +127,7 @@
           ]
         },
         "Honour": {
-          "address": "0x940c4e6D4A603707154ab663bDe529e0467B4cF5",
+          "address": "0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c",
           "abi": [
             {
               "inputs": [
@@ -141,7 +141,13 @@
               "type": "constructor"
             },
             {
-              "inputs": [],
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "message",
+                  "type": "string"
+                }
+              ],
               "name": "Unbalanced",
               "type": "error"
             },
@@ -159,6 +165,12 @@
                   "internalType": "address",
                   "name": "forgiven",
                   "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "forgivingId",
+                  "type": "uint256"
                 },
                 {
                   "indexed": false,
@@ -188,6 +200,12 @@
                 {
                   "indexed": false,
                   "internalType": "uint256",
+                  "name": "forgivingId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
                   "name": "amount",
                   "type": "uint256"
                 }
@@ -213,6 +231,12 @@
                 {
                   "indexed": false,
                   "internalType": "uint256",
+                  "name": "proposalId",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
                   "name": "amount",
                   "type": "uint256"
                 }
@@ -234,6 +258,12 @@
                   "internalType": "address",
                   "name": "receiver",
                   "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "proposalId",
+                  "type": "uint256"
                 },
                 {
                   "indexed": false,
@@ -276,6 +306,11 @@
                   "internalType": "address",
                   "name": "forgiver",
                   "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "id",
+                  "type": "uint256"
                 }
               ],
               "name": "accept",
@@ -342,7 +377,7 @@
                 },
                 {
                   "internalType": "uint256",
-                  "name": "amount",
+                  "name": "id",
                   "type": "uint256"
                 }
               ],
@@ -554,7 +589,7 @@
           ]
         },
         "Honour": {
-          "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+          "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
           "abi": [
             {
               "inputs": [

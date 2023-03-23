@@ -11,12 +11,12 @@ export const addresses = {
       case 5:
         return {
           ERC20: '0xd67Da31889E1EC7423cab31c68cD6D3FE1fc6D00',
-          Honour: '0x940c4e6D4A603707154ab663bDe529e0467B4cF5'
+          Honour: '0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c'
         }
       default:
         return {
           ERC20: '0xd67Da31889E1EC7423cab31c68cD6D3FE1fc6D00',
-          Honour: '0x940c4e6D4A603707154ab663bDe529e0467B4cF5'
+          Honour: '0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c'
         }
     }
   }
@@ -33,7 +33,7 @@ export const etherscan = {
 }
 
 export const graph = {
-  baseURL: 'https://api.studio.thegraph.com/query/24825/honour-goerli/0.0.6'
+  baseURL: 'https://api.studio.thegraph.com/query/24825/honour-goerli/0.1.0'
 }
 
 export const twitter = {

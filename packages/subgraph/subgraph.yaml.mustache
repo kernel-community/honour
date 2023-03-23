@@ -22,13 +22,13 @@ dataSources:
         - name: Honour
           file: ../../packages/hardhat/deployments/{{network}}/Honour.json
       eventHandlers:
-        - event: Accepted(indexed address,indexed address,uint256)
+        - event: Accepted(indexed address,indexed address,uint256,uint256)
           handler: handleAccepted
-        - event: Forgiven(indexed address,indexed address,uint256)
+        - event: Forgiven(indexed address,indexed address,uint256,uint256)
           handler: handleForgiven
-        - event: Honoured(indexed address,indexed address,uint256)
+        - event: Honoured(indexed address,indexed address,uint256,uint256)
           handler: handleHonoured
-        - event: Proposed(indexed address,indexed address,uint256)
+        - event: Proposed(indexed address,indexed address,uint256,uint256)
           handler: handleProposed
         - event: Transfer(address,address,uint256)
           handler: handleTransfer
