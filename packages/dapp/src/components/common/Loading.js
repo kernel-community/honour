@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import KernelLogo from '../../images/kernel_logo.png'
 
-const Loading = () => {
+const Loading = ({ text }) => {
   return (
     <div className='md:p-8 w-full h-min-content md:w-80 my-auto mx-auto bg-white font-volkhorn text-lg text-center flex flex-col items-center py-6 sm:py-0'>
       <div className='w-64 h-64 relative flex justify-center items-center'>
@@ -19,7 +19,7 @@ const Loading = () => {
         </div>
       </div>
       <div className='mt-10 text-xl'>
-        Loading
+        {text || 'Loading'}
       </div>
     </div>
   )

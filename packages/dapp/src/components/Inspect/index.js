@@ -18,7 +18,7 @@ const InspectModal = () => {
         </div>
         {state.confirming ? 
         (
-          <Loading />
+          <Loading text='Making money weird' />
         ) :  
         (
           <Display />

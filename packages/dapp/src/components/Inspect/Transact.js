@@ -47,35 +47,31 @@ const Transact = () => {
         dispatch({ type: 'confirmed' })
     }
     return (
-        <div>
+        <div className='px-6 py-4 whitespace-nowrap w-3/4 lg:w-1/2'>
             {state.button === 'accept' ?
-                <div className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
-                    <button
-                        className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                        onClick={() => acceptTx(state.address, state.id)}
-                        disabled={loading}
-                        style={{ position: 'relative' }}
-                        >
-                        {loading && (
-                            <Spinner />
-                        )}
-                        <span>{loading ? 'Confirming' : 'Accept'}</span>
-                    </button>
-                </div>
+                <button
+                    className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
+                    onClick={() => acceptTx(state.address, state.id)}
+                    disabled={loading}
+                    style={{ position: 'relative' }}
+                    >
+                    {loading && (
+                        <Spinner />
+                    )}
+                    <span>{loading ? 'Confirming' : 'Accept'}</span>
+                </button>
                 :
-                <div className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
-                    <button
-                        className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                        onClick={() => honourTx(state.address, state.id)}
-                        disabled={loading}
-                        style={{ position: 'relative' }}
-                        >
-                        {loading && (
-                            <Spinner />
-                        )}
-                        <span>{loading ? 'Confirming' : 'Honour'}</span>
-                    </button>
-                </div>
+                <button
+                    className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
+                    onClick={() => honourTx(state.address, state.id)}
+                    disabled={loading}
+                    style={{ position: 'relative' }}
+                    >
+                    {loading && (
+                        <Spinner />
+                    )}
+                    <span>{loading ? 'Confirming' : 'Honour'}</span>
+                </button>
             }
         </div>
     )

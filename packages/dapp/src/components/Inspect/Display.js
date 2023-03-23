@@ -40,9 +40,9 @@ const Display = () => {
 
     const calcBalanceChange = (balance, amount, kind) => {
         if (kind === 'honour') {
-            return (parseInt(balance) + parseInt(amount))
+            return (parseFloat(balance) + parseFloat(amount))
         } else {
-            return (parseInt(balance) - parseInt(amount))
+            return (parseFloat(balance) - parseFloat(amount))
         }
     }
 
