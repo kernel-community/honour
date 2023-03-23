@@ -15,7 +15,7 @@ function Accept () {
 
   useEffect(() => {
     if (address) {
-        async function fetchData () {
+      async function fetchData () {
         const queryForgivens = gql`
             query GetForgivens($account: Bytes!) {
                 forgivens(where: { forgiven: $account }) {
@@ -37,8 +37,8 @@ function Accept () {
         const variables = { account: address.toString() }
 
         const [dataForgivens, dataAccepteds] = await Promise.all([
-            graphQLClient.request(queryForgivens, variables),
-            graphQLClient.request(queryAccepteds, variables)
+          graphQLClient.request(queryForgivens, variables),
+          graphQLClient.request(queryAccepteds, variables)
         ])
 
         // Get the array of forgiveness
@@ -47,19 +47,19 @@ function Accept () {
 
         // Filter out the forgivens that have already been accepteded
         const filteredForgivens = forgivens.filter((forgiven) => {
-            return !accepteds.some((accepted) => {
+          return !accepteds.some((accepted) => {
             return (
-                accepted.forgivingId === forgiven.forgivingId &&
+              accepted.forgivingId === forgiven.forgivingId &&
                 forgiven.forgivingId !== state.acceptedId
             )
-            })
+          })
         })
 
         // Set the proposals state to the array of forgiveness
         setForgiveness(filteredForgivens)
-        }
+      }
 
-        fetchData()
+      fetchData()
     }
   }, [address, state.acceptedId])
 
@@ -85,7 +85,7 @@ function Accept () {
           </div>
           {forgiveness.map((forgive) => (
             <div key={forgive.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {(ethers.utils.formatUnits(forgive.amount, 18)).slice(0,5)}
+              {(ethers.utils.formatUnits(forgive.amount, 18)).slice(0, 5)}
             </div>
           ))}
         </div>
@@ -107,7 +107,7 @@ function Accept () {
             <div key={forgive.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => dispatch({ type: 'accept', payload: {showModal: true, id: forgive.forgivingId, address: forgive.forgiver, amount: forgive.amount } })}
+                onClick={() => dispatch({ type: 'accept', payload: { showModal: true, id: forgive.forgivingId, address: forgive.forgiver, amount: forgive.amount } })}
               >
                 Inspect
               </button>

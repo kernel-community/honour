@@ -16,7 +16,7 @@ function Honour () {
 
   useEffect(() => {
     if (address) {
-        async function fetchData () {
+      async function fetchData () {
         const queryProposals = gql`
             query GetProposals($account: Bytes!) {
                 proposeds(where: { receiver: $account }) {
@@ -38,8 +38,8 @@ function Honour () {
         const variables = { account: address.toString() }
 
         const [dataProposals, dataHonoureds] = await Promise.all([
-            graphQLClient.request(queryProposals, variables),
-            graphQLClient.request(queryHonoureds, variables)
+          graphQLClient.request(queryProposals, variables),
+          graphQLClient.request(queryHonoureds, variables)
         ])
 
         // Get the array of proposals and honoured proposals
@@ -48,23 +48,21 @@ function Honour () {
 
         // Filter out the proposals that have already been honoured
         const filteredProposals = proposeds.filter((proposal) => {
-            return !honoureds.some((honoured) => {
+          return !honoureds.some((honoured) => {
             return (
-                honoured.proposalId === proposal.proposalId &&
+              honoured.proposalId === proposal.proposalId &&
                 proposal.proposalId !== state.honouredId
             )
-            })
+          })
         })
 
         // Set the proposals state to the filtered array of proposals
         setProposals(filteredProposals)
-        }
+      }
 
-        fetchData()
+      fetchData()
     }
   }, [address, state.honouredId])
-
-  
 
   return (
     <div className='mt-20'>
@@ -88,7 +86,7 @@ function Honour () {
           </div>
           {proposals.map((proposal) => (
             <div key={proposal.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {(ethers.utils.formatUnits(proposal.amount, 18)).slice(0,5)}
+              {(ethers.utils.formatUnits(proposal.amount, 18)).slice(0, 5)}
             </div>
           ))}
         </div>
@@ -110,7 +108,7 @@ function Honour () {
             <div key={proposal.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
-                onClick={() => dispatch({ type: 'honour', payload: {showModal: true, id: proposal.proposalId, address: proposal.proposer, amount: proposal.amount } })}
+                onClick={() => dispatch({ type: 'honour', payload: { showModal: true, id: proposal.proposalId, address: proposal.proposer, amount: proposal.amount } })}
               >
                 Inspect
               </button>

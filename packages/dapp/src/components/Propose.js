@@ -15,22 +15,22 @@ function Propose () {
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
 
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
   const [receiver, setReceiver] = useState('')
   const [amount, setAmount] = useState('')
   const [showScanner, setShowScanner] = useState(false)
-  const [validForm, setValidForm] = useState(false);
+  const [validForm, setValidForm] = useState(false)
   // eslint-disable-next-line
   const [error, setError] = useState(null)
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 1024);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsSmallScreen(window.innerWidth < 1024)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleScan = async (scanData) => {
     if (scanData && scanData !== '') {
@@ -44,17 +44,17 @@ function Propose () {
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
-  };
+  }
 
   const handleInputChange = (e) => {
-    const input = e.target.value;
-    const name = e.target.name;
-  
+    const input = e.target.value
+    const name = e.target.name
+
     if (name === 'receiver') {
       if (address === input) {
         setError("You can't propose your own HON")
       } else {
-        setReceiver(input);
+        setReceiver(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
           setValidForm(false)
@@ -63,7 +63,7 @@ function Propose () {
         }
       }
     } else if (name === 'amount') {
-      const amountNum = Number(input);
+      const amountNum = Number(input)
       if (isNaN(amountNum) || amountNum <= 0) {
         setError('Please enter a valid amount greater than 0')
         setValidForm(false)
@@ -76,7 +76,7 @@ function Propose () {
       const isReceiverValid = isValidEthereumAddress(receiver)
       setValidForm(isAmountValid && isReceiverValid)
     }
-  };
+  }
 
   async function handlePropose (e) {
     e.preventDefault()

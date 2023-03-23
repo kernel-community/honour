@@ -16,14 +16,13 @@ const InspectModal = () => {
         <div className='self-end'>
           <CloseButton exec={() => dispatch({ type: 'close' })} />
         </div>
-        {state.confirming ? 
-        (
-          <Loading text='Making money weird' />
-        ) :  
-        (
-          <Display />
-        )
-        }
+        {state.confirming
+          ? (
+            <Loading text='Making money weird' />
+            )
+          : (
+            <Display />
+            )}
         <Transact />
       </div>
     </Modal>

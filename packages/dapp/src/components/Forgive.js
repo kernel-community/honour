@@ -15,7 +15,7 @@ function Forgive () {
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
 
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
   const [forgiven, setForgiven] = useState('')
   const [amount, setAmount] = useState('')
   const [showScanner, setShowScanner] = useState(false)
@@ -25,12 +25,12 @@ function Forgive () {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 1024);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsSmallScreen(window.innerWidth < 1024)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleScan = async (scanData) => {
     if (scanData && scanData !== '') {
@@ -44,26 +44,26 @@ function Forgive () {
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
-  };
+  }
 
   const handleInputChange = (e) => {
-    const input = e.target.value;
-    const name = e.target.name;
-  
+    const input = e.target.value
+    const name = e.target.name
+
     if (name === 'forgiven') {
-        if (address === input) {
-            setError("You can't forgive your own HON")
+      if (address === input) {
+        setError("You can't forgive your own HON")
+      } else {
+        setForgiven(input)
+        if (!isValidEthereumAddress(input)) {
+          setError('Please enter a valid Ethereum address')
+          setValidForm(false)
         } else {
-            setForgiven(input);
-            if (!isValidEthereumAddress(input)) {
-                setError('Please enter a valid Ethereum address')
-                setValidForm(false)
-            } else {
-                setError('')
-            }
+          setError('')
         }
+      }
     } else if (name === 'amount') {
-      const amountNum = Number(input);
+      const amountNum = Number(input)
       if (isNaN(amountNum) || amountNum <= 0) {
         setError('Please enter a valid amount greater than 0')
         setValidForm(false)
@@ -76,36 +76,36 @@ function Forgive () {
       const isReceiverValid = isValidEthereumAddress(forgiven)
       setValidForm(isAmountValid && isReceiverValid)
     }
-  };
+  }
 
   async function handleForgive (e) {
     e.preventDefault()
     const balance = await balanceOf(chain.id, signer, forgiven)
     if (balance < amount) {
-        openError('You are trying to forgive this account by more than their current balance, which is ' + balance + '. Please decrease to this amount or less.')
+      openError('You are trying to forgive this account by more than their current balance, which is ' + balance + '. Please decrease to this amount or less.')
     } else {
-        openLoading('Please sign this transaction')
+      openLoading('Please sign this transaction')
 
-        // Call the forgive function with the inputted address and amount
-        let tx
-        try {
+      // Call the forgive function with the inputted address and amount
+      let tx
+      try {
         tx = await forgive(forgiven, amount, chain.id, signer)
-        } catch (err) {
+      } catch (err) {
         openError('There was an error. Please try again.')
         closeLoading()
         setError('Failed to submit transaction')
         return
-        }
+      }
 
-        openLoading('Making money weirder')
+      openLoading('Making money weirder')
 
-        await tx.wait(1)
+      await tx.wait(1)
 
-        closeLoading()
+      closeLoading()
 
-        // Reset the form inputs
-        setForgiven('')
-        setAmount('')
+      // Reset the form inputs
+      setForgiven('')
+      setAmount('')
     }
   }
 

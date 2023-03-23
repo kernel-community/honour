@@ -1,7 +1,6 @@
 const calculateTrustScore = (transactions, inspector) => {
-
   let score = 0
-  let txCount = transactions.length
+  const txCount = transactions.length
   let totalAmount = 0
   let maxAmount = 0
 
@@ -9,27 +8,27 @@ const calculateTrustScore = (transactions, inspector) => {
     const txWith = tx.with.toLowerCase()
     const txValue = parseInt(tx.amount)
 
-    // Check if the inspected account (which is associated with the transactions being passed in) 
+    // Check if the inspected account (which is associated with the transactions being passed in)
     // has "honoured" a proposal from the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === "Honoured") {
+    if (txWith === inspector.toLowerCase() && tx.type === 'Honoured') {
       score += 2
     }
 
     // Check if the inspected account has "forgiven" the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === "Forgiven") {
+    if (txWith === inspector.toLowerCase() && tx.type === 'Forgiven') {
       score += 2
     }
 
     // Check if the inspected account has "accepted" a forgiven transaction from the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === "Accepted") {
+    if (txWith === inspector.toLowerCase() && tx.type === 'Accepted') {
       score += 2
     }
 
     // Calculate total amount, and max amount
-      totalAmount += txValue
-      if (txValue > maxAmount) {
-        maxAmount = txValue
-      }
+    totalAmount += txValue
+    if (txValue > maxAmount) {
+      maxAmount = txValue
+    }
   })
 
   // Calculate the average transaction amount

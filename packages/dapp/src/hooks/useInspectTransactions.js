@@ -7,12 +7,12 @@ import calculateTrustScore from './calculateTrustScore'
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
-function useInspectTransactions(inspected, inspector) {
+function useInspectTransactions (inspected, inspector) {
   const [transactions, setTransactions] = useState([])
   const score = calculateTrustScore(transactions, inspector)
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData () {
       const queryProposeds = gql`
         query GetProposals($account: Bytes!) {
           proposeds(where: { proposer: $account }) {
@@ -63,8 +63,8 @@ function useInspectTransactions(inspected, inspector) {
           proposeds: [],
           honoureds: [],
           forgivens: [],
-          accepteds: [],
-        })),
+          accepteds: []
+        }))
       ])
 
       // Get the arrays of proposals, honoured proposals, forgivens, and accepteds, using optional chaining
@@ -74,39 +74,39 @@ function useInspectTransactions(inspected, inspector) {
       const accepteds = dataAccepteds?.accepteds || []
 
       // Merge all the arrays of transactions into a single array
-      const transactions = [        
-        ...proposeds.map((proposal) => ({ 
-            type: 'Proposed', 
-            with: proposal.receiver,
-            id: proposal.id,  
-            amount: proposal.amount, 
-            blockNumber: proposal.blockNumber 
-        })),        
-        ...honoureds.map((honoured) => ({ 
-            type: 'Honoured', 
-            with: honoured.proposer,
-            id: honoured.id, 
-            amount: honoured.amount, 
-            blockNumber: honoured.blockNumber 
-        })),        
-        ...forgivens.map((forgiven) => ({ 
-            type: 'Forgiven', 
-            with: forgiven.forgiven,
-            id: forgiven.id, 
-            amount: forgiven.amount, 
-            blockNumber: forgiven.blockNumber 
-        })),        
-        ...accepteds.map((accepted) => ({ 
-            type: 'Accepted', 
-            with: accepted.forgiver,
-            id: accepted.id, 
-            amount: accepted.amount, 
-            blockNumber: accepted.blockNumber 
-        })),      
-      ];
+      const transactions = [
+        ...proposeds.map((proposal) => ({
+          type: 'Proposed',
+          with: proposal.receiver,
+          id: proposal.id,
+          amount: proposal.amount,
+          blockNumber: proposal.blockNumber
+        })),
+        ...honoureds.map((honoured) => ({
+          type: 'Honoured',
+          with: honoured.proposer,
+          id: honoured.id,
+          amount: honoured.amount,
+          blockNumber: honoured.blockNumber
+        })),
+        ...forgivens.map((forgiven) => ({
+          type: 'Forgiven',
+          with: forgiven.forgiven,
+          id: forgiven.id,
+          amount: forgiven.amount,
+          blockNumber: forgiven.blockNumber
+        })),
+        ...accepteds.map((accepted) => ({
+          type: 'Accepted',
+          with: accepted.forgiver,
+          id: accepted.id,
+          amount: accepted.amount,
+          blockNumber: accepted.blockNumber
+        }))
+      ]
 
       // Sort the transactions by blockNumber in descending order
-      transactions.sort((a, b) => b.blockNumber - a.blockNumber);
+      transactions.sort((a, b) => b.blockNumber - a.blockNumber)
 
       // Set the transactions state to the sorted array of transactions
       setTransactions(transactions)
