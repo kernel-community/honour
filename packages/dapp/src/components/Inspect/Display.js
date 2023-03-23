@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { useProvider, useAccount, useNetwork } from 'wagmi'
 import { ethers } from 'ethers'
 import { useBalanceReducer } from '../../contexts/Balance'
@@ -11,7 +12,7 @@ const Display = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
   const provider = useProvider()
-  const { state } = useContext(InspectContext)
+  const { state, dispatch } = useContext(InspectContext)
   // This is so we can inspect the balance of the address the person is interacting with
   const [balanceIns, setBalanceIns] = useState('')
   // This is so we can display the change to their balance the interaction will have
@@ -54,7 +55,7 @@ const Display = () => {
       <div className='text-2xl my-2'>
         Take Care
       </div>
-      <div className='my-4 text-xl'>
+      <div className='my-4 text-l md:text-xl'>
         Your are about to interact with: <strong>{truncatedAddress}</strong>,<br />
         who wants&nbsp;
         {state.button === 'accept'
@@ -89,6 +90,15 @@ const Display = () => {
                 }`}
             >
               {trustScore}
+            </div>
+            <div>
+            <Link
+                to='/trust'
+                className='cursor-pointer text-xs text-indigo-600 underline'
+                onClick={() => dispatch({ type: 'hideModal' })}
+            >
+                what is this?
+            </Link>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import Main from '../layouts/Main'
 const Learn = () => {
   return (
     <Main>
-      <div className='mx-auto flex flex-col px-8 md:px-0 py-16 w-full md:w-[800px] gap-y-12 text-md md:text-2xl font-garamond text-jusitifed items-center'>
+      <div className='mx-auto flex flex-col px-8 mt-20 md:px-0 py-16 w-full md:w-[800px] gap-y-12 text-md md:text-2xl font-garamond text-jusitifed items-center'>
         <div>
           This is all about <strong>making money weird</strong>.
         </div>
