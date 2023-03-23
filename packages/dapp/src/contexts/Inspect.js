@@ -5,6 +5,7 @@ export const InspectContext = createContext()
 
 const initial = { 
     modal: false,
+    confirming: false,
     button: null,
     address: null, 
     amount: null,
@@ -19,6 +20,18 @@ const reducer = (state = initial, action) => {
             return {
                 ...state,
                 modal: false,
+            }
+        }
+        case 'confirming': {
+            return {
+                ...state,
+                confirming: true
+            }
+        }
+        case 'confirmed': {
+            return {
+                ...state,
+                confirming: false
             }
         }
         case 'accept': {

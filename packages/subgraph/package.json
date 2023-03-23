@@ -15,7 +15,7 @@
     "remove:local": "graph remove --node http://localhost:8020/ honour-localhost",
     "deploy:local": "yarn clean && yarn prepare-yaml && yarn codegen && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 honour-localhost ./subgraph.localhost.yaml",
     "prep:goerli": "yarn clean && yarn prepare-yaml && yarn codegen:goerli && yarn build:goerli",
-    "deploy:goerli": "graph auth --studio d14d1caae849d37c04326351150f5640 && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
+    "deploy:goerli": "graph auth --studio <auth_token> && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
     "deploy:mainnet": "yarn clean && yarn prepare-yaml && yarn codegen:mainnet && yarn build:mainnet && graph auth --studio <auth_token> && graph deploy --studio honour ./subgraph.mainnet.yaml"
   },
   "dependencies": {
