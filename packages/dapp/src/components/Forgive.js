@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNetwork, useSigner, useAccount } from 'wagmi'
-import { forgive } from '../utils/contracts'
+import { forgive, balanceOf } from '../utils/contracts'
 import QrReader from 'react-qr-reader'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
@@ -61,7 +61,7 @@ function Forgive () {
             } else {
                 setError('')
             }
-        }   
+        }
     } else if (name === 'amount') {
       const amountNum = Number(input);
       if (isNaN(amountNum) || amountNum <= 0) {
@@ -80,28 +80,33 @@ function Forgive () {
 
   async function handleForgive (e) {
     e.preventDefault()
-    openLoading('Please sign this transaction')
+    const balance = await balanceOf(chain.id, signer, forgiven)
+    if (balance < amount) {
+        openError('You are trying to forgive this account by more than their current balance, which is ' + balance + '. Please decrease to this amount or less.')
+    } else {
+        openLoading('Please sign this transaction')
 
-    // Call the forgive function with the inputted address and amount
-    let tx
-    try {
-      tx = await forgive(forgiven, amount, chain.id, signer)
-    } catch (err) {
-      openError('There was an error. Please try again.')
-      closeLoading()
-      setError('Failed to submit transaction')
-      return
+        // Call the forgive function with the inputted address and amount
+        let tx
+        try {
+        tx = await forgive(forgiven, amount, chain.id, signer)
+        } catch (err) {
+        openError('There was an error. Please try again.')
+        closeLoading()
+        setError('Failed to submit transaction')
+        return
+        }
+
+        openLoading('Making money weirder')
+
+        await tx.wait(1)
+
+        closeLoading()
+
+        // Reset the form inputs
+        setForgiven('')
+        setAmount('')
     }
-
-    openLoading('Making money weirder')
-
-    await tx.wait(1)
-
-    closeLoading()
-
-    // Reset the form inputs
-    setForgiven('')
-    setAmount('')
   }
 
   const truncateString = (str, maxLen) => {
