@@ -33,7 +33,7 @@ export const etherscan = {
 }
 
 export const graph = {
-  baseURL: 'https://api.studio.thegraph.com/query/24825/honour-goerli/0.1.0'
+  baseURL: 'https://api.studio.thegraph.com/query/24825/honour-goerli/0.1.1'
 }
 
 export const twitter = {
