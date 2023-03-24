@@ -29,8 +29,8 @@ const TrustScore = () => {
           You trust Alice more than I, while I trust Charlie more than you.
         </div>
         <div>
-          Trust scores are also not a % or some score "out of" 10. There is no limit to what a trust score can be. 
-          Red suggests untrusted. Yellow suggests some trust. Green suggests trusted. You can also consider trust in tandem with creditworthiness. 
+          Trust scores are also not a % or some score "out of" 10. There is no limit to what a trust score can be.
+          Red suggests untrusted. Yellow suggests some trust. Green suggests trusted. You can also consider trust in tandem with creditworthiness.
           The higher the balance of the account you're interacting with, the <strong>less creditworthy</strong> it is.
         </div>
         <div>

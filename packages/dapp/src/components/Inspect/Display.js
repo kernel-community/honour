@@ -99,16 +99,16 @@ const Display = () => {
               {trustScore}
             </div>
             <div>
-            <Link
+              <Link
                 to='/trust'
                 className='cursor-pointer text-xs text-indigo-600 underline'
                 onClick={() => {
-                  scrollToTop();
-                  dispatch({ type: 'hideModal' });
+                  scrollToTop()
+                  dispatch({ type: 'hideModal' })
                 }}
-            >
+              >
                 what is this?
-            </Link>
+              </Link>
             </div>
           </div>
         </div>

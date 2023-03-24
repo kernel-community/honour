@@ -36,7 +36,7 @@ function Propose () {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, []) 
+  }, [])
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
@@ -50,7 +50,7 @@ function Propose () {
       if (address === input) {
         setError("You can't propose your own HON")
       } else {
-        dispatch({type: 'receiver', payload: { receiver: input }})
+        dispatch({ type: 'receiver', payload: { receiver: input } })
         setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')

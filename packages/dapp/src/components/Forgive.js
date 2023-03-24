@@ -36,7 +36,7 @@ function Forgive () {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, []) 
+  }, [])
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
@@ -50,7 +50,7 @@ function Forgive () {
       if (address === input) {
         setError("You can't forgive your own HON")
       } else {
-        dispatch({type: 'forgive', payload: { forgiven: input }})
+        dispatch({ type: 'forgive', payload: { forgiven: input } })
         setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
