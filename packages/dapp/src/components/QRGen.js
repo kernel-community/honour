@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi'
 import QRCode from 'qrcode.react'
 import Modal from '../layouts/Modal'
 
-const MyQRCode = () => {
+const QRGen = () => {
   const { address } = useAccount()
   const [modal, showModal] = useState(false)
 
@@ -37,4 +37,4 @@ const MyQRCode = () => {
   )
 }
 
-export default MyQRCode
+export default QRGen
