@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNetwork, useSigner, useAccount } from 'wagmi'
-import { forgive, balanceOf } from '../utils/contracts'
-import QrReader from 'react-qr-reader'
+import { balanceOf, forgive } from '../utils/contracts'
+import { QRReadContext } from '../contexts/QRRead'
+import QRReader from './common/QRReader'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
 
@@ -16,12 +17,17 @@ function Forgive () {
   const { open: openError } = useError()
 
   const [isSmallScreen, setIsSmallScreen] = useState(false)
-  const [forgiven, setForgiven] = useState('')
   const [amount, setAmount] = useState('')
-  const [showScanner, setShowScanner] = useState(false)
   const [validForm, setValidForm] = useState(false)
   // eslint-disable-next-line
   const [error, setError] = useState(null)
+
+  const [display, setDisplay] = useState('')
+  const { state, dispatch } = useContext(QRReadContext)
+
+  useEffect(() => {
+    setDisplay(state.forgiven)
+  }, [state.forgiven])
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,17 +36,7 @@ function Forgive () {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const handleScan = async (scanData) => {
-    if (scanData && scanData !== '') {
-      setForgiven(scanData)
-      setShowScanner(false)
-    }
-  }
-  const handleError = (err) => {
-    console.error(err)
-  }
+  }, []) 
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
@@ -54,7 +50,8 @@ function Forgive () {
       if (address === input) {
         setError("You can't forgive your own HON")
       } else {
-        setForgiven(input)
+        dispatch({type: 'forgive', payload: { forgiven: input }})
+        setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
           setValidForm(false)
@@ -73,23 +70,37 @@ function Forgive () {
       setAmount(input)
 
       const isAmountValid = !isNaN(amount)
-      const isReceiverValid = isValidEthereumAddress(forgiven)
-      setValidForm(isAmountValid && isReceiverValid)
+      const isForgivenValid = isValidEthereumAddress(state.forgiven)
+      setValidForm(isAmountValid && isForgivenValid)
     }
   }
 
+  const truncateString = (str, maxLen) => {
+    if (str === '' || str.forgiven === '') {
+      return ''
+    } else if (str.length <= maxLen) {
+      return str
+    } else {
+      const start = str.slice(0, 8)
+      const end = str.slice(-5)
+      return `${start}...${end}`
+    }
+  }
+
+  const truncatedForgiven = truncateString(display, 8)
+
   async function handleForgive (e) {
     e.preventDefault()
-    const balance = await balanceOf(chain.id, signer, forgiven)
+    const balance = await balanceOf(chain.id, signer, state.forgiven)
     if (balance < amount) {
-      openError('You are trying to forgive this account by more than their current balance, which is ' + balance + '. Please decrease to this amount or less.')
+      openError('You are trying to forgive this account by more than their current balance, which is ' + parseFloat(balance) + '. Please decrease to this amount or less.')
     } else {
       openLoading('Please sign this transaction')
 
       // Call the forgive function with the inputted address and amount
       let tx
       try {
-        tx = await forgive(forgiven, amount, chain.id, signer)
+        tx = await forgive(state.forgiven, amount, chain.id, signer)
       } catch (err) {
         openError('There was an error. Please try again.')
         closeLoading()
@@ -104,19 +115,10 @@ function Forgive () {
       closeLoading()
 
       // Reset the form inputs
-      setForgiven('')
+      setDisplay('')
       setAmount('')
     }
   }
-
-  const truncateString = (str, maxLen) => {
-    if (str.length <= maxLen) return str
-    const start = str.slice(0, 8)
-    const end = str.slice(-5)
-    return `${start}...${end}`
-  }
-
-  const truncatedForgiven = truncateString(forgiven, 8)
 
   return (
     <div>
@@ -124,7 +126,7 @@ function Forgive () {
         Forgive
       </div>
       <form className='flex flex-col gap-4 p-4 bg-gray-100 rounded-md shadow-md'>
-        <label htmlFor='receiver' className='text-gray-800'>
+        <label htmlFor='forgiven' className='text-gray-800'>
           Whom do you forgive?
         </label>
         <div className='relative'>
@@ -132,24 +134,20 @@ function Forgive () {
             type='text'
             id='forgiven'
             name='forgiven'
-            value={isSmallScreen ? truncatedForgiven : forgiven}
+            value={isSmallScreen ? truncatedForgiven : display}
             onChange={handleInputChange}
-            className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 truncate'
+            className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
           />
           <button
             type='button'
             className='absolute right-0 h-full px-3 text-gray-500 hover:text-gray-700'
-            onClick={() => setShowScanner(!showScanner)}
+            onClick={() => dispatch({ type: 'showForScanner' })}
           >
             <img src={qrcode} alt='Scan' className='h-8' />
           </button>
         </div>
-        {showScanner && (
-          <QrReader
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: '300px', margin: '0 auto 1rem' }}
-          />
+        {state.showForScanner && (
+          <QRReader type='forgiven' />
         )}
         <label htmlFor='amount' className='text-gray-800'>
           Amount
@@ -174,7 +172,7 @@ function Forgive () {
           Forgive
         </button>
       </form>
-      {error && <p className='mt-4 text-red-500'>{error}</p>}
+      {error ? <p className='mt-4 text-red-500'>{error}</p> : <p>&nbsp;</p>}
     </div>
   )
 }

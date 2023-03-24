@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNetwork, useSigner, useAccount } from 'wagmi'
 import { propose } from '../utils/contracts'
-import QrReader from 'react-qr-reader'
+import { QRReadContext } from '../contexts/QRRead'
+import QRReader from './common/QRReader'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
 
@@ -16,12 +17,17 @@ function Propose () {
   const { open: openError } = useError()
 
   const [isSmallScreen, setIsSmallScreen] = useState(false)
-  const [receiver, setReceiver] = useState('')
   const [amount, setAmount] = useState('')
-  const [showScanner, setShowScanner] = useState(false)
   const [validForm, setValidForm] = useState(false)
   // eslint-disable-next-line
   const [error, setError] = useState(null)
+
+  const [display, setDisplay] = useState('')
+  const { state, dispatch } = useContext(QRReadContext)
+
+  useEffect(() => {
+    setDisplay(state.receiver)
+  }, [state.receiver])
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,17 +36,7 @@ function Propose () {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const handleScan = async (scanData) => {
-    if (scanData && scanData !== '') {
-      setReceiver(scanData)
-      setShowScanner(false)
-    }
-  }
-  const handleError = (err) => {
-    console.error(err)
-  }
+  }, []) 
 
   const isValidEthereumAddress = (addr) => {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
@@ -54,7 +50,8 @@ function Propose () {
       if (address === input) {
         setError("You can't propose your own HON")
       } else {
-        setReceiver(input)
+        dispatch({type: 'receiver', payload: { receiver: input }})
+        setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
           setValidForm(false)
@@ -73,10 +70,24 @@ function Propose () {
       setAmount(input)
 
       const isAmountValid = !isNaN(amount)
-      const isReceiverValid = isValidEthereumAddress(receiver)
+      const isReceiverValid = isValidEthereumAddress(state.receiver)
       setValidForm(isAmountValid && isReceiverValid)
     }
   }
+
+  const truncateString = (str, maxLen) => {
+    if (str === '' || str.receiver === '') {
+      return ''
+    } else if (str.length <= maxLen) {
+      return str
+    } else {
+      const start = str.slice(0, 8)
+      const end = str.slice(-5)
+      return `${start}...${end}`
+    }
+  }
+
+  const truncatedReceiver = truncateString(display, 8)
 
   async function handlePropose (e) {
     e.preventDefault()
@@ -86,7 +97,7 @@ function Propose () {
     // Call the propose function with the inputted address and amount
     let tx
     try {
-      tx = await propose(receiver, amount, chain.id, signer)
+      tx = await propose(state.receiver, amount, chain.id, signer)
     } catch (err) {
       openError('There was an error. Please try again.')
       closeLoading()
@@ -101,18 +112,9 @@ function Propose () {
     closeLoading()
 
     // Reset the form inputs
-    setReceiver('')
+    setDisplay('')
     setAmount('')
   }
-
-  const truncateString = (str, maxLen) => {
-    if (str.length <= maxLen) return str
-    const start = str.slice(0, 8)
-    const end = str.slice(-5)
-    return `${start}...${end}`
-  }
-
-  const truncatedReceiver = truncateString(receiver, 8)
 
   return (
     <div>
@@ -128,24 +130,20 @@ function Propose () {
             type='text'
             id='receiver'
             name='receiver'
-            value={isSmallScreen ? truncatedReceiver : receiver}
+            value={isSmallScreen ? truncatedReceiver : display}
             onChange={handleInputChange}
             className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
           />
           <button
             type='button'
             className='absolute right-0 h-full px-3 text-gray-500 hover:text-gray-700'
-            onClick={() => setShowScanner(!showScanner)}
+            onClick={() => dispatch({ type: 'showPropScanner' })}
           >
             <img src={qrcode} alt='Scan' className='h-8' />
           </button>
         </div>
-        {showScanner && (
-          <QrReader
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: '300px', margin: '0 auto 1rem' }}
-          />
+        {state.showPropScanner && (
+          <QRReader type='receiver' />
         )}
         <label htmlFor='amount' className='text-gray-800'>
           Amount
@@ -170,7 +168,7 @@ function Propose () {
           Propose
         </button>
       </form>
-      {error && <p className='mt-4 text-red-500'>{error}</p>}
+      {error ? <p className='mt-4 text-red-500'>{error}</p> : <p>&nbsp;</p>}
     </div>
   )
 }

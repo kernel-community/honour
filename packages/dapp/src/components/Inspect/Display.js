@@ -50,6 +50,10 @@ const Display = () => {
   const acceptBalance = calcBalanceChange(balance, ethers.utils.formatUnits(state.amount, 18), 'accept')
   const honourBalance = calcBalanceChange(balance, ethers.utils.formatUnits(state.amount, 18), 'honour')
 
+  const scrollToTop = () => {
+    window.scrollTo(0, 0)
+  }
+
   return (
     <div className='w-full h-full p-2'>
       <div className='text-2xl my-2'>
@@ -81,6 +85,9 @@ const Display = () => {
           <div className='text-4xl text-bold mt-2'>
             {balanceIns.slice(0, 5)}
           </div>
+          <div className='text-xs text-indigo-600 mt-2'>
+            Less HON = more creditworthy!
+          </div>
         </div>
         <div className='sm:col-span-1'>
           <div className='sm:col-span-1 text-center'>
@@ -95,7 +102,10 @@ const Display = () => {
             <Link
                 to='/trust'
                 className='cursor-pointer text-xs text-indigo-600 underline'
-                onClick={() => dispatch({ type: 'hideModal' })}
+                onClick={() => {
+                  scrollToTop();
+                  dispatch({ type: 'hideModal' });
+                }}
             >
                 what is this?
             </Link>

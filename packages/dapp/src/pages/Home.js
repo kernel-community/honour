@@ -1,4 +1,5 @@
 import Balance from '../components/Balance'
+import QRGen from '../components/QRGen'
 import Propose from '../components/Propose'
 import Honour from '../components/Honour'
 import Forgive from '../components/Forgive'
@@ -9,6 +10,7 @@ const Home = () => {
   return (
     <Main>
       <Balance />
+      <QRGen />
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         <div className='bg-white rounded-md p-2 md:p-20'>
           <Propose />
