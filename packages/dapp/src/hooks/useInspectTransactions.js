@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { GraphQLClient, gql } from 'graphql-request'
 import { graph } from '../utils/constants'
-
+import useTransactionsReducer from './useTransactionsReducer'
 import calculateTrustScore from './calculateTrustScore'
 
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
-function useInspectTransactions (inspected, inspector) {
-  const [transactions, setTransactions] = useState([])
-  const score = calculateTrustScore(transactions, inspector)
+function useInspectTransactions (inspected, myAddress) {
+  const [theirTransactions, setTransactions] = useState([])
+  const { myTransactions } = useTransactionsReducer(myAddress);
+  const score = calculateTrustScore(theirTransactions, myTransactions, myAddress)
 
   useEffect(() => {
     async function fetchData () {
@@ -74,7 +75,7 @@ function useInspectTransactions (inspected, inspector) {
       const accepteds = dataAccepteds?.accepteds || []
 
       // Merge all the arrays of transactions into a single array
-      const transactions = [
+      const theirTransactions = [
         ...proposeds.map((proposal) => ({
           type: 'Proposed',
           with: proposal.receiver,
@@ -106,10 +107,10 @@ function useInspectTransactions (inspected, inspector) {
       ]
 
       // Sort the transactions by blockNumber in descending order
-      transactions.sort((a, b) => b.blockNumber - a.blockNumber)
+      theirTransactions.sort((a, b) => b.blockNumber - a.blockNumber)
 
       // Set the transactions state to the sorted array of transactions
-      setTransactions(transactions)
+      setTransactions(theirTransactions)
     }
 
     if (inspected) {
@@ -117,7 +118,7 @@ function useInspectTransactions (inspected, inspector) {
     }
   }, [inspected])
 
-  return [transactions, score]
+  return [theirTransactions, score]
 }
 
 export default useInspectTransactions

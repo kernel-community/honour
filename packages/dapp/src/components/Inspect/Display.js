@@ -5,11 +5,11 @@ import { ethers } from 'ethers'
 import { useBalanceReducer } from '../../contexts/Balance'
 import { InspectContext } from '../../contexts/Inspect'
 import { balanceOf } from '../../utils/contracts'
-
 import useInspectTransactions from '../../hooks/useInspectTransactions'
 
 const Display = () => {
   const { address } = useAccount()
+  const myAddress = address
   const { chain } = useNetwork()
   const provider = useProvider()
   const { state, dispatch } = useContext(InspectContext)
@@ -17,8 +17,7 @@ const Display = () => {
   const [balanceIns, setBalanceIns] = useState('')
   // This is so we can display the change to their balance the interaction will have
   const { balance } = useBalanceReducer()
-  const inspector = address
-  const [allTransactions, trustScore] = useInspectTransactions(state.address, inspector)
+  const [allTransactions, trustScore] = useInspectTransactions(state.address, myAddress)
   const transactions = allTransactions.slice(0, 8)
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const Display = () => {
           <div className='sm:col-span-1 text-center'>
             This account has a trust score of:
             <div className={`text-4xl text-bold mt-2 ${
-                  trustScore < 3 ? 'text-red-500' : trustScore >= 4 && trustScore <= 9 ? 'text-yellow-500' : 'text-green-500'
+                  trustScore < 3 ? 'text-red-500' : trustScore >= 4 && trustScore <= 6 ? 'text-yellow-500' : 'text-green-500'
                 }`}
             >
               {trustScore}

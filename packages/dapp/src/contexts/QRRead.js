@@ -3,7 +3,7 @@ import React, { createContext, useReducer, useMemo } from 'react'
 export const QRReadContext = createContext()
 
 const initial = {
-  receiver: '',
+  recipient: '',
   forgiven: '',
   showPropScanner: false,
   showForScanner: false
@@ -11,10 +11,10 @@ const initial = {
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
-    case 'receiver':
+    case 'recipient':
       return {
         ...state,
-        receiver: action.payload,
+        recipient: action.payload,
         showPropScanner: false
       }
     case 'forgiven':

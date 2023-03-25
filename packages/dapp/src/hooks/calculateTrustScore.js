@@ -1,26 +1,37 @@
-const calculateTrustScore = (transactions, inspector) => {
+const calculateTrustScore = (theirTransactions, myTransactions, myAddress) => {
   let score = 0
-  const txCount = transactions.length
+  const txCount = theirTransactions.length
   let totalAmount = 0
   let maxAmount = 0
 
-  transactions.forEach((tx) => {
+  // check if any addresses I have interacted with match any address they have interacted with
+  for (let i = 0; i < theirTransactions.length; i++) {
+    const theirTransaction = theirTransactions[i];
+    for (let j = 0; j < myTransactions.length; j++) {
+      const myTransaction = myTransactions[j];
+      if (theirTransaction.with === myTransaction.with) {
+        score++;
+      }
+    }
+  }
+
+  theirTransactions.forEach((tx) => {
     const txWith = tx.with.toLowerCase()
     const txValue = parseInt(tx.amount)
 
     // Check if the inspected account (which is associated with the transactions being passed in)
-    // has "honoured" a proposal from the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === 'Honoured') {
+    // has "honoured" a proposal from myAddress
+    if (txWith === myAddress.toLowerCase() && tx.type === 'Honoured') {
       score += 2
     }
 
-    // Check if the inspected account has "forgiven" the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === 'Forgiven') {
+    // Check if the inspected account has "forgiven" myAddress
+    if (txWith === myAddress.toLowerCase() && tx.type === 'Forgiven') {
       score += 2
     }
 
-    // Check if the inspected account has "accepted" a forgiven transaction from the inspector account
-    if (txWith === inspector.toLowerCase() && tx.type === 'Accepted') {
+    // Check if the inspected account has "accepted" a forgiven transaction from myAddress
+    if (txWith === myAddress.toLowerCase() && tx.type === 'Accepted') {
       score += 2
     }
 
@@ -40,7 +51,7 @@ const calculateTrustScore = (transactions, inspector) => {
   }
 
   // Check if the account has accepted a transaction that is 2 magnitudes of order larger than its average
-  transactions.forEach((tx) => {
+  theirTransactions.forEach((tx) => {
     const txValue = parseInt(tx.value)
     if (tx.type === 'Accepted' && txValue > 100 * avgAmount) {
       score -= 1

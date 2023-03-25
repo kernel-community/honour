@@ -50,7 +50,7 @@ function Forgive () {
       if (address === input) {
         setError("You can't forgive your own HON")
       } else {
-        dispatch({ type: 'forgive', payload: { forgiven: input } })
+        dispatch({ type: 'forgiven', payload: input })
         setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
@@ -76,7 +76,7 @@ function Forgive () {
   }
 
   const truncateString = (str, maxLen) => {
-    if (str === '' || str.forgiven === '') {
+    if (str === '' || str === undefined || str.forgiven === '') {
       return ''
     } else if (str.length <= maxLen) {
       return str
@@ -87,7 +87,7 @@ function Forgive () {
     }
   }
 
-  const truncatedForgiven = truncateString(display, 8)
+  const truncatedAddress = truncateString(display, 8)
 
   async function handleForgive (e) {
     e.preventDefault()
@@ -134,7 +134,7 @@ function Forgive () {
             type='text'
             id='forgiven'
             name='forgiven'
-            value={isSmallScreen ? truncatedForgiven : display}
+            value={isSmallScreen ? truncatedAddress : display}
             onChange={handleInputChange}
             className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
           />

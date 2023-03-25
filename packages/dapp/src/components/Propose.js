@@ -26,8 +26,8 @@ function Propose () {
   const { state, dispatch } = useContext(QRReadContext)
 
   useEffect(() => {
-    setDisplay(state.receiver)
-  }, [state.receiver])
+    setDisplay(state.recipient)
+  }, [state.recipient])
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,11 +46,11 @@ function Propose () {
     const input = e.target.value
     const name = e.target.name
 
-    if (name === 'receiver') {
+    if (name === 'recipient') {
       if (address === input) {
         setError("You can't propose your own HON")
       } else {
-        dispatch({ type: 'receiver', payload: { receiver: input } })
+        dispatch({ type: 'recipient', payload: input })
         setDisplay(input)
         if (!isValidEthereumAddress(input)) {
           setError('Please enter a valid Ethereum address')
@@ -70,13 +70,13 @@ function Propose () {
       setAmount(input)
 
       const isAmountValid = !isNaN(amount)
-      const isReceiverValid = isValidEthereumAddress(state.receiver)
-      setValidForm(isAmountValid && isReceiverValid)
+      const isRecipientValid = isValidEthereumAddress(state.recipient)
+      setValidForm(isAmountValid && isRecipientValid)
     }
   }
 
   const truncateString = (str, maxLen) => {
-    if (str === '' || str.receiver === '') {
+    if (str === '' || str === undefined || str.recipient === '') {
       return ''
     } else if (str.length <= maxLen) {
       return str
@@ -87,7 +87,7 @@ function Propose () {
     }
   }
 
-  const truncatedReceiver = truncateString(display, 8)
+  const truncatedAddress = truncateString(display, 8)
 
   async function handlePropose (e) {
     e.preventDefault()
@@ -97,7 +97,7 @@ function Propose () {
     // Call the propose function with the inputted address and amount
     let tx
     try {
-      tx = await propose(state.receiver, amount, chain.id, signer)
+      tx = await propose(state.recipient, amount, chain.id, signer)
     } catch (err) {
       openError('There was an error. Please try again.')
       closeLoading()
@@ -122,15 +122,15 @@ function Propose () {
         Propose
       </div>
       <form className='flex flex-col gap-4 p-4 bg-gray-100 rounded-md shadow-md'>
-        <label htmlFor='receiver' className='text-gray-800'>
+        <label htmlFor='recipient' className='text-gray-800'>
           Whom do you oblige?
         </label>
         <div className='relative'>
           <input
             type='text'
-            id='receiver'
-            name='receiver'
-            value={isSmallScreen ? truncatedReceiver : display}
+            id='recipient'
+            name='recipient'
+            value={isSmallScreen ? truncatedAddress : display}
             onChange={handleInputChange}
             className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
           />
@@ -143,7 +143,7 @@ function Propose () {
           </button>
         </div>
         {state.showPropScanner && (
-          <QRReader type='receiver' />
+          <QRReader type='recipient' />
         )}
         <label htmlFor='amount' className='text-gray-800'>
           Amount
