@@ -42,11 +42,14 @@ const TrustScore = () => {
         </div>
         <ol className='list-decimal'>
           <li className='my-2'>
-            If you have transacted HON before with the account you're Honouring a Proposal, or Accepting Forgiveness, from: <strong>+2</strong>
+          <strong>+2</strong> if you have transacted HON before with the account you're Honouring a Proposal, or Accepting Forgiveness, from. 
           </li>
           <li className='my-2'>
-            If the account you're transacting with has either proposed an amount more than 100 times larger than its average proposal,
-            or accepted forgiveness that is more than 100 times its average: <strong>-1</strong>
+            <strong>+1</strong> for every account that you have both interacted with - this is your shared trust graph.
+          </li>
+          <li className='my-2'>
+          <strong>-1</strong> if the account you're transacting with has either proposed an amount more than 100 times larger than its average proposal,
+            or accepted forgiveness that is more than 100 times its average.
           </li>
         </ol>
         <div>
@@ -54,10 +57,7 @@ const TrustScore = () => {
         </div>
         <ol className='list-decimal'>
           <li className='my-2'>
-            Nested trust graphs (has the account interacted with accounts you've interacted with? +1 per account)
-          </li>
-          <li className='my-2'>
-            More contextual checks like (2) above. What kinds of behaviour are really malicious in this system? Let's experiment and see!
+            More contextual checks like (3) above. What kinds of behaviour are really malicious in this system? Let's experiment and see!
           </li>
         </ol>
         <hr className='w-2/3 mx-auto pt-6' />
