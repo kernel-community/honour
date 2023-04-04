@@ -6,11 +6,11 @@ const calculateTrustScore = (theirTransactions, myTransactions, myAddress) => {
 
   // check if any addresses I have interacted with match any address they have interacted with
   for (let i = 0; i < theirTransactions.length; i++) {
-    const theirTransaction = theirTransactions[i];
+    const theirTransaction = theirTransactions[i]
     for (let j = 0; j < myTransactions.length; j++) {
-      const myTransaction = myTransactions[j];
+      const myTransaction = myTransactions[j]
       if (theirTransaction.with === myTransaction.with) {
-        score++;
+        score++
       }
     }
   }

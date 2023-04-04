@@ -40,18 +40,18 @@ const TrustScore = () => {
         <div>
           <strong>This is how it currently works</strong>:
         </div>
-        <ol className='list-decimal'>
-          <li className='my-2'>
-          <strong>+2</strong> if you have transacted HON before with the account you're Honouring a Proposal, or Accepting Forgiveness, from. 
+        <ul className='list-none'>
+          <li className='my-4 ml-2'>
+            <strong>+2</strong> if you have transacted HON before with the account you're Honouring a Proposal, or Accepting Forgiveness, from.
           </li>
-          <li className='my-2'>
-            <strong>+1</strong> for every account that you have both interacted with - this is your shared trust graph.
+          <li className='my-4 ml-2'>
+            <strong>+1</strong> for every account that you have both interacted with.
           </li>
-          <li className='my-2'>
-          <strong>-1</strong> if the account you're transacting with has either proposed an amount more than 100 times larger than its average proposal,
+          <li className='my-4 ml-2'>
+            <strong>-1</strong> if the account you're transacting with has either proposed an amount more than 100 times larger than its average proposal,
             or accepted forgiveness that is more than 100 times its average.
           </li>
-        </ol>
+        </ul>
         <div>
           We plan to implement:
         </div>

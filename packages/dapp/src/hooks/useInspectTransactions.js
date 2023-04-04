@@ -9,7 +9,7 @@ const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function useInspectTransactions (inspected, myAddress) {
   const [theirTransactions, setTransactions] = useState([])
-  const { myTransactions } = useTransactionsReducer(myAddress);
+  const { myTransactions } = useTransactionsReducer(myAddress)
   const score = calculateTrustScore(theirTransactions, myTransactions, myAddress)
 
   useEffect(() => {

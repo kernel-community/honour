@@ -16,7 +16,7 @@ const reducer = (state, action) => {
 }
 export const SwitchNetworkProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initial)
-  const { activeChain, chains } = useNetwork()
+  const { chain } = useNetwork()
 
   const value = useMemo(() => {
     return {
@@ -25,15 +25,12 @@ export const SwitchNetworkProvider = ({ children }) => {
   }, [state, dispatch])
 
   useEffect(() => {
-    const trigger = () => {
-      if (chains.find((c) => c.id === activeChain.id)) {
-        dispatch({ type: 'modal', payload: false })
-      } else {
-        dispatch({ type: 'modal', payload: true })
-      }
+    if (chain.id !== 5) {
+      dispatch({ type: 'modal', payload: true })
+    } else {
+      dispatch({ type: 'modal', payload: false })
     }
-    if (activeChain) trigger()
-  }, [activeChain, chains, dispatch])
+  }, [chain, dispatch])
 
   return (
     <SwitchNetworkContext.Provider value={value}>

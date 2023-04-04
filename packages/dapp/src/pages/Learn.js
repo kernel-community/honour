@@ -1,6 +1,10 @@
+import { Link } from 'react-router-dom'
 import Main from '../layouts/Main'
 
 const Learn = () => {
+  const scrollToTop = () => {
+    window.scrollTo(0, 0)
+  }
   return (
     <Main>
       <div className='mx-auto flex flex-col px-8 mt-20 md:px-0 py-16 w-full md:w-[800px] gap-y-12 text-md md:text-2xl font-garamond text-jusitifed items-center'>
@@ -14,7 +18,15 @@ const Learn = () => {
           <strong>HON tokens represent obligations</strong>.
         </div>
         <div>
-          The higher your balance, the <i>less creditworthy</i> you are. That said, the transaction history of any account is how we establish trust. Using HON will help you learn about the interplay between balance and history in order to cultivate meaningful, valuable kinds of trust in other people.
+          The higher your balance, the <i>less creditworthy</i> you are. Keep your balance in check by not taking on more HON than you can get others to forgive you. That said, you want to transact often with a diversity of people, as the richer your transaction history, the easier it is to&nbsp;
+          <Link
+            to='/trust'
+            className='cursor-pointer text-indigo-600 underline'
+            onClick={() => scrollToTop()}
+          >
+            establish lasting trust
+          </Link>.&nbsp;
+          Using HON will help you learn about the interplay between balance and history in order to cultivate meaningful, valuable kinds of trust with and in other people.
         </div>
         <div>
           This system works by virtue of four simple rules:

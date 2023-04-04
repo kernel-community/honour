@@ -9,7 +9,8 @@
     "scripts": {
       "start": "yarn workspace dapp start",
       "format": "yarn workspace dapp format",
-      "lint": "yarn workspace dapp lint"
+      "lint": "yarn workspace dapp lint",
+      "build": "yarn workspace dapp build"
     },
     "license": "MIT"
   }

@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.b43f66dd.css",
-    "main.js": "/static/js/main.407c294c.js",
+    "main.css": "/static/css/main.e9d3e553.css",
+    "main.js": "/static/js/main.da04511b.js",
     "static/media/Volkhorn.otf": "/static/media/Volkhorn.2188208a0df1f3bb369a.otf",
     "static/media/kernel_logo.png": "/static/media/kernel_logo.ad8f047ef531c1a35319.png",
     "index.html": "/index.html",
-    "main.b43f66dd.css.map": "/static/css/main.b43f66dd.css.map",
-    "main.407c294c.js.map": "/static/js/main.407c294c.js.map"
+    "main.e9d3e553.css.map": "/static/css/main.e9d3e553.css.map",
+    "main.da04511b.js.map": "/static/js/main.da04511b.js.map"
   },
   "entrypoints": [
-    "static/css/main.b43f66dd.css",
-    "static/js/main.407c294c.js"
+    "static/css/main.e9d3e553.css",
+    "static/js/main.da04511b.js"
   ]
 }
