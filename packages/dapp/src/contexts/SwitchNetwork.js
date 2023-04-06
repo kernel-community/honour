@@ -25,7 +25,10 @@ export const SwitchNetworkProvider = ({ children }) => {
   }, [state, dispatch])
 
   useEffect(() => {
-    if (chain.id !== 5) {
+    console.log(chain)
+    if (!chain) {
+      dispatch({ type: 'modal', payload: false })
+    } else if (chain?.id !== 5) {
       dispatch({ type: 'modal', payload: true })
     } else {
       dispatch({ type: 'modal', payload: false })

@@ -4,8 +4,7 @@ import { useSwitchNetwork } from 'wagmi'
 import Spinner from './common/Spinner'
 import Modal from '../layouts/Modal'
 
-export const env = process.env.REACT_APP_DEPLOY_TARGET === 'STAGING' || 'PROD'
-export const isDev = env !== 'PROD'
+export const isDev = true
 
 const SwitchNetworkModal = () => {
   const { state } = useContext(SwitchNetworkContext)
@@ -19,7 +18,7 @@ const SwitchNetworkModal = () => {
         </div>
         <div className='flex flex-col gap-2'>
           <button
-            onClick={() => switchNetwork(isDev ? 5: 1)}
+            onClick={() => switchNetwork(isDev ? 5 : 1)}
             className={`
                 py-2 px-6 my-4 bg-slate-200 rounded-lg hover:bg-slate-300 flex flex-row items-center gap-2
               `}
