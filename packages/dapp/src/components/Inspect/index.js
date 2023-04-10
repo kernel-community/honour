@@ -12,7 +12,7 @@ const InspectModal = () => {
   if (!state.modal) return
   return (
     <Modal bringToFront>
-      <div className='md:p-8 w-full h-min-content md:w-3/4 my-auto rounded-lg shadow-xl bg-white font-volkhorn flex flex-col items-center py-6 sm:py-0'>
+      <div className='p-4 h-min-content max-h-screen w-full md:w-1/2 my-auto rounded-lg shadow-xl bg-white font-volkhorn flex flex-col items-center'>
         <div className='self-end'>
           <CloseButton exec={() => dispatch({ type: 'close' })} />
         </div>
@@ -21,7 +21,10 @@ const InspectModal = () => {
             <Loading text='Making money weird' />
             )
           : (
-            <Display />
+            <div className='overflow-y-auto'>
+              <Display />
+            </div>
+            
             )}
         <Transact />
       </div>

@@ -64,14 +64,14 @@ const Display = () => {
         {state.button === 'accept'
           ? (
             <span>
-              to forgive you <strong>{ethers.utils.formatUnits(state.amount, 18)} HON</strong>.<br />
+              to forgive you <strong className='text-green-500'>{ethers.utils.formatUnits(state.amount, 18)} HON</strong>.<br />
               This will <strong className='text-green-500'>decrease</strong> your HON balance to&nbsp;
               <strong className='text-green-500'>{acceptBalance}</strong>
             </span>
             )
           : (
             <span>
-              you to take on an additional <strong>{ethers.utils.formatUnits(state.amount, 18)} HON</strong>.<br />
+              you to take on <strong className='text-red-500'>{ethers.utils.formatUnits(state.amount, 18)}</strong> more HON.<br />
               This will <strong className='text-red-500'>increase</strong> your HON balance to&nbsp;
               <strong className='text-red-500'>{honourBalance}</strong>
             </span>
