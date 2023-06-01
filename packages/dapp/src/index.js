@@ -12,7 +12,6 @@ const { provider, webSocketProvider } = configureChains(
   [mainnet, goerli],
   [alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY })]
 )
-console.log("ALCHEMY_API_KEY:", process.env.REACT_APP_ALCHEMY_API_KEY)
 const client = createClient({
   provider,
   webSocketProvider,
