@@ -21,3 +21,71 @@ html::-webkit-scrollbar {
 a {
   color: #fff;
 }
+
+/* All styles for tooltips */
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  border-bottom: 1px dotted #374151;
+}
+
+.tooltip .tooltip-bottom {
+  width: 200px;
+  top: 100%;
+  left: 15%;
+  margin-left: -100px;
+  font-size: 16px;
+  line-height: 26px;
+  background-color: #374151;
+  color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip .tooltip-bottom::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 15%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #374151 transparent;
+}
+
+.tooltip .tooltip-right {
+  width: 200px;
+  top: -5px;
+  left: 105%;
+  font-size: 16px;
+  line-height: 26px;
+  background-color: #374151;
+  color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip .tooltip-right::after {
+  content: " ";
+  position: absolute;
+  top: 18%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #374151 transparent transparent;
+}
+
+@media screen and (max-width: 768px) {
+  .tooltip .tooltip-bottom {
+    left: 30%;
+  }
+}

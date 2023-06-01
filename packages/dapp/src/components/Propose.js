@@ -3,6 +3,7 @@ import { useNetwork, useSigner, useAccount } from 'wagmi'
 import { propose } from '../utils/contracts'
 import { QRReadContext } from '../contexts/QRRead'
 import QRReader from './common/QRReader'
+import Tooltip from './common/ToolTip'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
 
@@ -119,12 +120,10 @@ function Propose () {
   return (
     <div>
       <div className='flex md:text-4xl text-2xl flex-grow font-volkhorn text-gray-700 self-center'>
-        Propose
+          Propose
       </div>
       <form className='flex flex-col gap-4 p-4 bg-gray-100 rounded-md shadow-md'>
-        <label htmlFor='recipient' className='text-gray-800'>
-          Whom do you oblige?
-        </label>
+        <Tooltip text="Whom do you oblige?" tooltip="You can propose HON to any account. Start here by putting in an account you wish to take on HON tokens." />
         <div className='relative'>
           <input
             type='text'

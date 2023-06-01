@@ -46,6 +46,7 @@ const calculateTrustScore = (theirTransactions, myTransactions, myAddress) => {
   const avgAmount = totalAmount / txCount
 
   // Check if the account has proposed an amount more than 2 magnitudes of order larger than its average
+  // It would be best to improve this in line with Ostrom's principles for the commons, esp graduating sanctions.
   if (maxAmount > 100 * avgAmount) {
     score -= 1
   }

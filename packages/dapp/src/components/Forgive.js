@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useNetwork, useSigner, useAccount } from 'wagmi'
 import { balanceOf, forgive } from '../utils/contracts'
 import { QRReadContext } from '../contexts/QRRead'
+import Tooltip from './common/ToolTip'
 import QRReader from './common/QRReader'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
@@ -126,9 +127,7 @@ function Forgive () {
         Forgive
       </div>
       <form className='flex flex-col gap-4 p-4 bg-gray-100 rounded-md shadow-md'>
-        <label htmlFor='forgiven' className='text-gray-800'>
-          Whom do you forgive?
-        </label>
+      <Tooltip text="Whom do you forgive?" tooltip="You can forgive any account, but you cannot forgive more HON than you hold, or more HON than is currently in the account you want to forgive." />
         <div className='relative'>
           <input
             type='text'

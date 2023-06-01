@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { GraphQLClient, gql } from 'graphql-request'
 import { graph } from '../utils/constants'
 import { InspectContext } from '../contexts/Inspect'
+import Tooltip from './common/ToolTip'
 
 const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
@@ -66,7 +67,7 @@ function Accept () {
   return (
     <div className='mt-20'>
       <div className='flex md:text-4xl text-2xl flex-grow font-volkhorn text-gray-700 self-center'>
-        Accept
+        <Tooltip position='right' text="Accept" tooltip="Below is all the HON others wish to forgive you. Inspect each before you accept it." />
       </div>
       <div className='grid grid-cols-3 lg:grid-cols-4 md:divide-x sm:divide-gray-200'>
         <div className='sm:col-span-1'>
