@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useNetwork, useSigner, useAccount } from 'wagmi'
 import { propose } from '../utils/contracts'
 import { QRReadContext } from '../contexts/QRRead'
+import { AddressInput } from './Input/AdressInput'
 import QRReader from './common/QRReader'
 import Tooltip from './common/ToolTip'
 import useError from '../hooks/useError'
@@ -17,78 +18,41 @@ function Propose () {
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
 
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [display, setDisplay] = useState('')
+
   const [amount, setAmount] = useState('')
   const [validForm, setValidForm] = useState(false)
   // eslint-disable-next-line
   const [error, setError] = useState(null)
 
-  const [display, setDisplay] = useState('')
   const { state, dispatch } = useContext(QRReadContext)
 
+  // Displays the address if it comes from a QR scan
   useEffect(() => {
     setDisplay(state.recipient)
   }, [state.recipient])
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 1024)
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const isValidEthereumAddress = (addr) => {
-    return /^(0x)?[0-9a-fA-F]{40}$/.test(addr)
-  }
-
-  const handleInputChange = (e) => {
-    const input = e.target.value
-    const name = e.target.name
-
-    if (name === 'recipient') {
-      if (address === input) {
-        setError("You can't propose your own HON")
-      } else {
-        dispatch({ type: 'recipient', payload: input })
-        setDisplay(input)
-        if (!isValidEthereumAddress(input)) {
-          setError('Please enter a valid Ethereum address')
-          setValidForm(false)
-        } else {
-          setError('')
-        }
-      }
-    } else if (name === 'amount') {
-      const amountNum = Number(input)
-      if (isNaN(amountNum) || amountNum <= 0) {
-        setError('Please enter a valid amount greater than 0')
-        setValidForm(false)
-      } else {
-        setError('')
-      }
-      setAmount(input)
-
-      const isAmountValid = !isNaN(amount)
-      const isRecipientValid = isValidEthereumAddress(state.recipient)
-      setValidForm(isAmountValid && isRecipientValid)
-    }
-  }
-
-  const truncateString = (str, maxLen) => {
-    if (str === '' || str === undefined || str.recipient === '') {
-      return ''
-    } else if (str.length <= maxLen) {
-      return str
+  const handleAddress = (setAddress) => {
+    if (address === setAddress) {
+      setError("You can't propose HON to yourself")
     } else {
-      const start = str.slice(0, 8)
-      const end = str.slice(-5)
-      return `${start}...${end}`
+      dispatch({ type: 'recipient', payload: setAddress })
+      setDisplay(setAddress)
     }
   }
 
-  const truncatedAddress = truncateString(display, 8)
+  const handleAmount = (event) => {
+    const amountNum = Number(event.target.value)
+    if (isNaN(amountNum) || amountNum <= 0) {
+      setError('Please enter a valid amount greater than 0')
+      setValidForm(false)
+    } else {
+      setError('')
+    }
+    setAmount(event.target.value)
+    const isAmountValid = !isNaN(amount)
+    setValidForm(isAmountValid)
+  }
 
   async function handlePropose (e) {
     e.preventDefault()
@@ -125,21 +89,22 @@ function Propose () {
       <form className='flex flex-col gap-4 p-4 bg-gray-100 rounded-md shadow-md'>
         <Tooltip text="Whom do you oblige?" tooltip="You can propose HON to any account. Start here by putting in an account you wish to take on HON tokens." />
         <div className='relative'>
-          <input
-            type='text'
-            id='recipient'
+          <AddressInput
+            value={display}
             name='recipient'
-            value={isSmallScreen ? truncatedAddress : display}
-            onChange={handleInputChange}
-            className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
+            placeholder='Enter address or ENS name' 
+            onChange={handleAddress}
           />
-          <button
-            type='button'
-            className='absolute right-0 h-full px-3 text-gray-500 hover:text-gray-700'
-            onClick={() => dispatch({ type: 'showPropScanner' })}
-          >
-            <img src={qrcode} alt='Scan' className='h-8' />
-          </button>
+          <div className='mt-2'>
+            <button
+              type='button'
+              className='h-full px-3 text-gray-500 hover:text-gray-700'
+              onClick={() => dispatch({ type: 'showPropScanner' })}
+            >
+              Or scan a QR code
+              <img src={qrcode} alt='Scan' className='h-8 float-left pr-2' />
+            </button>
+          </div>
         </div>
         {state.showPropScanner && (
           <QRReader type='recipient' />
@@ -153,7 +118,7 @@ function Propose () {
           name='amount'
           autoComplete='off'
           value={amount}
-          onChange={handleInputChange}
+          onChange={handleAmount}
           className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500'
         />
         <button
