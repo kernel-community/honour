@@ -16,8 +16,8 @@
     "deploy:local": "yarn clean && yarn prepare-yaml && yarn codegen && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 honour-localhost ./subgraph.localhost.yaml",
     "prep:goerli": "yarn clean && yarn prepare-yaml && yarn codegen:goerli && yarn build:goerli",
     "prep:optimism": "yarn clean && yarn prepare-yaml && yarn codegen:optimism && yarn build:optimism",
-    "deploy:goerli": "graph auth <auth_token> && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
-    "deploy:optimism": "graph auth <auth_token> && graph deploy --studio honour ./subgraph.optimism.yaml"
+    "deploy:goerli": "graph auth --studio <auth_token> && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
+    "deploy:optimism": "graph auth --studio <auth_token> && graph deploy --studio honour ./subgraph.optimism.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.68.5",

@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum
     name: Honour
-    network: goerli
+    network: optimism
     source:
       address: "0xB123B2d5C0932F2B13Fcf03763004f0800fF29dD"
       abi: Honour
