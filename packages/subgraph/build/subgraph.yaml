@@ -6,9 +6,9 @@ dataSources:
     name: Honour
     network: goerli
     source:
-      address: "0x80c25Df6014253FE78f4Ec6258F73855dEe09A6c"
+      address: "0xB123B2d5C0932F2B13Fcf03763004f0800fF29dD"
       abi: Honour
-      startBlock: 8705670
+      startBlock: 117586865
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,7 +21,7 @@ dataSources:
         - Transfer
       abis:
         - name: Honour
-          file: hardhat/deployments/goerli/Honour.json
+          file: hardhat/deployments/optimism/Honour.json
       eventHandlers:
         - event: Accepted(indexed address,indexed address,uint256,uint256)
           handler: handleAccepted

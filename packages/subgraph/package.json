@@ -1,25 +1,26 @@
 {
   "name": "subgraph",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf ./generated ./build subgraph.*.yaml",
     "prepare-yaml": "ts-node src/generate-subgraph-yaml.ts",
     "codegen": "graph codegen ./subgraph.localhost.yaml",
     "codegen:goerli": "graph codegen ./subgraph.goerli.yaml",
-    "codegen:mainnet": "graph codegen ./subgraph.mainnet.yaml",
+    "codegen:optimism": "graph codegen ./subgraph.optimism.yaml",
     "build": "graph build ./subgraph.localhost.yaml",
     "build:goerli": "graph build ./subgraph.goerli.yaml",
-    "build:mainnet": "graph build ./subgraph.mainnet.yaml",
+    "build:optimism": "graph build ./subgraph.optimism.yaml",
     "create:local": "graph create --node http://localhost:8020/ honour-localhost",
     "remove:local": "graph remove --node http://localhost:8020/ honour-localhost",
     "deploy:local": "yarn clean && yarn prepare-yaml && yarn codegen && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 honour-localhost ./subgraph.localhost.yaml",
     "prep:goerli": "yarn clean && yarn prepare-yaml && yarn codegen:goerli && yarn build:goerli",
-    "deploy:goerli": "graph auth --studio <auth_token> && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
-    "deploy:mainnet": "yarn clean && yarn prepare-yaml && yarn codegen:mainnet && yarn build:mainnet && graph auth --studio <auth_token> && graph deploy --studio honour ./subgraph.mainnet.yaml"
+    "prep:optimism": "yarn clean && yarn prepare-yaml && yarn codegen:optimism && yarn build:optimism",
+    "deploy:goerli": "graph auth <auth_token> && graph deploy --studio honour-goerli ./subgraph.goerli.yaml",
+    "deploy:optimism": "graph auth <auth_token> && graph deploy --studio honour ./subgraph.optimism.yaml"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.42.4",
+    "@graphprotocol/graph-cli": "0.68.5",
     "@graphprotocol/graph-ts": "0.29.1",
     "mustache": "^4.2.0",
     "typescript": "^4.6.4"

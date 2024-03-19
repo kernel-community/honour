@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import { createClient, configureChains, WagmiConfig } from 'wagmi'
-import { mainnet, goerli } from 'wagmi/chains'
+import { optimism } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { BrowserRouter } from 'react-router-dom'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 const { provider, webSocketProvider } = configureChains(
-  [mainnet, goerli],
+  [optimism],
   [alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_API_KEY })]
 )
 const client = createClient({

@@ -4,8 +4,6 @@ import { useSwitchNetwork } from 'wagmi'
 import Spinner from './common/Spinner'
 import Modal from '../layouts/Modal'
 
-export const isDev = true
-
 const SwitchNetworkModal = () => {
   const { state } = useContext(SwitchNetworkContext)
   const { isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
@@ -18,16 +16,16 @@ const SwitchNetworkModal = () => {
         </div>
         <div className='flex flex-col gap-2'>
           <button
-            onClick={() => switchNetwork(isDev ? 5 : 1)}
+            onClick={() => switchNetwork(10)}
             className={`
                 py-2 px-6 my-4 bg-slate-200 rounded-lg hover:bg-slate-300 flex flex-row items-center gap-2
               `}
           >
             <div className='grow'>
-              {isDev ? 'Goerli' : 'Ethereum'}
+              {'Optimism'}
             </div>
             {
-                isLoading && pendingChainId === 5 && (
+                isLoading && pendingChainId === 10 && (
                   <Spinner />
                 )
               }

@@ -9,6 +9,9 @@ const INFURA_API_KEY = process.env.INFURA_API_KEY || ''
 const MAINNET_PRIVATE_KEY =
     process.env.MAINNET_PRIVATE_KEY ||
     ''
+const OP_PRIVATE_KEY =
+    process.env.OP_PRIVATE_KEY ||
+    ''
 const GOERLI_PRIVATE_KEY =
     process.env.GOERLI_PRIVATE_KEY ||
     ''
@@ -49,6 +52,10 @@ module.exports = {
     goerli: {
       url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [GOERLI_PRIVATE_KEY]
+    },
+    optimism: {
+      url: `https://optimism-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [OP_PRIVATE_KEY]
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,

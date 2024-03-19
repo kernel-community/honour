@@ -1,6 +1,6 @@
 {
   "name": "dapp",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -20,7 +20,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "BUILD_PATH='./dist/build' react-scripts build",
-    "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-honour-staging",
     "test": "react-scripts test",
     "lint": "npx standard",
     "format": "npx standard --fix",

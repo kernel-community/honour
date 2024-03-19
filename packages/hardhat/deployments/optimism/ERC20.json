@@ -1,0 +1,220 @@
+{
+  "address": "0x1FD2beFB832695f5643C14D90214461Bca4119e2",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_decimals",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x1ec753359de61b6742e9ef143ab79792050b554f6e856d966a297e7a481172ff",
+  "receipt": {
+    "to": null,
+    "from": "0x5f3371793285920351344a1EaaAA48d45e600652",
+    "contractAddress": "0x1FD2beFB832695f5643C14D90214461Bca4119e2",
+    "transactionIndex": 14,
+    "gasUsed": "248965",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x0b0dd5e665ba944d4f32092ae26d3d0176be7b7c50ecb1fba6459d0fc4dbc9ff",
+    "transactionHash": "0x1ec753359de61b6742e9ef143ab79792050b554f6e856d966a297e7a481172ff",
+    "logs": [],
+    "blockNumber": 117586865,
+    "cumulativeGasUsed": "4482388",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "Honour",
+    "HON",
+    18
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "152d8856a8d765e25b3395855b2e9d2c",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_symbol\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"_decimals\",\"type\":\"uint8\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)Modified for this use by stripping all transfer and approval logic + associated events.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Gas efficient ERC20 to explore alternative currency designs\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ERC20.sol\":\"ERC20\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/ERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.7;\\n\\n/// @notice Gas efficient ERC20 to explore alternative currency designs\\n/// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)\\n/// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)\\n/// @author Modified for this use by stripping all transfer and approval logic + associated events.\\ncontract ERC20 {\\n    /*///////////////////////////////////////////////////////////////\\n                                  EVENTS\\n    //////////////////////////////////////////////////////////////*/\\n\\n    event Transfer(address from, address to, uint256 amount);\\n\\n    /*///////////////////////////////////////////////////////////////\\n                             METADATA STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    string public name;\\n\\n    string public symbol;\\n\\n    uint8 public immutable decimals;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                              ERC20 STORAGE\\n    //////////////////////////////////////////////////////////////*/\\n\\n    uint256 public totalSupply;\\n\\n    mapping(address => uint256) public balanceOf;\\n\\n    /*///////////////////////////////////////////////////////////////\\n                               CONSTRUCTOR\\n    //////////////////////////////////////////////////////////////*/\\n\\n    constructor(\\n        string memory _name,\\n        string memory _symbol,\\n        uint8 _decimals\\n    ) {\\n        name = _name;\\n        symbol = _symbol;\\n        decimals = _decimals;\\n    }\\n\\n    /*///////////////////////////////////////////////////////////////\\n                    INTERNAL PROMISE/FORGIVE LOGIC\\n    //////////////////////////////////////////////////////////////*/\\n\\n    function _mint(address to, uint256 amount) internal virtual {\\n        totalSupply += amount;\\n\\n        // Cannot overflow because the sum of all user\\n        // balances can't exceed the max uint256 value.\\n        unchecked {\\n            balanceOf[to] += amount;\\n        }\\n\\n        emit Transfer(address(0), to, amount);\\n    }\\n\\n    function _burn(address from, uint256 amount) internal virtual {\\n        balanceOf[from] -= amount;\\n\\n        // Cannot underflow because a user's balance\\n        // will never be larger than the total supply.\\n        unchecked {\\n            totalSupply -= amount;\\n        }\\n\\n        emit Transfer(from, address(0), amount);\\n    }\\n}\",\"keccak256\":\"0x89f87207a63bff2edd002623cc87aec2985a215019c8be22a77225bbd8271dbe\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a060405234801561001057600080fd5b5060405161053a38038061053a83398101604081905261002f916101cc565b8251610042906000906020860190610087565b508151610056906001906020850190610087565b5060f81b7fff00000000000000000000000000000000000000000000000000000000000000166080525061029a9050565b82805461009390610249565b90600052602060002090601f0160209004810192826100b557600085556100fb565b82601f106100ce57805160ff19168380011785556100fb565b828001600101855582156100fb579182015b828111156100fb5782518255916020019190600101906100e0565b5061010792915061010b565b5090565b5b80821115610107576000815560010161010c565b600082601f83011261013157600080fd5b81516001600160401b038082111561014b5761014b610284565b604051601f8301601f19908116603f0116810190828211818310171561017357610173610284565b8160405283815260209250868385880101111561018f57600080fd5b600091505b838210156101b15785820183015181830184015290820190610194565b838211156101c25760008385830101525b9695505050505050565b6000806000606084860312156101e157600080fd5b83516001600160401b03808211156101f857600080fd5b61020487838801610120565b9450602086015191508082111561021a57600080fd5b5061022786828701610120565b925050604084015160ff8116811461023e57600080fd5b809150509250925092565b600181811c9082168061025d57607f821691505b6020821081141561027e57634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052604160045260246000fd5b60805160f81c6102836102b76000396000609601526102836000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c806306fdde031461005c57806318160ddd1461007a578063313ce5671461009157806370a08231146100ca57806395d89b41146100ea575b600080fd5b6100646100f2565b60405161007191906101bd565b60405180910390f35b61008360025481565b604051908152602001610071565b6100b87f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff9091168152602001610071565b6100836100d836600461018d565b60036020526000908152604090205481565b610064610180565b600080546100ff90610212565b80601f016020809104026020016040519081016040528092919081815260200182805461012b90610212565b80156101785780601f1061014d57610100808354040283529160200191610178565b820191906000526020600020905b81548152906001019060200180831161015b57829003601f168201915b505050505081565b600180546100ff90610212565b60006020828403121561019f57600080fd5b81356001600160a01b03811681146101b657600080fd5b9392505050565b600060208083528351808285015260005b818110156101ea578581018301518582016040015282016101ce565b818111156101fc576000604083870101525b50601f01601f1916929092016040019392505050565b600181811c9082168061022657607f821691505b6020821081141561024757634e487b7160e01b600052602260045260246000fd5b5091905056fea264697066735822122000fd051f83eab15793e42bb433ac9a87f1e9fbd5df1860149271bdc6e293a5fe64736f6c63430008070033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c806306fdde031461005c57806318160ddd1461007a578063313ce5671461009157806370a08231146100ca57806395d89b41146100ea575b600080fd5b6100646100f2565b60405161007191906101bd565b60405180910390f35b61008360025481565b604051908152602001610071565b6100b87f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff9091168152602001610071565b6100836100d836600461018d565b60036020526000908152604090205481565b610064610180565b600080546100ff90610212565b80601f016020809104026020016040519081016040528092919081815260200182805461012b90610212565b80156101785780601f1061014d57610100808354040283529160200191610178565b820191906000526020600020905b81548152906001019060200180831161015b57829003601f168201915b505050505081565b600180546100ff90610212565b60006020828403121561019f57600080fd5b81356001600160a01b03811681146101b657600080fd5b9392505050565b600060208083528351808285015260005b818110156101ea578581018301518582016040015282016101ce565b818111156101fc576000604083870101525b50601f01601f1916929092016040019392505050565b600181811c9082168061022657607f821691505b6020821081141561024757634e487b7160e01b600052602260045260246000fd5b5091905056fea264697066735822122000fd051f83eab15793e42bb433ac9a87f1e9fbd5df1860149271bdc6e293a5fe64736f6c63430008070033",
+  "devdoc": {
+    "author": "Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)Modified for this use by stripping all transfer and approval logic + associated events.",
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "Gas efficient ERC20 to explore alternative currency designs",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 52,
+        "contract": "contracts/ERC20.sol:ERC20",
+        "label": "name",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_string_storage"
+      },
+      {
+        "astId": 54,
+        "contract": "contracts/ERC20.sol:ERC20",
+        "label": "symbol",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_string_storage"
+      },
+      {
+        "astId": 58,
+        "contract": "contracts/ERC20.sol:ERC20",
+        "label": "totalSupply",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 62,
+        "contract": "contracts/ERC20.sol:ERC20",
+        "label": "balanceOf",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_address,t_uint256)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_address,t_uint256)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256)",
+        "numberOfBytes": "32",
+        "value": "t_uint256"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
