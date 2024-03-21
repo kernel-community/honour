@@ -2,6 +2,8 @@
 
 We propose a peer-to-peer system of social credit. It is open, permissionless, and can be deployed on any EVM-compatible blockchain. The system assumes minimal structure. By virtue of four weird rules, we can invert how we represent money, in order to cultivate more healthy communal use. In short, entities hold this money as a liability that simultaneously grants access to high-bandwidth, authentic communication channels by which ongoing and lively relationships may be established.
 
+You can find the app permanently on Arweave [here](https://arweave.net/x71LeozOUlN9u5ngk6XRsKlGhRxtqnl0HNfY4NvTdLY).
+
 ## De-Sign
 
 1. All HON are the same.
