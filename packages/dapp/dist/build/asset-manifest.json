@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "./static/css/main.04737f0a.css",
-    "main.js": "./static/js/main.e9500d80.js",
-    "static/media/Volkhorn.otf": "./static/media/Volkhorn.2188208a0df1f3bb369a.otf",
-    "static/media/kernel_logo.png": "./static/media/kernel_logo.ad8f047ef531c1a35319.png",
-    "index.html": "./index.html",
-    "main.04737f0a.css.map": "./static/css/main.04737f0a.css.map",
-    "main.e9500d80.js.map": "./static/js/main.e9500d80.js.map"
+    "main.css": "/static/css/main.fdedc9d6.css",
+    "main.js": "/static/js/main.816f1481.js",
+    "static/media/Volkhorn.otf": "/static/media/Volkhorn.2188208a0df1f3bb369a.otf",
+    "static/media/kernel_logo.png": "/static/media/kernel_logo.ad8f047ef531c1a35319.png",
+    "index.html": "/index.html",
+    "main.fdedc9d6.css.map": "/static/css/main.fdedc9d6.css.map",
+    "main.816f1481.js.map": "/static/js/main.816f1481.js.map"
   },
   "entrypoints": [
-    "static/css/main.04737f0a.css",
-    "static/js/main.e9500d80.js"
+    "static/css/main.fdedc9d6.css",
+    "static/js/main.816f1481.js"
   ]
 }

@@ -5,6 +5,7 @@ import App from './App'
 import { createClient, configureChains, WagmiConfig } from 'wagmi'
 import { mainnet, optimism } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { BrowserRouter } from 'react-router-dom'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 const { provider, webSocketProvider } = configureChains(
@@ -18,6 +19,8 @@ const client = createClient({
 })
 root.render(
   <WagmiConfig client={client}>
+    <BrowserRouter>
       <App />
+    </BrowserRouter>
   </WagmiConfig>
 )

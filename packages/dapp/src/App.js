@@ -1,4 +1,3 @@
-import { HashRouter } from "react-router-dom";
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Learn from './pages/Learn'
@@ -21,13 +20,11 @@ const App = () => {
               <ErrorProvider>
                 <div>
                   <SwitchNetworkModal />
-                  <HashRouter>
-                    <Routes>
-                      <Route path={'/'} element={<Home />} />
-                      <Route path={'/learn'} element={<Learn />} />
-                      <Route path={'/trust'} element={<TrustScore />} />
-                    </Routes>
-                  </HashRouter>
+                  <Routes>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/learn' element={<Learn />} />
+                    <Route path='/trust' element={<TrustScore />} />
+                  </Routes>
                 </div>
               </ErrorProvider>
             </LoadingProvider>
