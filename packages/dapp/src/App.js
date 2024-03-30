@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, HashRouter, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Learn from './pages/Learn'
 import TrustScore from './pages/TrustScore'
@@ -12,26 +12,28 @@ import { ErrorProvider } from './hooks/useError'
 
 const App = () => {
   return (
-    <SwitchNetworkProvider>
-      <BalanceProvider>
-        <QRReadProvider>
-          <InspectProvider>
-            <LoadingProvider>
-              <ErrorProvider>
-                <div>
-                  <SwitchNetworkModal />
-                  <Routes>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/learn' element={<Learn />} />
-                    <Route path='/trust' element={<TrustScore />} />
-                  </Routes>
-                </div>
-              </ErrorProvider>
-            </LoadingProvider>
-          </InspectProvider>
-        </QRReadProvider>
-      </BalanceProvider>
-    </SwitchNetworkProvider>
+    <HashRouter>
+      <SwitchNetworkProvider>
+        <BalanceProvider>
+          <QRReadProvider>
+            <InspectProvider>
+              <LoadingProvider>
+                <ErrorProvider>
+                  <div>
+                    <SwitchNetworkModal />
+                      <Routes>
+                        <Route path={'/'} element={<Home />} />
+                        <Route path={'/learn'} element={<Learn />} />
+                        <Route path={'/trust'} element={<TrustScore />} />
+                      </Routes>
+                  </div>
+                </ErrorProvider>
+              </LoadingProvider>
+            </InspectProvider>
+          </QRReadProvider>
+        </BalanceProvider>
+      </SwitchNetworkProvider>
+    </HashRouter>
   )
 }
 
