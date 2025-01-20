@@ -53,7 +53,7 @@ const Learn = () => {
           className='w-1/4 px-4 py-2 mx-auto text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
         >
           <a
-            href='https://kernel.community/en/tokens/token-studies/honour'
+            href='https://read.kernel.community/en/tokens/token-studies/honour'
             target='_blank'
             rel='noopener noreferrer'
           >
