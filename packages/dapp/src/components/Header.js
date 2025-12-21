@@ -1,11 +1,11 @@
 import { useLocation, Link } from 'react-router-dom'
-import { useNetwork } from 'wagmi'
+import { useWallet } from '../contexts/Wallet'
 import { useDisplayableAddress } from '../hooks/useDisplayableAddress'
 import ConnectButton from './common/ConnectButton'
 
 const Header = () => {
   const toDisplay = useDisplayableAddress()
-  const { chain } = useNetwork()
+  const { chain } = useWallet()
 
   return (
     <>

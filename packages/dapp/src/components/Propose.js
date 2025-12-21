@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useNetwork, useSigner, useAccount } from 'wagmi'
+import { useWallet } from '../contexts/Wallet'
 import { propose } from '../utils/contracts'
 import { QRReadContext } from '../contexts/QRRead'
 import { AddressInput } from './Input/AdressInput'
@@ -11,9 +11,7 @@ import useLoading from '../hooks/useLoading'
 import qrcode from '../images/qr-code.png'
 
 function Propose () {
-  const { chain } = useNetwork()
-  const { data: signer } = useSigner()
-  const { address } = useAccount()
+  const { chainId, address, getWalletClient, publicClient } = useWallet()
 
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
@@ -62,7 +60,11 @@ function Propose () {
     // Call the propose function with the inputted address and amount
     let tx
     try {
-      tx = await propose(state.recipient, amount, chain.id, signer)
+      const walletClient = await getWalletClient()
+      if (!walletClient) {
+        throw new Error('Wallet not connected')
+      }
+      tx = await propose(state.recipient, amount, chainId, walletClient, publicClient)
     } catch (err) {
       openError('There was an error. Please try again.')
       closeLoading()

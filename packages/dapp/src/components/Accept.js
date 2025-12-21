@@ -1,6 +1,7 @@
+/* global BigInt */
 import React, { useState, useEffect, useContext } from 'react'
-import { useAccount } from 'wagmi'
-import { ethers } from 'ethers'
+import { useWallet } from '../contexts/Wallet'
+import { formatUnits } from 'viem'
 import { GraphQLClient, gql } from 'graphql-request'
 import { graph } from '../utils/constants'
 import { InspectContext } from '../contexts/Inspect'
@@ -10,7 +11,7 @@ const HONOUR_SUBGRAPH_URL = graph.baseURL
 const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Accept () {
-  const { address } = useAccount()
+  const { address } = useWallet()
   const { state, dispatch } = useContext(InspectContext)
   const [forgiveness, setForgiveness] = useState([])
 
@@ -56,8 +57,13 @@ function Accept () {
           })
         })
 
-        // Set the proposals state to the array of forgiveness
-        setForgiveness(filteredForgivens)
+        // Sort by timestamp, newest first
+        const sortedForgivens = filteredForgivens.sort((a, b) => {
+          return parseInt(b.blockTimestamp) - parseInt(a.blockTimestamp)
+        })
+
+        // Set the proposals state to the sorted array of forgiveness
+        setForgiveness(sortedForgivens)
       }
 
       fetchData()
@@ -69,13 +75,13 @@ function Accept () {
       <div className='flex md:text-4xl text-2xl flex-grow font-volkhorn text-gray-700 self-center'>
         <Tooltip position='right' text="Accept" tooltip="Below is all the HON others wish to forgive you. Inspect each before you accept it." />
       </div>
-      <div className='grid grid-cols-3 lg:grid-cols-4 md:divide-x sm:divide-gray-200'>
+      <div className='grid grid-cols-[1.2fr_0.6fr_1.4fr_0.8fr] md:divide-x sm:divide-gray-200'>
         <div className='sm:col-span-1'>
           <div className='px-6 py-3 text-sm font-medium text-gray-500 uppercase tracking-wider'>
             Forgiver
           </div>
           {forgiveness.map((forgive) => (
-            <div key={forgive.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
+            <div key={forgive.id} className='px-6 h-20 whitespace-nowrap border-b border-gray-200 flex items-center'>
               {`${forgive.forgiver.slice(0, 5)}...${forgive.forgiver.slice(-3)}`}
             </div>
           ))}
@@ -85,8 +91,8 @@ function Accept () {
             Amount
           </div>
           {forgiveness.map((forgive) => (
-            <div key={forgive.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {(ethers.utils.formatUnits(forgive.amount, 18)).slice(0, 5)}
+            <div key={forgive.id} className='px-6 h-20 whitespace-nowrap border-b border-gray-200 flex items-center'>
+              {(formatUnits(BigInt(forgive.amount), 18)).slice(0, 5)}
             </div>
           ))}
         </div>
@@ -94,18 +100,22 @@ function Accept () {
           <div className='px-6 py-3 text-sm font-medium text-gray-500 uppercase tracking-wider'>
             Timestamp
           </div>
-          {forgiveness.map((forgive) => (
-            <div key={forgive.id} className='px-6 py-6 whitespace-nowrap border-b border-gray-200'>
-              {new Date(parseInt(forgive.blockTimestamp) * 1000).toLocaleString()}
-            </div>
-          ))}
+          {forgiveness.map((forgive) => {
+            const date = new Date(parseInt(forgive.blockTimestamp) * 1000)
+            const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) + ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            return (
+              <div key={forgive.id} className='px-6 h-20 whitespace-nowrap border-b border-gray-200 flex items-center text-[10px]'>
+                {formattedDate}
+              </div>
+            )
+          })}
         </div>
         <div className='sm:col-span-1'>
           <div className='px-6 py-3 text-sm font-medium text-gray-500 uppercase tracking-wider'>
             Action
           </div>
           {forgiveness.map((forgive) => (
-            <div key={forgive.id} className='px-6 py-4 whitespace-nowrap border-b border-gray-200'>
+            <div key={forgive.id} className='px-6 h-20 whitespace-nowrap border-b border-gray-200 flex items-center'>
               <button
                 className='w-full lg:px-4 py-2 text-white bg-[#233447] rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500'
                 onClick={() => dispatch({ type: 'accept', payload: { showModal: true, id: forgive.forgivingId, address: forgive.forgiver, amount: forgive.amount } })}

@@ -1,35 +1,67 @@
 import { useCallback, useEffect, useState } from "react"
-import { isAddress } from "ethers/lib/utils"
+import { isAddress } from "viem"
 import Blockies from "react-blockies"
-import { useEnsAddress, useEnsAvatar, useEnsName } from "wagmi"
+import { useQuery } from "@tanstack/react-query"
+import { createPublicClient, http } from "viem"
+import { mainnet } from "viem/chains"
 import { InputBase } from "./InputBase"
 
 const isENS = (address = "") => address.endsWith(".eth") || address.endsWith(".xyz")
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http()
+})
 
 /**
  * Address input with ENS name resolution
  */
 export const AddressInput = ({ value, name, placeholder, onChange }) => {
-  const { data: ensAddress, isLoading: isEnsAddressLoading } = useEnsAddress({
-    name: value,
-    enabled: isENS(value),
-    chainId: 1,
-    cacheTime: 30_000,
-  });
-
   const [enteredEnsName, setEnteredEnsName] = useState();
-  const { data: ensName, isLoading: isEnsNameLoading } = useEnsName({
-    address: value,
-    enabled: isAddress(value),
-    chainId: 1,
-    cacheTime: 30_000,
+
+  // Fetch ENS address from name
+  const { data: ensAddress, isLoading: isEnsAddressLoading } = useQuery({
+    queryKey: ['ensAddress', value],
+    queryFn: async () => {
+      if (!isENS(value)) return null
+      try {
+        return await publicClient.getEnsAddress({ name: value })
+      } catch {
+        return null
+      }
+    },
+    enabled: isENS(value),
+    staleTime: 30_000,
   });
 
-  const { data: ensAvatar } = useEnsAvatar({
-    address: value,
+  // Fetch ENS name from address
+  const { data: ensName, isLoading: isEnsNameLoading } = useQuery({
+    queryKey: ['ensName', value],
+    queryFn: async () => {
+      if (!isAddress(value)) return null
+      try {
+        return await publicClient.getEnsName({ address: value })
+      } catch {
+        return null
+      }
+    },
     enabled: isAddress(value),
-    chainId: 1,
-    cacheTime: 30_000,
+    staleTime: 30_000,
+  });
+
+  // Fetch ENS avatar
+  const { data: ensAvatar } = useQuery({
+    queryKey: ['ensAvatar', value],
+    queryFn: async () => {
+      if (!isAddress(value)) return null
+      try {
+        return await publicClient.getEnsAvatar({ name: ensName || value })
+      } catch {
+        return null
+      }
+    },
+    enabled: isAddress(value) && !!ensName,
+    staleTime: 30_000,
   });
 
   // ens => address

@@ -1,60 +1,86 @@
 import { addresses, abis } from './constants'
-import { ethers, Contract } from 'ethers'
+import { parseUnits, formatUnits } from 'viem'
 
-// function to propose HON creation
-export const propose = async (receiver, amount, chainId, signer) => {
-  const contract = new Contract(
-    addresses.chainIdToContractAddresses(chainId).Honour,
-    abis.Honour,
-    signer
-  )
-  const amountBN = ethers.BigNumber.from(ethers.utils.parseUnits(amount.toString(), 18))
-  const proposal = await contract.propose(receiver, amountBN)
-  return proposal
+// Helper to create transaction object with wait method
+const createTxWithWait = (hash, publicClient) => {
+  return {
+    hash,
+    wait: async (confirmations = 1) => {
+      const receipt = await publicClient.waitForTransactionReceipt({ hash, confirmations })
+      return receipt
+    }
+  }
 }
 
-// // function to honour HON proposal
-export const honour = async (proposer, id, chainId, signer) => {
-  const contract = new Contract(
-    addresses.chainIdToContractAddresses(chainId).Honour,
-    abis.Honour,
-    signer
-  )
-  const honour = await contract.honour(proposer, id)
-  return honour
+// function to propose HON creation
+export const propose = async (receiver, amount, chainId, walletClient, publicClient) => {
+  const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+  const amountBN = parseUnits(amount.toString(), 18)
+  
+  const hash = await walletClient.writeContract({
+    address: contractAddress,
+    abi: JSON.parse(abis.Honour),
+    functionName: 'propose',
+    args: [receiver, amountBN]
+  })
+  
+  return createTxWithWait(hash, publicClient)
+}
+
+// function to honour HON proposal
+export const honour = async (proposer, id, chainId, walletClient, publicClient) => {
+  const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+  
+  const hash = await walletClient.writeContract({
+    address: contractAddress,
+    abi: JSON.parse(abis.Honour),
+    functionName: 'honour',
+    args: [proposer, id]
+  })
+  
+  return createTxWithWait(hash, publicClient)
 }
 
 // function to forgive HON
-export const forgive = async (forgiven, amount, chainId, signer) => {
-  const contract = new Contract(
-    addresses.chainIdToContractAddresses(chainId).Honour,
-    abis.Honour,
-    signer
-  )
-  const amountBN = ethers.BigNumber.from(ethers.utils.parseUnits(amount.toString(), 18))
-  const forgiveness = await contract.forgive(forgiven, amountBN)
-  return forgiveness
+export const forgive = async (forgiven, amount, chainId, walletClient, publicClient) => {
+  const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+  const amountBN = parseUnits(amount.toString(), 18)
+  
+  const hash = await walletClient.writeContract({
+    address: contractAddress,
+    abi: JSON.parse(abis.Honour),
+    functionName: 'forgive',
+    args: [forgiven, amountBN]
+  })
+  
+  return createTxWithWait(hash, publicClient)
 }
 
-// // function to accept HON forgiveness
-export const accept = async (forgiver, id, chainId, signer) => {
-  const contract = new Contract(
-    addresses.chainIdToContractAddresses(chainId).Honour,
-    abis.Honour,
-    signer
-  )
-  const accept = await contract.accept(forgiver, id)
-  return accept
+// function to accept HON forgiveness
+export const accept = async (forgiver, id, chainId, walletClient, publicClient) => {
+  const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+  
+  const hash = await walletClient.writeContract({
+    address: contractAddress,
+    abi: JSON.parse(abis.Honour),
+    functionName: 'accept',
+    args: [forgiver, id]
+  })
+  
+  return createTxWithWait(hash, publicClient)
 }
 
 // function to fetch HON balance
-export const balanceOf = async (chainId, provider, address) => {
-  const contract = new Contract(
-    addresses.chainIdToContractAddresses(chainId).Honour,
-    abis.Honour,
-    provider
-  )
-  const balance = await contract.balanceOf(address)
-  const balanceFormatted = ethers.utils.formatUnits(balance, 'ether')
+export const balanceOf = async (chainId, publicClient, address) => {
+  const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+  
+  const balance = await publicClient.readContract({
+    address: contractAddress,
+    abi: JSON.parse(abis.Honour),
+    functionName: 'balanceOf',
+    args: [address]
+  })
+  
+  const balanceFormatted = formatUnits(balance, 18)
   return balanceFormatted
 }

@@ -1,17 +1,16 @@
+/* global BigInt */
 import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { useProvider, useAccount, useNetwork } from 'wagmi'
-import { ethers } from 'ethers'
+import { useWallet } from '../../contexts/Wallet'
+import { formatUnits } from 'viem'
 import { useBalanceReducer } from '../../contexts/Balance'
 import { InspectContext } from '../../contexts/Inspect'
 import { balanceOf } from '../../utils/contracts'
 import useInspectTransactions from '../../hooks/useInspectTransactions'
 
 const Display = () => {
-  const { address } = useAccount()
+  const { address, chainId, publicClient } = useWallet()
   const myAddress = address
-  const { chain } = useNetwork()
-  const provider = useProvider()
   const { state, dispatch } = useContext(InspectContext)
   // This is so we can inspect the balance of the address the person is interacting with
   const [balanceIns, setBalanceIns] = useState('')
@@ -21,14 +20,14 @@ const Display = () => {
   const transactions = allTransactions.slice(0, 8)
 
   useEffect(() => {
-    if (state.address && chain) {
+    if (state.address && chainId && publicClient) {
       const fetchBalanceIns = async () => {
-        const balanceIns = await balanceOf(chain.id, provider, state.address.toString())
+        const balanceIns = await balanceOf(chainId, publicClient, state.address)
         setBalanceIns(balanceIns)
       }
       fetchBalanceIns()
     }
-  }, [chain, provider, state.address])
+  }, [chainId, publicClient, state.address])
 
   const truncateString = (str, maxLen) => {
     if (str.length <= maxLen) return str
@@ -46,8 +45,8 @@ const Display = () => {
     }
   }
 
-  const acceptBalance = calcBalanceChange(balance, ethers.utils.formatUnits(state.amount, 18), 'accept')
-  const honourBalance = calcBalanceChange(balance, ethers.utils.formatUnits(state.amount, 18), 'honour')
+  const acceptBalance = calcBalanceChange(balance, formatUnits(BigInt(state.amount), 18), 'accept')
+  const honourBalance = calcBalanceChange(balance, formatUnits(BigInt(state.amount), 18), 'honour')
 
   const scrollToTop = () => {
     window.scrollTo(0, 0)
@@ -64,14 +63,14 @@ const Display = () => {
         {state.button === 'accept'
           ? (
             <span>
-              to forgive you <strong className='text-green-500'>{ethers.utils.formatUnits(state.amount, 18)} HON</strong>.<br />
+              to forgive you <strong className='text-green-500'>{formatUnits(BigInt(state.amount), 18)} HON</strong>.<br />
               This will <strong className='text-green-500'>decrease</strong> your HON balance to&nbsp;
               <strong className='text-green-500'>{acceptBalance}</strong>
             </span>
             )
           : (
             <span>
-              you to take on <strong className='text-red-500'>{ethers.utils.formatUnits(state.amount, 18)}</strong> more HON.<br />
+              you to take on <strong className='text-red-500'>{formatUnits(BigInt(state.amount), 18)}</strong> more HON.<br />
               This will <strong className='text-red-500'>increase</strong> your HON balance to&nbsp;
               <strong className='text-red-500'>{honourBalance}</strong>
             </span>
@@ -143,7 +142,7 @@ const Display = () => {
           </div>
           {transactions.map((transaction) => (
             <div key={transaction.id} className='px-4 py-1 whitespace-nowrap border-b border-gray-200'>
-              {ethers.utils.formatUnits(transaction.amount, 18)}
+              {formatUnits(BigInt(transaction.amount), 18)}
             </div>
           ))}
         </div>

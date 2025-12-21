@@ -1,25 +1,37 @@
-import { useContractEvent } from 'wagmi'
-import { ethers } from 'ethers'
+import { useEffect } from 'react'
+import { formatUnits } from 'viem'
 import { addresses, abis } from '../utils/constants'
-import { useBalanceReducer } from '../context/Balance'
+import { useBalanceReducer } from '../contexts/Balance'
+import { useWallet } from '../contexts/Wallet'
 
 function useAcceptedEvent (chainId) {
   const { decreaseBalance } = useBalanceReducer()
+  const { publicClient } = useWallet()
 
-  useContractEvent({
-    address: addresses.chainIdToContractAddresses(chainId).Honour,
-    abi: abis.Honour,
-    eventName: 'Accepted',
-    listener (forgiver, forgiven, bn) {
-      console.log('Forgiver: ', forgiver)
-      console.log('Forgiven: ', forgiven)
-      const amountBN = ethers.BigNumber.from(bn._hex)
-      const amountDecimal = amountBN.toBigInt()
-      const amount = ethers.utils.formatUnits(amountDecimal, 18)
-      console.log('Amount: ', amount)
-      decreaseBalance(amount)
+  useEffect(() => {
+    if (!publicClient || !chainId) return
+
+    const contractAddress = addresses.chainIdToContractAddresses(chainId).Honour
+    const unwatch = publicClient.watchContractEvent({
+      address: contractAddress,
+      abi: JSON.parse(abis.Honour),
+      eventName: 'Accepted',
+      onLogs: (logs) => {
+        logs.forEach((log) => {
+          const { forgiver, forgiven, amount } = log.args
+          console.log('Forgiver: ', forgiver)
+          console.log('Forgiven: ', forgiven)
+          const amountFormatted = formatUnits(amount, 18)
+          console.log('Amount: ', amountFormatted)
+          decreaseBalance(amountFormatted)
+        })
+      }
+    })
+
+    return () => {
+      unwatch()
     }
-  })
+  }, [publicClient, chainId, decreaseBalance])
 }
 
 export default useAcceptedEvent

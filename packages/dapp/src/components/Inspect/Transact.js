@@ -1,14 +1,13 @@
 import { useState, useContext } from 'react'
 import { InspectContext } from '../../contexts/Inspect'
 import { honour, accept } from '../../utils/contracts'
-import { useNetwork, useSigner } from 'wagmi'
+import { useWallet } from '../../contexts/Wallet'
 
 import Spinner from '../common/Spinner'
 
 const Transact = () => {
   const { state, dispatch } = useContext(InspectContext)
-  const { chain } = useNetwork()
-  const { data: signer } = useSigner()
+  const { chainId, getWalletClient, publicClient } = useWallet()
 
   const [loading, setLoading] = useState(false)
   // eslint-disable-next-line
@@ -18,7 +17,11 @@ const Transact = () => {
     dispatch({ type: 'confirming' })
     let tx
     try {
-      tx = await honour(proposer, id, chain.id, signer)
+      const walletClient = await getWalletClient()
+      if (!walletClient) {
+        throw new Error('Wallet not connected')
+      }
+      tx = await honour(proposer, id, chainId, walletClient, publicClient)
     } catch (err) {
       setLoading(false)
       setError('Failed to submit transaction')
@@ -35,7 +38,11 @@ const Transact = () => {
     dispatch({ type: 'confirming' })
     let tx
     try {
-      tx = await accept(forgiver, id, chain.id, signer)
+      const walletClient = await getWalletClient()
+      if (!walletClient) {
+        throw new Error('Wallet not connected')
+      }
+      tx = await accept(forgiver, id, chainId, walletClient, publicClient)
     } catch (err) {
       setLoading(false)
       setError('Failed or rejected transaction')

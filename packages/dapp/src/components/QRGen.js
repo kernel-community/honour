@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useWallet } from '../contexts/Wallet'
 import QRCode from 'qrcode.react'
 import Modal from '../layouts/Modal'
 
 const QRGen = () => {
-  const { address } = useAccount()
+  const { address } = useWallet()
   const [modal, showModal] = useState(false)
 
   return (

@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { useNetwork, useProvider, useAccount } from 'wagmi'
+import { useWallet } from '../contexts/Wallet'
 import { useBalanceReducer } from '../contexts/Balance'
 import { balanceOf } from '../utils/contracts'
 import Loading from './common/Loading'
 
 const Balance = () => {
-  const { chain } = useNetwork()
-  const provider = useProvider()
-  const { address } = useAccount()
+  const { chainId, address, publicClient } = useWallet()
 
   const { balance, setBalance } = useBalanceReducer()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (address && chain) {
+    if (address && chainId && publicClient) {
       const fetchBalance = async () => {
-        const balance = await balanceOf(chain.id, provider, address.toString())
+        const balance = await balanceOf(chainId, publicClient, address)
         setBalance(balance)
         setLoading(false)
       }
       fetchBalance()
     }
-  }, [chain, provider, address, setBalance])
+  }, [chainId, publicClient, address, setBalance])
 
   return (
     <div className='flex flex-col w-screen items-center '>

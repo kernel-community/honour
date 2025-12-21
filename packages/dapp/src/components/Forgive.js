@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useNetwork, useSigner, useAccount } from 'wagmi'
+import { useWallet } from '../contexts/Wallet'
 import { balanceOf, forgive } from '../utils/contracts'
 import { QRReadContext } from '../contexts/QRRead'
 import { AddressInput } from './Input/AdressInput'
@@ -11,9 +11,7 @@ import useLoading from '../hooks/useLoading'
 import qrcode from '../images/qr-code.png'
 
 function Forgive () {
-  const { chain } = useNetwork()
-  const { data: signer } = useSigner()
-  const { address } = useAccount()
+  const { chainId, address, publicClient, getWalletClient } = useWallet()
 
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
@@ -55,7 +53,7 @@ function Forgive () {
   async function handleForgive (e) {
     e.preventDefault()
     console.log("From handleForgiven: ", state.forgiven)
-    const balance = await balanceOf(chain.id, signer, state.forgiven)
+    const balance = await balanceOf(chainId, publicClient, state.forgiven)
     if (balance < amount) {
       openError('You are trying to forgive this account by more than their current balance, which is ' + parseFloat(balance) + '. Please decrease to this amount or less.')
     } else {
@@ -64,7 +62,11 @@ function Forgive () {
       // Call the forgive function with the inputted address and amount
       let tx
       try {
-        tx = await forgive(state.forgiven, amount, chain.id, signer)
+        const walletClient = await getWalletClient()
+        if (!walletClient) {
+          throw new Error('Wallet not connected')
+        }
+        tx = await forgive(state.forgiven, amount, chainId, walletClient, publicClient)
       } catch (err) {
         openError('There was an error. Please try again.')
         closeLoading()

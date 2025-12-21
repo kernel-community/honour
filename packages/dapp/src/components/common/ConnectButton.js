@@ -1,4 +1,5 @@
-import { useConnect } from 'wagmi'
+import { useState } from 'react'
+import { useWallet } from '../../contexts/Wallet'
 
 const base = `
   text-center
@@ -28,23 +29,32 @@ const greenButtonDisabledStyle = `
 `
 
 const ConnectButton = ({ disabled = false }) => {
-  const { connect, connectors, error } =
-    useConnect()
+  const { connect, isConnected } = useWallet()
+  const [error, setError] = useState(null)
+
+  const handleConnect = async () => {
+    try {
+      setError(null)
+      await connect()
+    } catch (err) {
+      setError(err.message || 'Failed to connect')
+    }
+  }
+
+  if (isConnected) return null
+
   return (
     <div className='flex flex-col gap-1'>
-      {connectors.map((connector) => (
-        <div
-          key={connector.name}
-          className={disabled ? greenButtonDisabledStyle : greenButtonStyle}
-          onClick={() => connect({ connector })}
-        >
-          Connect
-        </div>
-      ))}
+      <div
+        className={disabled ? greenButtonDisabledStyle : greenButtonStyle}
+        onClick={handleConnect}
+      >
+        Connect
+      </div>
       {
-      error && error.message &&
+        error &&
         <div className='text-red-400 text-sm sm:text-base'>Failed to connect</div>
-    }
+      }
     </div>
   )
 }

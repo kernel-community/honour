@@ -1,13 +1,27 @@
 import { SwitchNetworkContext } from '../contexts/SwitchNetwork'
-import { useContext } from 'react'
-import { useSwitchNetwork } from 'wagmi'
+import { useContext, useState } from 'react'
+import { useWallet } from '../contexts/Wallet'
 import Spinner from './common/Spinner'
 import Modal from '../layouts/Modal'
 
 const SwitchNetworkModal = () => {
   const { state } = useContext(SwitchNetworkContext)
-  const { isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
+  const { switchNetwork } = useWallet()
+  const [isLoading, setIsLoading] = useState(false)
+  
   if (!state.modal) return
+  
+  const handleSwitchNetwork = async () => {
+    setIsLoading(true)
+    try {
+      await switchNetwork(10)
+    } catch (error) {
+      console.error('Failed to switch network:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
   return (
     <Modal bringToFront>
       <div className='p-12 md:w-80 w-full h-min-content my-auto rounded-lg shadow-xl bg-white font-volkhorn text-lg backdrop-blur-lg text-center'>
@@ -16,7 +30,7 @@ const SwitchNetworkModal = () => {
         </div>
         <div className='flex flex-col gap-2'>
           <button
-            onClick={() => switchNetwork(10)}
+            onClick={handleSwitchNetwork}
             className={`
                 py-2 px-6 my-4 bg-slate-200 rounded-lg hover:bg-slate-300 flex flex-row items-center gap-2
               `}
@@ -25,7 +39,7 @@ const SwitchNetworkModal = () => {
               {'Optimism'}
             </div>
             {
-                isLoading && pendingChainId === 10 && (
+                isLoading && (
                   <Spinner />
                 )
               }
