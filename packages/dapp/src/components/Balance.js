@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import { useWallet } from '../contexts/Wallet'
+import { useSmartAccount } from '../contexts/SmartAccount'
+import { useFreeMode } from '../contexts/FreeMode'
 import { useBalanceReducer } from '../contexts/Balance'
 import { balanceOf } from '../utils/contracts'
 import Loading from './common/Loading'
 
 const Balance = () => {
-  const { chainId, address, publicClient } = useWallet()
+  const { chainId, publicClient, address } = useWallet()
+  const { smartAccountAddress } = useSmartAccount()
+  const { freeMode } = useFreeMode()
+  
+  // Use smart account address when freeMode is on, EOA when off
+  const accountAddress = freeMode ? smartAccountAddress : address
 
   const { balance, setBalance } = useBalanceReducer()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (address && chainId && publicClient) {
+    if (accountAddress && chainId && publicClient) {
       const fetchBalance = async () => {
-        const balance = await balanceOf(chainId, publicClient, address)
+        const balance = await balanceOf(chainId, publicClient, accountAddress)
         setBalance(balance)
         setLoading(false)
       }
       fetchBalance()
     }
-  }, [chainId, publicClient, address, setBalance])
+  }, [chainId, publicClient, accountAddress, setBalance])
 
   return (
     <div className='flex flex-col w-screen items-center '>

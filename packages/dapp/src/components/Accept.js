@@ -1,6 +1,8 @@
 /* global BigInt */
 import React, { useState, useEffect, useContext } from 'react'
 import { useWallet } from '../contexts/Wallet'
+import { useSmartAccount } from '../contexts/SmartAccount'
+import { useFreeMode } from '../contexts/FreeMode'
 import { formatUnits } from 'viem'
 import { GraphQLClient, gql } from 'graphql-request'
 import { graph } from '../utils/constants'
@@ -12,11 +14,26 @@ const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Accept () {
   const { address } = useWallet()
+  const { smartAccountAddress } = useSmartAccount()
+  const { freeMode } = useFreeMode()
   const { state, dispatch } = useContext(InspectContext)
   const [forgiveness, setForgiveness] = useState([])
+  const [processedIds, setProcessedIds] = useState(new Set())
+
+  // Use smart account address when freeMode is on, EOA when off
+  const accountAddress = freeMode ? smartAccountAddress : address
+
+  // Track processed IDs from context and immediately filter them out
+  useEffect(() => {
+    if (state.acceptedId) {
+      setProcessedIds(prev => new Set(prev).add(state.acceptedId))
+      // Immediately filter out the processed forgiveness
+      setForgiveness(prev => prev.filter(forgive => forgive.forgivingId !== state.acceptedId))
+    }
+  }, [state.acceptedId])
 
   useEffect(() => {
-    if (address) {
+    if (accountAddress) {
       async function fetchData () {
         const queryForgivens = gql`
             query GetForgivens($account: Bytes!) {
@@ -36,24 +53,20 @@ function Accept () {
                 }
             }
         `
-        const variables = { account: address.toString() }
+        const variables = { account: accountAddress.toString() }
 
         const [dataForgivens, dataAccepteds] = await Promise.all([
           graphQLClient.request(queryForgivens, variables),
           graphQLClient.request(queryAccepteds, variables)
         ])
 
-        // Get the array of forgiveness
         const forgivens = dataForgivens.forgivens
         const accepteds = dataAccepteds.accepteds
 
-        // Filter out the forgivens that have already been accepteded
+        // Filter out forgiveness that are accepted according to subgraph
         const filteredForgivens = forgivens.filter((forgiven) => {
           return !accepteds.some((accepted) => {
-            return (
-              accepted.forgivingId === forgiven.forgivingId &&
-                forgiven.forgivingId !== state.acceptedId
-            )
+            return accepted.forgivingId === forgiven.forgivingId
           })
         })
 
@@ -62,13 +75,12 @@ function Accept () {
           return parseInt(b.blockTimestamp) - parseInt(a.blockTimestamp)
         })
 
-        // Set the proposals state to the sorted array of forgiveness
         setForgiveness(sortedForgivens)
       }
 
       fetchData()
     }
-  }, [address, state.acceptedId])
+  }, [accountAddress, state.acceptedId])
 
   return (
     <div className='mt-20'>
@@ -131,3 +143,4 @@ function Accept () {
 }
 
 export default Accept
+

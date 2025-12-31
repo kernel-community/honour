@@ -3,14 +3,14 @@
     "private": "true",
     "version": "0.0.1",
     "main": "index.js",
-    "workspaces": {
-      "packages": ["packages/*"]
-    },
+    "workspaces": [
+      "packages/*"
+    ],
     "scripts": {
-      "start": "yarn workspace dapp start",
-      "format": "yarn workspace dapp format",
-      "lint": "yarn workspace dapp lint",
-      "build": "yarn workspace dapp build"
+      "start": "pnpm --filter dapp start",
+      "format": "pnpm --filter dapp format",
+      "lint": "pnpm --filter dapp lint",
+      "build": "pnpm --filter dapp build"
     },
     "license": "MIT"
   }

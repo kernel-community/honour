@@ -2,6 +2,8 @@
 import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useWallet } from '../../contexts/Wallet'
+import { useSmartAccount } from '../../contexts/SmartAccount'
+import { useFreeMode } from '../../contexts/FreeMode'
 import { formatUnits } from 'viem'
 import { useBalanceReducer } from '../../contexts/Balance'
 import { InspectContext } from '../../contexts/Inspect'
@@ -10,7 +12,10 @@ import useInspectTransactions from '../../hooks/useInspectTransactions'
 
 const Display = () => {
   const { address, chainId, publicClient } = useWallet()
-  const myAddress = address
+  const { smartAccountAddress } = useSmartAccount()
+  const { freeMode } = useFreeMode()
+  // Use smart account address when freeMode is on, EOA when off
+  const myAddress = freeMode ? (smartAccountAddress || address) : address
   const { state, dispatch } = useContext(InspectContext)
   // This is so we can inspect the balance of the address the person is interacting with
   const [balanceIns, setBalanceIns] = useState('')
@@ -35,7 +40,20 @@ const Display = () => {
     const end = str.slice(-5)
     return `${start}...${end}`
   }
-  const truncatedAddress = truncateString(state.address, 8)
+
+  const formatAddress = (addr) => {
+    if (!addr) return ''
+    // When freeMode is off, compare against EOA address only
+    // When freeMode is on, compare against smart account address (or EOA as fallback)
+    const addressToCompare = freeMode ? (smartAccountAddress || address) : address
+    // Check if address matches user's address (case-insensitive)
+    if (addr.toLowerCase() === addressToCompare?.toLowerCase()) {
+      return 'You'
+    }
+    return truncateString(addr, 8)
+  }
+
+  const truncatedAddress = formatAddress(state.address)
 
   const calcBalanceChange = (balance, amount, kind) => {
     if (kind === 'honour') {
@@ -132,7 +150,7 @@ const Display = () => {
           </div>
           {transactions.map((transaction) => (
             <div key={transaction.id} className='px-4 py-1 whitespace-nowrap border-b border-gray-200'>
-              {`${transaction.with.slice(0, 5)}...${transaction.with.slice(-3)}`}
+              {formatAddress(transaction.with)}
             </div>
           ))}
         </div>

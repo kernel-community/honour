@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useWallet } from '../contexts/Wallet'
-import { propose } from '../utils/contracts'
+import { useSmartAccount } from '../contexts/SmartAccount'
+import { useFreeMode } from '../contexts/FreeMode'
+import { propose, extractErrorDetails } from '../utils/contracts'
+import { resolveToSmartAccountAddress } from '../utils/smartAccount'
 import { QRReadContext } from '../contexts/QRRead'
 import { AddressInput } from './Input/AdressInput'
 import QRReader from './common/QRReader'
 import Tooltip from './common/ToolTip'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
+import useSuccess from '../hooks/useSuccess'
 
 import qrcode from '../images/qr-code.png'
 
 function Propose () {
   const { chainId, address, getWalletClient, publicClient } = useWallet()
+  const { smartAccountClient, smartAccountAddress, isInitialized: smartAccountReady } = useSmartAccount()
+  const { freeMode } = useFreeMode()
 
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
+  const { open: openSuccess } = useSuccess()
 
   const [display, setDisplay] = useState('')
 
@@ -57,30 +64,65 @@ function Propose () {
 
     openLoading('Please sign this transaction')
 
+    // Resolve recipient address to smart account address only when freeMode is on
+    const recipientSmartAccount = freeMode
+      ? await resolveToSmartAccountAddress(
+          state.recipient,
+          address,
+          smartAccountAddress
+        )
+      : state.recipient
+
     // Call the propose function with the inputted address and amount
     let tx
     try {
-      const walletClient = await getWalletClient()
-      if (!walletClient) {
+      // When freeMode is off, always use regular wallet client (no smart account)
+      // When freeMode is on, use smart account client if available
+      let client
+      if (freeMode && smartAccountReady && smartAccountClient) {
+        client = smartAccountClient
+      } else {
+        client = await getWalletClient()
+      }
+      
+      if (!client) {
         throw new Error('Wallet not connected')
       }
-      tx = await propose(state.recipient, amount, chainId, walletClient, publicClient)
+      if (!publicClient) {
+        throw new Error('Public client not initialized')
+      }
+      tx = await propose(recipientSmartAccount, amount, chainId, client, publicClient)
     } catch (err) {
-      openError('There was an error. Please try again.')
+      const errorMessage = err?.message || 'Unknown error'
+      const details = extractErrorDetails(errorMessage)
       closeLoading()
-      setError('Failed to submit transaction')
+      openError(`There was an error: ${details}`)
+      setError(`Failed to submit transaction: ${details}`)
       return
     }
 
     openLoading('Making money weirder')
 
-    await tx.wait(1)
-
-    closeLoading()
-
-    // Reset the form inputs
-    setDisplay('')
-    setAmount('')
+    try {
+      await tx.wait(1)
+      
+      // Open success modal first, then close loading to avoid flash
+      openSuccess('Transaction successful!', tx.hash)
+      // Close loading in next tick to ensure smooth transition
+      setTimeout(() => {
+        closeLoading()
+      }, 0)
+      
+      // Reset the form inputs
+      setDisplay('')
+      setAmount('')
+      setError(null)
+    } catch (err) {
+      closeLoading()
+      openError('Transaction submitted but failed to confirm')
+      setError('Transaction may have failed')
+      return
+    }
   }
 
   return (

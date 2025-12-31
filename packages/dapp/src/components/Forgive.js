@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useWallet } from '../contexts/Wallet'
-import { balanceOf, forgive } from '../utils/contracts'
+import { useSmartAccount } from '../contexts/SmartAccount'
+import { useFreeMode } from '../contexts/FreeMode'
+import { balanceOf, forgive, extractErrorDetails } from '../utils/contracts'
+import { resolveToSmartAccountAddress } from '../utils/smartAccount'
 import { QRReadContext } from '../contexts/QRRead'
 import { AddressInput } from './Input/AdressInput'
 import Tooltip from './common/ToolTip'
 import QRReader from './common/QRReader'
 import useError from '../hooks/useError'
 import useLoading from '../hooks/useLoading'
+import useSuccess from '../hooks/useSuccess'
 
 import qrcode from '../images/qr-code.png'
 
 function Forgive () {
   const { chainId, address, publicClient, getWalletClient } = useWallet()
+  const { smartAccountClient, smartAccountAddress, isInitialized: smartAccountReady } = useSmartAccount()
+  const { freeMode } = useFreeMode()
 
   const { open: openLoading, close: closeLoading } = useLoading()
   const { open: openError } = useError()
+  const { open: openSuccess } = useSuccess()
 
   const [amount, setAmount] = useState('')
   const [validForm, setValidForm] = useState(false)
@@ -52,37 +59,66 @@ function Forgive () {
 
   async function handleForgive (e) {
     e.preventDefault()
-    console.log("From handleForgiven: ", state.forgiven)
-    const balance = await balanceOf(chainId, publicClient, state.forgiven)
+    
+    // Resolve forgiven address to smart account address only when freeMode is on
+    const forgivenAddress = freeMode
+      ? await resolveToSmartAccountAddress(
+          state.forgiven,
+          address,
+          smartAccountAddress
+        )
+      : state.forgiven
+    
+    // Check balance using the resolved address
+    const balance = await balanceOf(chainId, publicClient, forgivenAddress)
     if (balance < amount) {
       openError('You are trying to forgive this account by more than their current balance, which is ' + parseFloat(balance) + '. Please decrease to this amount or less.')
     } else {
       openLoading('Please sign this transaction')
 
-      // Call the forgive function with the inputted address and amount
+      // Call the forgive function with the resolved address
       let tx
       try {
-        const walletClient = await getWalletClient()
-        if (!walletClient) {
+        // Use smart account client when freeMode is on, EOA wallet client when off
+        const client = freeMode && smartAccountReady && smartAccountClient 
+          ? smartAccountClient 
+          : await getWalletClient()
+        if (!client) {
           throw new Error('Wallet not connected')
         }
-        tx = await forgive(state.forgiven, amount, chainId, walletClient, publicClient)
+        if (!publicClient) {
+          throw new Error('Public client not initialized')
+        }
+        tx = await forgive(forgivenAddress, amount, chainId, client, publicClient)
       } catch (err) {
-        openError('There was an error. Please try again.')
+        const errorMessage = err?.message || 'Unknown error'
+        const details = extractErrorDetails(errorMessage)
         closeLoading()
-        setError('Failed to submit transaction')
+        openError(`There was an error: ${details}`)
+        setError(`Failed to submit transaction: ${details}`)
         return
       }
 
       openLoading('Making money weirder')
 
-      await tx.wait(1)
-
-      closeLoading()
-
-      // Reset the form inputs
-      setDisplay('')
-      setAmount('')
+      try {
+        await tx.wait(1)
+        
+        // Close loading modal and show success
+        closeLoading()
+        openSuccess('Transaction successful!', tx.hash)
+        
+        // Reset the form inputs
+        setDisplay('')
+        setAmount('')
+        setError(null)
+      } catch (err) {
+        console.error('Transaction wait error:', err)
+        openError('Transaction submitted but failed to confirm')
+        closeLoading()
+        setError('Transaction may have failed')
+        return
+      }
     }
   }
 

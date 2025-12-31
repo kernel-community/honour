@@ -1,6 +1,8 @@
 /* global BigInt */
 import React, { useState, useEffect, useContext } from 'react'
 import { useWallet } from '../contexts/Wallet'
+import { useSmartAccount } from '../contexts/SmartAccount'
+import { useFreeMode } from '../contexts/FreeMode'
 import { formatUnits } from 'viem'
 import { InspectContext } from '../contexts/Inspect'
 import { GraphQLClient, gql } from 'graphql-request'
@@ -12,12 +14,26 @@ const graphQLClient = new GraphQLClient(HONOUR_SUBGRAPH_URL)
 
 function Honour () {
   const { address } = useWallet()
+  const { smartAccountAddress } = useSmartAccount()
+  const { freeMode } = useFreeMode()
   const { state, dispatch } = useContext(InspectContext)
-
   const [proposals, setProposals] = useState([])
+  const [processedIds, setProcessedIds] = useState(new Set())
+
+  // Use smart account address when freeMode is on, EOA when off
+  const accountAddress = freeMode ? smartAccountAddress : address
+
+  // Track processed IDs from context and immediately filter them out
+  useEffect(() => {
+    if (state.honouredId) {
+      setProcessedIds(prev => new Set(prev).add(state.honouredId))
+      // Immediately filter out the processed proposal
+      setProposals(prev => prev.filter(proposal => proposal.proposalId !== state.honouredId))
+    }
+  }, [state.honouredId])
 
   useEffect(() => {
-    if (address) {
+    if (accountAddress) {
       async function fetchData () {
         const queryProposals = gql`
             query GetProposals($account: Bytes!) {
@@ -37,24 +53,20 @@ function Honour () {
                 }
             }
         `
-        const variables = { account: address.toString() }
+        const variables = { account: accountAddress.toString() }
 
         const [dataProposals, dataHonoureds] = await Promise.all([
           graphQLClient.request(queryProposals, variables),
           graphQLClient.request(queryHonoureds, variables)
         ])
 
-        // Get the array of proposals and honoured proposals
         const proposeds = dataProposals.proposeds
         const honoureds = dataHonoureds.honoureds
 
-        // Filter out the proposals that have already been honoured
+        // Filter out proposals that are honoured according to subgraph
         const filteredProposals = proposeds.filter((proposal) => {
           return !honoureds.some((honoured) => {
-            return (
-              honoured.proposalId === proposal.proposalId &&
-                proposal.proposalId !== state.honouredId
-            )
+            return honoured.proposalId === proposal.proposalId
           })
         })
 
@@ -63,13 +75,12 @@ function Honour () {
           return parseInt(b.blockTimestamp) - parseInt(a.blockTimestamp)
         })
 
-        // Set the proposals state to the sorted array of proposals
         setProposals(sortedProposals)
       }
 
       fetchData()
     }
-  }, [address, state.honouredId])
+  }, [accountAddress, state.honouredId])
 
   return (
     <div className='mt-20'>

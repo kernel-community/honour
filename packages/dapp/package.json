@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@tanstack/react-query": "^5.56.2",
+    "@account-kit/wallet-client": "^4.61.0",
+    "@account-kit/infra": "^4.61.0",
+    "@account-kit/smart-contracts": "^4.61.0",
+    "@aa-sdk/core": "^4.61.0",
+    "@tanstack/react-query": "^5.90.12",
     "dotenv": "^10.0.0",
     "framer-motion": "^6.3.3",
     "graphql-request": "^5.2.0",
@@ -14,7 +18,7 @@
     "react-qr-reader": "2.2.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
-    "viem": "^2.21.45",
+    "viem": "^2.43.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

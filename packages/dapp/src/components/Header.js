@@ -5,7 +5,7 @@ import ConnectButton from './common/ConnectButton'
 
 const Header = () => {
   const toDisplay = useDisplayableAddress()
-  const { chain } = useWallet()
+  const { isConnected } = useWallet()
 
   return (
     <>
@@ -23,18 +23,16 @@ const Header = () => {
       '
         >
           {
-          (toDisplay && chain) &&
+          (toDisplay && isConnected) &&
             (
               <>
                 <span>signing as</span>
                 <span className='hover:text-black'>{toDisplay}</span>
-                <span>on</span>
-                {chain && <span className='hover:text-black'>{chain.name}</span>}
               </>
             )
         }
           {
-          !chain &&
+          !isConnected &&
           (
             <ConnectButton />
           )
@@ -55,16 +53,15 @@ const Header = () => {
             <Items />
           </div>
           {
-          toDisplay &&
+          (toDisplay && isConnected) &&
             (
               <div className='flex flex-col'>
                 <span className='hover:text-black'>{toDisplay}</span>
-                {chain && <span className='hover:text-black'>{chain.name}</span>}
               </div>
             )
       }
           {
-          !chain &&
+          !isConnected &&
           (
             <ConnectButton />
           )

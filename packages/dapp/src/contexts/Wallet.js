@@ -1,161 +1,248 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { createPublicClient, createWalletClient, custom, http, parseUnits, formatUnits, isAddress as viemIsAddress } from 'viem'
-import { mainnet, optimism } from 'viem/chains'
+import { createPublicClient, createWalletClient, custom, http } from 'viem'
+import { optimism, mainnet } from 'viem/chains'
 
 const WalletContext = createContext()
 
 export const useWallet = () => {
   const context = useContext(WalletContext)
   if (!context) {
-    throw new Error('useWallet must be used within WalletProvider')
+    throw new Error('useWallet must be used within a WalletProvider')
   }
   return context
 }
 
 export const WalletProvider = ({ children }) => {
-  const [account, setAccount] = useState(null)
-  const [chainId, setChainId] = useState(null)
+  const [address, setAddress] = useState(null)
+  const [userChain, setUserChain] = useState(null) // User's actual wallet chain (for display only)
+  const [userChainId, setUserChainId] = useState(null) // User's actual wallet chainId (for display only)
   const [isConnected, setIsConnected] = useState(false)
-  const [connector, setConnector] = useState(null)
+  const [publicClient, setPublicClient] = useState(null)
+  const [walletClient, setWalletClient] = useState(null)
 
-  // Create public clients for each chain
-  const publicClients = {
-    [mainnet.id]: createPublicClient({
-      chain: mainnet,
-      transport: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_KEY}`)
-    }),
-    [optimism.id]: createPublicClient({
-      chain: optimism,
-      transport: http(`https://opt-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_KEY}`)
-    })
-  }
-
-  // Get current chain
-  const chain = chainId === mainnet.id ? mainnet : chainId === optimism.id ? optimism : null
-
-  // Get public client for current chain
-  const publicClient = chainId ? publicClients[chainId] : null
-
-  // Create wallet client
-  const getWalletClient = useCallback(async () => {
-    if (!window.ethereum) return null
-    return createWalletClient({
-      chain: chain || mainnet,
-      transport: custom(window.ethereum)
-    })
-  }, [chain])
-
-  // Connect wallet
-  const connect = useCallback(async () => {
+  // Always use Optimism for the app - initialize clients for Optimism
+  useEffect(() => {
     if (!window.ethereum) {
-      throw new Error('No wallet found')
+      setPublicClient(null)
+      setWalletClient(null)
+      return
     }
 
     try {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      const account = accounts[0]
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' })
-      
-      setAccount(account)
-      setChainId(parseInt(chainId, 16))
-      setIsConnected(true)
-      setConnector('injected')
-    } catch (error) {
-      throw error
-    }
-  }, [])
+      // Use Alchemy RPC endpoint if available, otherwise fall back to public RPC
+      const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY
+      const rpcUrl = alchemyApiKey
+        ? `https://opt-mainnet.g.alchemy.com/v2/${alchemyApiKey}`
+        : undefined
 
-  // Disconnect wallet
-  const disconnect = useCallback(() => {
-    setAccount(null)
-    setChainId(null)
-    setIsConnected(false)
-    setConnector(null)
-  }, [])
-
-  // Switch network
-  const switchNetwork = useCallback(async (targetChainId) => {
-    if (!window.ethereum) {
-      throw new Error('No wallet found')
-    }
-
-    try {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${targetChainId.toString(16)}` }]
+      // Always create public client for Optimism
+      const publicClientInstance = createPublicClient({
+        chain: optimism,
+        transport: http(rpcUrl)
       })
-      setChainId(targetChainId)
+
+      // Create wallet client - will use user's wallet for signing but transactions go to Optimism
+      const walletClientInstance = createWalletClient({
+        chain: optimism,
+        transport: custom(window.ethereum)
+      })
+
+      setPublicClient(publicClientInstance)
+      setWalletClient(walletClientInstance)
     } catch (error) {
-      // If chain doesn't exist, add it
-      if (error.code === 4902) {
-        const chain = targetChainId === optimism.id ? optimism : mainnet
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: `0x${targetChainId.toString(16)}`,
-            chainName: chain.name,
-            nativeCurrency: chain.nativeCurrency,
-            rpcUrls: [chain.rpcUrls.default.http[0]],
-            blockExplorerUrls: [chain.blockExplorers?.default?.url]
-          }]
-        })
-        setChainId(targetChainId)
+      console.error('Error creating clients:', error)
+      setPublicClient(null)
+      setWalletClient(null)
+    }
+  }, []) // Only run once on mount
+
+  // Check if wallet is already connected
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (!window.ethereum) {
+        // Explicitly set to disconnected state if no provider
+        setIsConnected(false)
+        setAddress(null)
+        setUserChain(null)
+        setUserChainId(null)
+        return
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+        if (accounts && accounts.length > 0) {
+          const account = accounts[0]
+          setAddress(account)
+          setIsConnected(true)
+
+          // Get current chain (for display purposes only - we always use Optimism for transactions)
+          const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' })
+          const chainIdNum = parseInt(chainIdHex, 16)
+          setUserChainId(chainIdNum)
+
+          // Map chainId to chain object (for display only)
+          const currentChain = chainIdNum === optimism.id ? optimism : chainIdNum === mainnet.id ? mainnet : null
+          setUserChain(currentChain)
+        } else {
+          // No accounts connected - explicitly set disconnected state
+          setIsConnected(false)
+          setAddress(null)
+          setUserChain(null)
+          setUserChainId(null)
+        }
+      } catch (error) {
+        console.error('Error checking connection:', error)
+        // On error, set to disconnected state
+        setIsConnected(false)
+        setAddress(null)
+        setUserChain(null)
+        setUserChainId(null)
+      }
+    }
+
+    checkConnection()
+
+    // Listen for account changes
+    const handleAccountsChanged = (accounts) => {
+      if (accounts && accounts.length > 0) {
+        const account = accounts[0]
+        setAddress(account)
+        setIsConnected(true)
+        // Re-fetch chain info when account changes (for display only)
+        window.ethereum.request({ method: 'eth_chainId' })
+          .then(chainIdHex => {
+            const chainIdNum = parseInt(chainIdHex, 16)
+            setUserChainId(chainIdNum)
+            const currentChain = chainIdNum === optimism.id ? optimism : chainIdNum === mainnet.id ? mainnet : null
+            setUserChain(currentChain)
+          })
+          .catch(err => console.error('Error fetching chain after account change:', err))
       } else {
-        throw error
+        setAddress(null)
+        setIsConnected(false)
+        setUserChain(null)
+        setUserChainId(null)
+      }
+    }
+
+    // Listen for chain changes (for display only - we always use Optimism for transactions)
+    const handleChainChanged = (chainIdHex) => {
+      const chainIdNum = parseInt(chainIdHex, 16)
+      setUserChainId(chainIdNum)
+      const currentChain = chainIdNum === optimism.id ? optimism : chainIdNum === mainnet.id ? mainnet : null
+      setUserChain(currentChain)
+    }
+
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', handleAccountsChanged)
+      window.ethereum.on('chainChanged', handleChainChanged)
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
+        window.ethereum.removeListener('chainChanged', handleChainChanged)
       }
     }
   }, [])
 
-  // Initialize connection on mount
-  useEffect(() => {
-    if (window.ethereum) {
-      // Check if already connected
-      window.ethereum.request({ method: 'eth_accounts' })
-        .then(accounts => {
-          if (accounts.length > 0) {
-            setAccount(accounts[0])
-            setIsConnected(true)
-            setConnector('injected')
-          }
-        })
+  // Connect wallet function
+  const connect = useCallback(async () => {
+    if (!window.ethereum) {
+      throw new Error('No ethereum provider found. Please install MetaMask or another Web3 wallet.')
+    }
 
-      window.ethereum.request({ method: 'eth_chainId' })
-        .then(chainId => {
-          setChainId(parseInt(chainId, 16))
-        })
+    try {
+      // Request account access
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      
+      if (accounts && accounts.length > 0) {
+        const account = accounts[0]
+        setAddress(account)
+        setIsConnected(true)
 
-      // Listen for account changes
-      window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length > 0) {
-          setAccount(accounts[0])
-          setIsConnected(true)
-        } else {
-          disconnect()
-        }
+        // Get current chain (for display purposes only - we always use Optimism for transactions)
+        const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' })
+        const chainIdNum = parseInt(chainIdHex, 16)
+        setUserChainId(chainIdNum)
+
+        // Map chainId to chain object (for display only)
+        const currentChain = chainIdNum === optimism.id ? optimism : chainIdNum === mainnet.id ? mainnet : null
+        setUserChain(currentChain)
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error)
+      throw error
+    }
+  }, [])
+
+  // Switch network function
+  const switchNetwork = useCallback(async (targetChainId) => {
+    if (!window.ethereum) {
+      throw new Error('No ethereum provider found')
+    }
+
+    try {
+      // Try to switch to the chain
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${targetChainId.toString(16)}` }]
       })
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask
+      if (switchError.code === 4902) {
+        // Try to add the chain
+        const targetChain = targetChainId === optimism.id ? optimism : targetChainId === mainnet.id ? mainnet : null
+        
+        if (!targetChain) {
+          throw new Error(`Unsupported chain ID: ${targetChainId}`)
+        }
 
-      // Listen for chain changes
-      window.ethereum.on('chainChanged', (chainId) => {
-        setChainId(parseInt(chainId, 16))
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: `0x${targetChainId.toString(16)}`,
+            chainName: targetChain.name,
+            nativeCurrency: {
+              name: targetChain.nativeCurrency.name,
+              symbol: targetChain.nativeCurrency.symbol,
+              decimals: targetChain.nativeCurrency.decimals
+            },
+            rpcUrls: [targetChain.rpcUrls.default.http[0]],
+            blockExplorerUrls: targetChain.blockExplorers ? [targetChain.blockExplorers.default.url] : []
+          }]
+        })
+      } else {
+        throw switchError
+      }
+    }
+  }, [])
+
+  // Get wallet client function - always returns Optimism client
+  const getWalletClient = useCallback(async () => {
+    if (!walletClient) {
+      if (!window.ethereum) {
+        throw new Error('No ethereum provider found')
+      }
+      // Always return Optimism client
+      return createWalletClient({
+        chain: optimism,
+        transport: custom(window.ethereum)
       })
     }
-  }, [disconnect])
+    return walletClient
+  }, [walletClient])
 
   const value = {
-    account,
-    address: account,
-    chainId,
-    chain,
+    address,
+    chain: userChain, // User's actual chain (for display only)
+    chainId: optimism.id, // Always return Optimism chainId for app operations
+    userChainId, // User's actual chainId (for display/info purposes)
     isConnected,
-    connector,
-    publicClient,
-    getWalletClient,
+    publicClient, // Always Optimism
+    getWalletClient, // Always returns Optimism client
     connect,
-    disconnect,
-    switchNetwork,
-    parseUnits,
-    formatUnits,
-    isAddress: viemIsAddress
+    switchNetwork
   }
 
   return (

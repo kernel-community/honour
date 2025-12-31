@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWallet } from '../contexts/Wallet'
 import QRCode from 'qrcode.react'
 import Modal from '../layouts/Modal'
@@ -6,6 +6,19 @@ import Modal from '../layouts/Modal'
 const QRGen = () => {
   const { address } = useWallet()
   const [modal, showModal] = useState(false)
+  const [qrSize, setQrSize] = useState(250)
+
+  useEffect(() => {
+    const calculateSize = () => {
+      // Calculate size based on viewport width, leaving room for padding
+      const maxSize = Math.min(250, window.innerWidth - 128) // 128px for padding and margins
+      setQrSize(Math.max(200, maxSize)) // Minimum 200px
+    }
+    
+    calculateSize()
+    window.addEventListener('resize', calculateSize)
+    return () => window.removeEventListener('resize', calculateSize)
+  }, [])
 
   return (
     <div>
@@ -22,12 +35,16 @@ const QRGen = () => {
           )
         : (
           <Modal bringToFront>
-            <div className='md:p-8 w-full h-min-content md:w-80 my-auto rounded-lg shadow-xl bg-white font-volkhorn text-lg text-center flex flex-col items-center py-6 sm:py-0'>
-              <div className='my-10 px-8 text-xl'>
-                <QRCode size='250' value={address} />
+            <div className='p-4 sm:p-8 w-full max-w-sm my-auto rounded-lg shadow-xl bg-white font-volkhorn text-lg text-center flex flex-col items-center overflow-hidden'>
+              <div className='my-6 sm:my-10 w-full flex justify-center'>
+                <QRCode 
+                  size={qrSize}
+                  value={address}
+                  renderAs='svg'
+                />
               </div>
               <button
-                className='sm:w-32 sm:px-4 sm:py-2 w-24 px-2 py-1 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all cursor-pointer flex justify-center z-[50]'
+                className='w-32 px-4 py-2 border-2 border-gray-200 rounded-md hover:border-gray-400 transition-all cursor-pointer flex justify-center z-[50] mb-2'
                 onClick={() => showModal(false)}
               >
                 Dismiss
