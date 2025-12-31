@@ -4,6 +4,7 @@ import { alchemy, optimism } from '@account-kit/infra'
 import { WalletClientSigner } from '@aa-sdk/core'
 import { createWalletClient, custom } from 'viem'
 import { optimism as optimismViem } from 'viem/chains'
+import { getAlchemyApiKey } from '../utils/alchemyConfig'
 
 const SmartAccountContext = createContext()
 
@@ -36,17 +37,17 @@ export const SmartAccountProvider = ({ children, eoaAddress }) => {
       return
     }
 
-    // Check if Alchemy API key is configured - if not, just skip smart account initialization
-    if (!process.env.REACT_APP_ALCHEMY_API_KEY) {
-      // Don't log warning on every render - only set state
-      setSmartAccountClient(null)
-      setSmartAccountAddress(null)
-      setIsInitialized(false)
-      return
-    }
-
     try {
-      const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY
+      // Get API key from API route (keeps it secret)
+      const alchemyApiKey = await getAlchemyApiKey()
+      
+      // Check if Alchemy API key is configured - if not, just skip smart account initialization
+      if (!alchemyApiKey) {
+        setSmartAccountClient(null)
+        setSmartAccountAddress(null)
+        setIsInitialized(false)
+        return
+      }
       
       // Create a wallet client for the signer
       const walletClient = createWalletClient({

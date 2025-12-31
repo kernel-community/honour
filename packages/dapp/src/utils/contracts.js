@@ -1,6 +1,35 @@
 import { addresses, abis } from './constants'
 import { parseUnits, formatUnits, encodeFunctionData } from 'viem'
 
+// Helper to get paymaster capabilities from API route
+// In production (Vercel), uses API route to keep policy ID secret
+// In development, falls back to environment variable if API route unavailable
+const getPaymasterCapabilities = async () => {
+  // In development, try API route first, but fall back to env var
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  
+  try {
+    // Use relative path for API route (Vercel will handle the routing)
+    const response = await fetch('/api/paymaster')
+    if (!response.ok) {
+      throw new Error('API route not available')
+    }
+    const data = await response.json()
+    return data.capabilities || {}
+  } catch (error) {
+    // In development, fall back to environment variable if API route fails
+    if (isDevelopment && process.env.REACT_APP_ALCHEMY_PAYMASTER_POLICY_ID) {
+      return {
+        paymasterService: {
+          policyId: process.env.REACT_APP_ALCHEMY_PAYMASTER_POLICY_ID
+        }
+      }
+    }
+    // In production, if API route fails, proceed without paymaster
+    return {}
+  }
+}
+
 // Helper to extract the "Details:" part from error messages
 export const extractErrorDetails = (errorMessage) => {
   if (!errorMessage) return 'Unknown error'
@@ -86,6 +115,9 @@ const sendTransaction = async (client, contractAddress, abi, functionName, args,
         args
       })
       
+      // Get paymaster capabilities from API route (keeps policy ID secret)
+      const paymasterCapabilities = await getPaymasterCapabilities()
+      
       // Use sendCalls which handles prepare, sign, and send in one call
       // The client already has the account configured
       const result = await client.sendCalls({
@@ -94,13 +126,7 @@ const sendTransaction = async (client, contractAddress, abi, functionName, args,
           value: '0x0',
           data: callData
         }],
-        capabilities: {
-          ...(process.env.REACT_APP_ALCHEMY_PAYMASTER_POLICY_ID && {
-            paymasterService: {
-              policyId: process.env.REACT_APP_ALCHEMY_PAYMASTER_POLICY_ID
-            }
-          })
-        }
+        capabilities: paymasterCapabilities
       })
       
       const callId = result.preparedCallIds?.[0] || result.ids?.[0]

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { createPublicClient, createWalletClient, custom, http } from 'viem'
 import { optimism, mainnet } from 'viem/chains'
+import { getAlchemyApiKey } from '../utils/alchemyConfig'
 
 const WalletContext = createContext()
 
@@ -28,32 +29,38 @@ export const WalletProvider = ({ children }) => {
       return
     }
 
-    try {
-      // Use Alchemy RPC endpoint if available, otherwise fall back to public RPC
-      const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY
-      const rpcUrl = alchemyApiKey
-        ? `https://opt-mainnet.g.alchemy.com/v2/${alchemyApiKey}`
-        : undefined
+    const initializeClients = async () => {
+      try {
+        // Get API key from API route (keeps it secret)
+        const alchemyApiKey = await getAlchemyApiKey()
+        
+        // Use Alchemy RPC endpoint if available, otherwise fall back to public RPC
+        const rpcUrl = alchemyApiKey
+          ? `https://opt-mainnet.g.alchemy.com/v2/${alchemyApiKey}`
+          : undefined
 
-      // Always create public client for Optimism
-      const publicClientInstance = createPublicClient({
-        chain: optimism,
-        transport: http(rpcUrl)
-      })
+        // Always create public client for Optimism
+        const publicClientInstance = createPublicClient({
+          chain: optimism,
+          transport: http(rpcUrl)
+        })
 
-      // Create wallet client - will use user's wallet for signing but transactions go to Optimism
-      const walletClientInstance = createWalletClient({
-        chain: optimism,
-        transport: custom(window.ethereum)
-      })
+        // Create wallet client - will use user's wallet for signing but transactions go to Optimism
+        const walletClientInstance = createWalletClient({
+          chain: optimism,
+          transport: custom(window.ethereum)
+        })
 
-      setPublicClient(publicClientInstance)
-      setWalletClient(walletClientInstance)
-    } catch (error) {
-      console.error('Error creating clients:', error)
-      setPublicClient(null)
-      setWalletClient(null)
+        setPublicClient(publicClientInstance)
+        setWalletClient(walletClientInstance)
+      } catch (error) {
+        console.error('Error creating clients:', error)
+        setPublicClient(null)
+        setWalletClient(null)
+      }
     }
+
+    initializeClients()
   }, []) // Only run once on mount
 
   // Check if wallet is already connected

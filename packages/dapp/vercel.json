@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd packages/dapp && npm run build",
+  "outputDirectory": "packages/dapp/dist/build",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ]
+}
+
