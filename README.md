@@ -1,36 +1,77 @@
 # Honour
 
-We propose a peer-to-peer system of social credit. It is open, permissionless, and can be deployed on any EVM-compatible blockchain. The system assumes minimal structure. By virtue of four weird rules, we can invert how we represent money, in order to cultivate more healthy communal use. In short, entities hold this money as a liability that simultaneously grants access to high-bandwidth, authentic communication channels by which ongoing and lively relationships may be established.
+Money, made mutual. HON represents obligation, created by accepting someone’s proposal and extinguished by accepting forgiveness. [Read the full essay](https://www.kernel.community/en/tokens/token-studies/honour).
 
-You can find the app permanently on Arweave [here](https://arweave.net/x71LeozOUlN9u5ngk6XRsKlGhRxtqnl0HNfY4NvTdLY).
+## Project
 
-## De-Sign
+- `packages/contracts`: Solidity contracts, Hardhat deployment tools, shared ABI.
+- `packages/indexer`: a small geth-backed indexer and authenticated API using SQLite.
+- `packages/web`: the Next.js app.
+- `scripts/bundle-indexer.mjs`: builds the indexer as a standalone Node module.
 
-1. All HON are the same.
-2. I cannot create HON: they are minted only when I accept another’s proposal.
-3. I can forgive as much HON as I currently hold.
-4. HON are non-transferrable.
+## Development
 
-The system is instantiated by means of two, simple contracts. One adapts the ERC20 token standard by removing any ability to transfer, or approve other accounts to transfer on your behalf. This contract is responsible for creating and destroying HON, and tracking the balance associated with each account. The other contract holds the logic for proposing and forgiving HON, which is done via two simple mappings.
+Use Node 22.13+ (22.x) and pnpm 10.26.2.
 
-## Run the App
-
-```bash
-git clone https://github.com/kernel-community/honour.git
-cd honour
-yarn
-yarn start
+```sh
+pnpm install
+pnpm contracts:build
+pnpm dev
 ```
 
-If you look in the package.json file at the top level of this repo, you will see that we only specify starting the frontend. It is possible to `cd` into either the `hardhat` or `subgraph` repos, but those are a bit more involved to work with. 
+Open http://127.0.0.1:3000. Copy `packages/web/.env.example` to `.env.local` in that directory and configure the server-only variables. Without credentials, the interface is available but account actions are disabled. Never put secrets in `NEXT_PUBLIC_*` variables.
 
-In particular, we recommend that you start the app, change the network in whatever wallet you like to use to Goerli and go from there. It should be easy enough to deploy your own local contracts, but this app also relies on a subgraph, and the one we are currently using is fetching data from the contract on Goerli.
+```sh
+pnpm test
+pnpm typecheck
+pnpm build
+```
 
-## Notes
+For a local chain, run `pnpm node`, then `pnpm deploy:local`. The deployment is recorded in `packages/contracts/deployments/31337.local.json`. Copy `packages/indexer/.env.example` to `.env`, set the local contract address, deployment block, `CHAIN_ID=31337` and a random `INDEXER_TOKEN`, then run `pnpm indexer`. Set matching values in the web environment, with `INDEXER_URL=http://127.0.0.1:8787`.
 
-The two mappings you will find in the Honour.sol contract are not very gas-efficient means of storing information. There are two alternative ways to address this:
+Smart-account writes use Ethereum mainnet. To exercise all four actions on the local test chain instead:
 
-1. If we wanted to deploy on Ethereum mainnet, we could consider using a system of signed messages instead of mappings. That is, to make a proposal, you would sign a message with the recipient's address and amount proposed. They would then need to fetch that message, sign it themselves in a way which ensured they could use it once only, and then submit it to the contract which could do a double ECRECOVER to get all the information associated with the transaction and emit it as an event to be stored in a subgraph or similar place. 
-    1. This leaves unsolved the issue of where to store such signed messages and how to fetch them efficiently. One solution is to use Arweave, and leverage their tag system and graphql endpoint to handle this, but then we need to pay for storing data there in AR and somehow ensure that the means by which we upload data cannot be easily abused, while still being essentially open and permissionless. This is not trivial to solve.
+```sh
+pnpm --filter @honour/contracts exec tsx scripts/smoke-local.ts
+```
 
-2. The other solution, and my preferred one, is simply to deploy this on Celo or a L2 like Optimism. Then, we can stick with the current simple and easy-to-understand structure given the lower fees on such networks, and still maintain rich histories onchain, which is important given the [underlying philosophy](https://docs.google.com/document/d/1mdWJhBFrGx0OBJbx5fceLZSEI1zvkVuJhQwgVhpxOas/edit?usp=sharing) of this work. In particular, Celo is a wonderful place to [experiment with currency design](https://www.youtube.com/watch?v=kKggE5OvyhE) as this work is stongly aligned with their principles and these contracts have been, in part, inspired by the work of people like Sep Kumvar (among many others).
+## Indexer
+
+The indexer reads only the configured Honour contract, starting at its deployment block. It indexes the latest head, saving events and the cursor atomically and deduplicating logs. Trust scores use complete indexed histories and are relative to the viewer.
+
+Run from source with `pnpm indexer`, or build a standalone bundle:
+
+```sh
+pnpm indexer:bundle
+node --env-file=/path/to/indexer.env packages/indexer/dist/indexer.mjs
+```
+
+The bundle needs Node 22.13+ (22.x), with no npm install on the host. Configure it using `packages/indexer/.env.example`. SQLite defaults to a 256 MiB ceiling and requires at least 128 MiB of free disk space. The API binds to loopback and requires `INDEXER_TOKEN`.
+
+Keep geth RPC private. Use an SSH tunnel for local development or an authenticated HTTPS reverse proxy for a hosted app. If a reorg requires rebuilding derived history, stop the indexer, run `pnpm --filter @honour/indexer rebuild` with the same environment, then restart it. This does not change geth data.
+
+## Web deployment
+
+For Vercel, set the Root Directory to `packages/web` and include files outside that directory for the shared contracts package. Configure the variables in `packages/web/.env.example` as server-only environment variables.
+
+Alchemy account requests go through the app’s server routes. Enable Ethereum mainnet and configure per-account and global spending limits, then set `SPONSORSHIP_LIMITS_CONFIGURED=true`. The app’s server route restricts prepared calls to the Honour contract and its four supported actions. Alchemy’s sender allowlist identifies smart accounts, not destination contracts; provider-side contract restrictions require a custom policy webhook. Keep the API key and policy server-side. Preview deployments should use separate limits or omit wallet credentials.
+
+Wallet addresses and ENS names resolve to the same smart account used when their owner connects. Receiving links preserve the recipient’s Honour address. Prepared operations are sealed server-side so signed submissions cannot alter their approved contents.
+
+## Contract deployment
+
+Provide `MAINNET_RPC_URL` and a dedicated funded `DEPLOYER_PRIVATE_KEY` in the deployment shell. These are local deployment secrets, not Vercel variables. Never commit a key or unlock a node account.
+
+```sh
+pnpm deploy:mainnet
+```
+
+The script checks chain 1, requests confirmation and records the transaction, address and deployment block in `packages/contracts/deployments/mainnet.json`. An existing deployment record prevents accidental redeployment. Configure the web app and indexer with the same address and start the indexer from its deployment block. Rebuild the shared ABI whenever contracts change.
+
+For Etherscan verification, provide `ETHERSCAN_API_KEY` and run:
+
+```sh
+pnpm --filter @honour/contracts exec hardhat verify --network mainnet DEPLOYED_ADDRESS
+```
+
+Local operations notes and deployment helpers live in the ignored `ops/` directory and are not required to build or run the project.

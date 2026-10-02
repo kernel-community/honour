@@ -1,0 +1,15 @@
+{
+  "name": "@honour/indexer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --import tsx src/server.ts",
+    "rebuild": "node --env-file-if-exists=.env --import tsx src/server.ts --rebuild",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@honour/contracts": "workspace:*",
+    "viem": "2.57.2"
+  }
+}

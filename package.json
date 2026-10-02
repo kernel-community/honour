@@ -1,17 +1,30 @@
 {
-    "name": "honour",
-    "private": "true",
-    "version": "0.0.1",
-    "main": "index.js",
-    "workspaces": [
-      "packages/*"
-    ],
-    "scripts": {
-      "start": "pnpm --filter dapp start",
-      "format": "pnpm --filter dapp format",
-      "lint": "pnpm --filter dapp lint",
-      "build": "pnpm --filter dapp build"
-    },
-    "license": "MIT"
-  }
-  
+  "name": "honour",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.26.2",
+  "engines": {
+    "node": ">=22.13.0 <23"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @honour/web dev",
+    "start": "pnpm --filter @honour/web start",
+    "build": "pnpm --filter @honour/web build",
+    "contracts:build": "pnpm --filter @honour/contracts build",
+    "contracts:test": "pnpm --filter @honour/contracts test",
+    "node": "pnpm --filter @honour/contracts node",
+    "deploy:local": "pnpm --filter @honour/contracts deploy:local",
+    "indexer": "pnpm --filter @honour/indexer start",
+    "test": "pnpm --filter @honour/contracts test && pnpm --filter @honour/indexer test && pnpm --filter @honour/web test",
+    "typecheck": "pnpm -r typecheck",
+    "indexer:bundle": "node scripts/bundle-indexer.mjs",
+    "deploy:mainnet": "pnpm --filter @honour/contracts deploy:mainnet"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.15",
+    "esbuild": "0.28.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  },
+  "license": "MIT"
+}

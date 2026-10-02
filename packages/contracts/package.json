@@ -1,0 +1,26 @@
+{
+  "name": "@honour/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./abi": "./src/abi.ts",
+    "./domain": "./src/domain.ts"
+  },
+  "scripts": {
+    "build": "hardhat compile && tsx scripts/export-abi.ts",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "viem": "2.57.2"
+  },
+  "devDependencies": {
+    "hardhat": "3.18.0",
+    "@nomicfoundation/hardhat-viem": "3.0.9",
+    "@nomicfoundation/hardhat-node-test-runner": "3.1.0",
+    "@nomicfoundation/hardhat-verify": "3.1.1"
+  }
+}
