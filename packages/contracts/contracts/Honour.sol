@@ -21,6 +21,9 @@ contract Honour is ERC20 {
     // been honoured or accepted
     mapping(address => mapping(address => mapping(uint256 => uint256))) private proposal;
     mapping(address => mapping(address => mapping(uint256 => uint256))) private forgiving;
+    // Lifetime offers to each recipient, including offers awaiting acceptance.
+    // Acceptance does not reduce the amount already offered.
+    mapping(address => mapping(address => uint256)) public forgivenessOffered;
 
     uint256 proposalId;
     uint256 forgivingId;
@@ -57,6 +60,13 @@ contract Honour is ERC20 {
         emit Honoured(proposer, msg.sender, id, amount);
     }
 
+    /// @notice Remaining lifetime forgiveness capacity for this recipient at the current balance.
+    function forgivenessAvailable(address forgiver, address forgiven) public view returns (uint256) {
+        uint256 balance = balanceOf[forgiver];
+        uint256 offered = forgivenessOffered[forgiver][forgiven];
+        return balance > offered ? balance - offered : 0;
+    }
+
     /**
      * @notice begin the process of erasing HON by setting the amount and address it should be removed from
      * @param  forgiven the address to be forgiven
@@ -69,9 +79,10 @@ contract Honour is ERC20 {
         require (amount > 0, "Forgive more than 0");
         // you can't forgive more than your current balance, nor can you forgive more than
         // the current balance of the person you are forgiving
-        if(balanceOf[msg.sender] < amount || balanceOf[forgiven] < amount) {
+        if(forgivenessAvailable(msg.sender, forgiven) < amount || balanceOf[forgiven] < amount) {
             revert Unbalanced("Unmatched balances");
         }
+        forgivenessOffered[msg.sender][forgiven] += amount;
         forgivingId++;
         forgiving[msg.sender][forgiven][forgivingId] += amount;
         emit Forgiven(msg.sender, forgiven, forgivingId, amount);

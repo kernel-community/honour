@@ -9,6 +9,10 @@ const { viem } = await network.create();
 const publicClient = await viem.getPublicClient();
 const chainId = await publicClient.getChainId();
 const artifact = await artifacts.readArtifact('Honour');
+const deploymentName = chainId === 1 ? (process.env.DEPLOYMENT_NAME ?? 'mainnet') : '31337.local';
+if (!/^[a-z0-9.-]+$/.test(deploymentName)) throw new Error('Invalid deployment name');
+const recordUrl = new URL(`../deployments/${deploymentName}.json`, import.meta.url);
+const pendingUrl = new URL(`../deployments/${deploymentName}-pending.json`, import.meta.url);
 let hash: `0x${string}`;
 if (chainId === 31337) {
   const [wallet] = await viem.getWalletClients();
@@ -23,9 +27,9 @@ if (chainId === 31337) {
   try { account = privateKeyToAccount(`0x${key}`); }
   catch { throw new Error('The supplied value is not a valid Ethereum private key.'); }
   const wallet = createWalletClient({ chain: mainnet, account, transport: http(process.env.MAINNET_RPC_URL) });
-  const existing = new URL('../deployments/mainnet.json', import.meta.url);
+  const existing = recordUrl;
   if (await access(existing).then(() => true, () => false)) throw new Error('A mainnet deployment record already exists. Reuse it rather than redeploying.');
-  const pending = new URL('../deployments/mainnet-pending.json', import.meta.url);
+  const pending = pendingUrl;
   if (await access(pending).then(() => true, () => false)) throw new Error('A deployment transaction was already submitted. Recover its receipt before trying again.');
   const balance = await publicClient.getBalance({ address: account.address });
   console.log(`Ethereum mainnet\nDeploying one Honour contract (no constructor arguments).\nSigner: ${account.address}\nBalance: ${formatEther(balance)} ETH`);
@@ -38,10 +42,10 @@ if (chainId === 31337) {
 } else throw new Error(`Unexpected chain ${chainId}`);
 console.log(`Submitted: ${hash}`);
 await mkdir(new URL('../deployments/', import.meta.url), { recursive: true });
-if (chainId === 1) await writeFile(new URL('../deployments/mainnet-pending.json', import.meta.url), JSON.stringify({ chainId, transactionHash: hash }, null, 2) + '\n');
+if (chainId === 1) await writeFile(pendingUrl, JSON.stringify({ chainId, transactionHash: hash }, null, 2) + '\n');
 const receipt = await publicClient.waitForTransactionReceipt({ hash });
 if (receipt.status !== 'success' || !receipt.contractAddress) throw new Error('Deployment failed');
 const deployment = { chainId, address: receipt.contractAddress, block: receipt.blockNumber.toString(), transactionHash: hash };
 await mkdir(new URL('../deployments/', import.meta.url), { recursive: true });
-await writeFile(new URL(`../deployments/${chainId === 1 ? 'mainnet' : '31337.local'}.json`, import.meta.url), JSON.stringify(deployment, null, 2) + '\n');
+await writeFile(recordUrl, JSON.stringify(deployment, null, 2) + '\n');
 console.log(JSON.stringify(deployment, null, 2));

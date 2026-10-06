@@ -5,29 +5,43 @@ export type HonourEvent = {
   type: EventKind; from: string; to: string; offerId: string; amount: string;
   block: number; logIndex: number; transactionIndex: number; hash: string; timestamp: number;
 };
-export type Interaction = { type: EventKind; with: string; amount: string };
+export type Interaction = { type: EventKind; with: string; amount: string; received?: boolean };
 export function interactions(events: HonourEvent[], address: string): Interaction[] {
   const who = address.toLowerCase();
-  return events.filter(e => (e.type === 'Proposed' || e.type === 'Forgiven' ? e.from : e.to).toLowerCase() === who)
-    .map(e => ({ type: e.type, with: (e.from.toLowerCase() === who ? e.to : e.from).toLowerCase(), amount: e.amount }));
+  return events.filter(e => e.from.toLowerCase() === who || e.to.toLowerCase() === who)
+    .map(e => ({ type: e.type, with: (e.from.toLowerCase() === who ? e.to : e.from).toLowerCase(), amount: e.amount, received: e.to.toLowerCase() === who }));
 }
 
-// Preserve the original viewer-relative algorithm, including repeated shared
-// interactions and the average across all activity. Integer math avoids rounding HON.
-export function trustScore(theirs: Interaction[], mine: Interaction[], viewer: string) {
-  const frequencies = new Map<string, number>();
-  for (const tx of mine) frequencies.set(tx.with.toLowerCase(), (frequencies.get(tx.with.toLowerCase()) ?? 0) + 1);
-  let shared = 0, direct = 0, unusual = 0;
-  const total = theirs.reduce((sum, tx) => sum + BigInt(tx.amount), 0n);
-  const count = BigInt(theirs.length);
-  const isLarge = (amount: string) => count > 0n && BigInt(amount) * count > 100n * total;
+// Completed proposal relationships count once. Neither unsolicited offers nor
+// accepting forgiveness can manufacture positive evidence through repetition.
+export function trustScore(theirs: Interaction[], mine: Interaction[], viewer: string, subject?: string) {
+  const viewerAddress = viewer.toLowerCase();
+  const subjectAddress = subject?.toLowerCase();
+  const connections = (history: Interaction[]) => new Set(history
+    .filter(tx => tx.type === 'Honoured')
+    .map(tx => tx.with.toLowerCase())
+    .filter(who => who !== viewerAddress && who !== subjectAddress));
+  const theirConnections = connections(theirs), myConnections = connections(mine);
+  const sharedAccounts = [...theirConnections].filter(who => myConnections.has(who)).sort();
+  const direct = theirs.some(tx => tx.type === 'Honoured' && tx.received === true && tx.with.toLowerCase() === viewerAddress) ? 2 : 0;
+  const sources = new Map<string, bigint>();
+  let acceptedCount = 0;
   for (const tx of theirs) {
-    shared += frequencies.get(tx.with.toLowerCase()) ?? 0;
-    if (tx.with.toLowerCase() === viewer.toLowerCase() && ['Honoured', 'Forgiven', 'Accepted'].includes(tx.type)) direct += 2;
-    if (tx.type === 'Accepted' && isLarge(tx.amount)) unusual -= 1;
+    if (tx.type !== 'Accepted' || tx.received !== true) continue;
+    const source = tx.with.toLowerCase();
+    sources.set(source, (sources.get(source) ?? 0n) + BigInt(tx.amount));
+    acceptedCount++;
   }
-  if (theirs.some(tx => isLarge(tx.amount))) unusual -= 1;
-  return { score: shared + direct + unusual, shared, direct, unusual };
+  const interactedWith = new Set(mine.map(tx => tx.with.toLowerCase()));
+  const knownSourceCount = [...sources.keys()].filter(source => source !== viewerAddress && interactedWith.has(source)).length;
+  const ranked = [...sources].sort(([a, av], [b, bv]) => av === bv ? a.localeCompare(b) : av > bv ? -1 : 1);
+  const total = ranked.reduce((sum, [, amount]) => sum + amount, 0n);
+  const largest = ranked[0]?.[1] ?? 0n;
+  return {
+    score: sharedAccounts.length + direct, shared: sharedAccounts.length, direct, sharedAccounts,
+    forgiveness: { acceptedCount, knownSourceCount, sourceCount: sources.size, total: total.toString(), largest: largest.toString(), largestSource: ranked[0]?.[0] ?? null,
+      largestPercent: total > 0n ? Number(largest * 100n / total) : 0 },
+  };
 }
 export type Trust = ReturnType<typeof trustScore>;
 export function parseAmount(value: string): bigint {

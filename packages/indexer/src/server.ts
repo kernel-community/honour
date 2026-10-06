@@ -72,6 +72,17 @@ const server = createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', 'http://localhost');
     const status = { chainId, contract, block: store.cursor, head, lastSync, stale: !!syncError || Date.now() - lastSync > 30_000, error: syncError };
     if (url.pathname === '/health') return send(200, status);
+    if (url.pathname === '/allowance') {
+      const forgiver = address(url.searchParams.get('address') ?? '');
+      const recipient = address(url.searchParams.get('forgiveTo') ?? '');
+      // Read both constraints from one block, independent of indexed history.
+      const blockNumber = await client.getBlockNumber({ cacheTime: 0 });
+      const [available, recipientBalance] = await Promise.all([
+        client.readContract({ address: contract, abi: honourAbi, functionName: 'forgivenessAvailable', args: [forgiver, recipient], blockNumber }),
+        client.readContract({ address: contract, abi: honourAbi, functionName: 'balanceOf', args: [recipient], blockNumber }),
+      ]);
+      return send(200, { available: available.toString(), recipientBalance: recipientBalance.toString(), block: blockNumber.toString(), status });
+    }
     if (url.pathname === '/resolve') {
       const name = url.searchParams.get('name') ?? '';
       if (!name || name.length > 255) return send(400, { error: 'Invalid ENS name' });

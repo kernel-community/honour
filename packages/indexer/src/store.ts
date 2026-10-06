@@ -51,6 +51,6 @@ export class Store {
         AND done.type=CASE e.type WHEN 'Proposed' THEN 'Honoured' ELSE 'Accepted' END)
       ORDER BY e.block DESC, e.logIndex DESC LIMIT 100`).all(who, who) as HonourEvent[];
   }
-  score(subject: string, viewer: string) { return trustScore(interactions(this.all(subject), subject), interactions(this.all(viewer), viewer), viewer); }
+  score(subject: string, viewer: string) { return trustScore(interactions(this.all(subject), subject), interactions(this.all(viewer), viewer), viewer, subject); }
   close() { this.db.close(); }
 }

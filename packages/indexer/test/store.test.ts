@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Store } from '../src/store.ts';
-import { trustScore, parseAmount, type HonourEvent } from '@honour/contracts/domain';
+import { trustScore, interactions, parseAmount, type HonourEvent, type Interaction } from '@honour/contracts/domain';
 
 test('restarting and replaying a batch does not duplicate offers or lose completion', () => {
   const dir = mkdtempSync(join(tmpdir(), 'honour-'));
@@ -23,13 +23,44 @@ test('restarting and replaying a batch does not duplicate offers or lose complet
   } finally { db.close(); rmSync(dir, { recursive: true }); }
 });
 
-test('score retains repeated shared interactions and direct weights; amounts remain exact', () => {
-  const theirs = [{ type: 'Honoured' as const, with: 'ALICE', amount: '1000000000000000001' }];
-  const mine = [{ type: 'Proposed' as const, with: 'alice', amount: '1' }, { type: 'Forgiven' as const, with: 'ALICE', amount: '1' }];
-  assert.deepEqual(trustScore(theirs, mine, 'alice'), { score: 4, shared: 2, direct: 2, unusual: 0 });
-  assert.equal(trustScore([], [], 'alice').score, 0);
+test('repeated relationships, unsolicited offers and forgiveness cannot inflate trust', () => {
+  const tx = (type: Interaction['type'], who: string, received = true): Interaction => ({ type, with: who, received, amount: '1' });
+  const theirs = [tx('Honoured', 'VIEWER'), tx('Honoured', 'shared'), tx('Proposed', 'spam'), tx('Accepted', 'forgiver')];
+  const mine = [tx('Honoured', 'SHARED', false), tx('Proposed', 'spam'), tx('Honoured', 'forgiver')];
+  const score = trustScore(theirs, mine, 'viewer', 'subject');
+  assert.equal(score.score, 3);
+  assert.deepEqual(score.sharedAccounts, ['shared']);
+  assert.equal(trustScore([...theirs, ...theirs, ...theirs], [...mine, ...mine], 'viewer', 'subject').score, 3);
+  assert.equal(trustScore([tx('Accepted', 'viewer'), tx('Forgiven', 'viewer')], mine, 'viewer', 'subject').score, 0);
+  assert.equal(trustScore([tx('Honoured', 'viewer', false)], mine, 'viewer', 'subject').direct, 0);
+  assert.equal(trustScore(theirs, [], 'stranger', 'subject').score, 0);
+  assert.equal(trustScore([], [], 'viewer', 'subject').score, 0);
+});
+
+test('completed relationships are bilateral; forgiveness concentration uses exact received amounts', () => {
+  const event: HonourEvent = { type: 'Honoured', from: 'alice', to: 'bob', offerId: '1', amount: '10', hash: 'a', block: 1, timestamp: 1, transactionIndex: 0, logIndex: 0 };
+  assert.equal(interactions([event], 'ALICE')[0].received, false);
+  assert.equal(interactions([event], 'bob')[0].received, true);
+  assert.equal(interactions([event], 'outsider').length, 0);
+  const big = 10n ** 30n;
+  const history: Interaction[] = [
+    { type: 'Accepted', with: 'a', received: true, amount: (big * 8n).toString() },
+    { type: 'Accepted', with: 'A', received: true, amount: big.toString() },
+    { type: 'Accepted', with: 'b', received: true, amount: big.toString() },
+    { type: 'Accepted', with: 'c', received: false, amount: (big * 100n).toString() },
+    { type: 'Forgiven', with: 'c', received: true, amount: (big * 100n).toString() },
+  ];
+  const score = trustScore(history, [], 'viewer', 'subject');
+  assert.equal(score.score, 0);
+  assert.deepEqual(score.forgiveness, { acceptedCount: 3, knownSourceCount: 0, sourceCount: 2, total: (big * 10n).toString(), largest: (big * 9n).toString(), largestSource: 'a', largestPercent: 90 });
+  const familiar: Interaction[] = [
+    { type: 'Proposed', with: 'A', received: false, amount: '1' },
+    { type: 'Honoured', with: 'a', received: true, amount: '1' },
+    { type: 'Accepted', with: 'b', received: true, amount: '1' },
+    { type: 'Honoured', with: 'c', received: true, amount: '1' },
+  ];
+  assert.equal(trustScore(history, familiar, 'viewer', 'subject').forgiveness.knownSourceCount, 2);
+  assert.equal(trustScore(history, familiar, 'a', 'subject').forgiveness.knownSourceCount, 1);
   assert.equal(parseAmount('1.000000000000000001'), 1000000000000000001n);
   assert.throws(() => parseAmount('0.0000000000000000001'));
-  const history = Array.from({ length: 101 }, () => ({ type: 'Proposed' as const, with: 'bob', amount: '1' }));
-  assert.equal(trustScore([...history, { type: 'Accepted', with: 'bob', amount: '1000000' }], [], 'alice').unusual, -2);
 });

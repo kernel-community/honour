@@ -237,6 +237,54 @@ export const honourAbi = [
     "inputs": [
       {
         "internalType": "address",
+        "name": "forgiver",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "forgiven",
+        "type": "address"
+      }
+    ],
+    "name": "forgivenessAvailable",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "forgivenessOffered",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "proposer",
         "type": "address"
       },
